@@ -13,7 +13,7 @@ import { Avatar, Button } from "@/components/ui";
 import {
     NOTIFICATIONS,
     USERS,
-} from "@/features/dashboard/data/data";
+} from "@/data/data";
 
 interface TopNavProps {
     title: string;

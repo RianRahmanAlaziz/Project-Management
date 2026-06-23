@@ -1,7 +1,7 @@
 "use client";
 
 import { Avatar } from "@/components/ui";
-import { NOTIFICATIONS } from "@/features/dashboard/data/data";
+import { NOTIFICATIONS } from "@/data/data";
 
 interface NotificationsCardProps {
     onNavigate: (page: string) => void;

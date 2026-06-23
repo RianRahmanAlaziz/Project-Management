@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
@@ -55,6 +55,29 @@ export function DashboardShell({
 
     const [darkMode, setDarkMode] = useState(false);
 
+    useEffect(() => {
+        const savedTheme = localStorage.getItem("theme");
+
+        if (savedTheme === "dark") {
+            setDarkMode(true);
+        }
+    }, []);
+
+    useEffect(() => {
+        const html = document.documentElement;
+
+        if (darkMode) {
+            html.classList.add("dark");
+        } else {
+            html.classList.remove("dark");
+        }
+
+        localStorage.setItem(
+            "theme",
+            darkMode ? "dark" : "light"
+        );
+    }, [darkMode]);
+
     const currentPage = getCurrentPage(pathname);
 
     const handleNavigate = (page: string) => {
@@ -68,8 +91,7 @@ export function DashboardShell({
 
     return (
         <div
-            className={`flex h-screen overflow-hidden bg-background ${darkMode ? "dark" : ""
-                }`}
+            className={`flex h-screen overflow-hidden bg-background`}
         >
             <div className="hidden h-full shrink-0 md:block">
                 <Sidebar

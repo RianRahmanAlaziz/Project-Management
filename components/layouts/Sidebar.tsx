@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 import { Avatar, Tooltip } from "@/components/ui";
-import { USERS } from "@/features/dashboard/data/data";
+import { USERS } from "@/data/data";
 
 interface SidebarProps {
     collapsed: boolean;

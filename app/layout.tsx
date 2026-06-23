@@ -17,9 +17,24 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`h-full antialiased`}
     >
-      <body>{children}</body>
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+                try {
+                    const theme = localStorage.getItem("theme");
+                    if (theme === "dark") {
+                        document.documentElement.classList.add("dark");
+                    }
+                } catch {}
+            `,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

@@ -20,7 +20,7 @@ export function Input({ label, error, leftIcon, className = "", ...props }: Inpu
 
                 <input
                     {...props}
-                    className={`w-full h-12 bg-input-background border border-border rounded-md px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${leftIcon ? "pl-8" : ""
+                    className={`w-full h-12 bg-background border border-border rounded-md px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${leftIcon ? "pl-8" : ""
                         } ${error ? "border-destructive" : ""} ${className}`}
                 />
             </div>

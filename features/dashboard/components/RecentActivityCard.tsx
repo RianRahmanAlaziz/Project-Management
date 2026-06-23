@@ -1,5 +1,5 @@
 import { Avatar } from "@/components/ui";
-import { ACTIVITIES } from "@/features/dashboard/data/data";
+import { ACTIVITIES } from "@/data/data";
 
 export function RecentActivityCard() {
     return (

@@ -9,7 +9,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import { CHART_DATA } from "@/features/dashboard/data/data";
+import { CHART_DATA } from "@/data/data";
 
 export function TaskCompletionChart() {
     return (

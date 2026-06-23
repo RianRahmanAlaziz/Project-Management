@@ -8,7 +8,7 @@ import {
     TrendingUp,
 } from "lucide-react";
 
-import { PROJECTS, TASKS } from "@/features/dashboard/data/data";
+import { PROJECTS, TASKS } from "@/data/data";
 import { DashboardStatCard } from "../components/DashboardStatCard";
 import { TaskCompletionChart } from "../components/TaskCompletionChart";
 import { ProjectProgressCard } from "../components/ProjectProgressCard";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui";
-import { TASKS } from "@/features/dashboard/data/data";
+import { TASKS } from "@/data/data";
 import { priorityDotColors, statusColors } from "../constants/dashboardColors";
 
 interface MyTasksCardProps {

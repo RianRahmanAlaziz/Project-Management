@@ -16,7 +16,8 @@ export function Tooltip({ children, content }: TooltipProps) {
 
                 <TooltipPrimitive.Portal>
                     <TooltipPrimitive.Content
-                        className="z-50 bg-foreground text-background text-xs rounded px-2 py-1 shadow-md"
+                        side="right"
+                        className="z-50 bg-foreground text-background text-s rounded px-2 py-1 shadow-md"
                         sideOffset={4}
                     >
                         {content}

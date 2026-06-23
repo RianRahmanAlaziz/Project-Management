@@ -1,6 +1,6 @@
 "use client";
 
-import { PROJECT_PROGRESS_DATA } from "@/features/dashboard/data/data";
+import { PROJECT_PROGRESS_DATA } from "@/data/data";
 
 interface ProjectProgressCardProps {
     onNavigate: (page: string) => void;
