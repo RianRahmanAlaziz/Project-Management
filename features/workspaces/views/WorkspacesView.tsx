@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import {
     ACTIVITIES,
     USERS,
@@ -21,57 +20,15 @@ export function WorkspacesView() {
         search,
         setSearch,
         filteredWorkspaces,
+        handleOpenWorkspace,
+        workspaceModal,
+        setWorkspaceModal,
+        handleCreateWorkspace,
+        handleEditWorkspace,
+        deleteModal,
+        setDeleteModal,
+        handleDeleteWorkspace,
     } = useWorkspaceSearch(WORKSPACES);
-
-    const router = useRouter();
-
-    const [workspaceModal, setWorkspaceModal] = useState<{
-        open: boolean;
-        mode: "create" | "edit";
-        workspace: any;
-    }>({
-        open: false,
-        mode: "create",
-        workspace: null,
-    });
-
-    const handleOpenWorkspace = (workspace: any) => {
-        router.push(
-            `/dashboard/projects?workspace=${workspace.id}`
-        );
-    };
-
-    const handleCreateWorkspace = () => {
-        setWorkspaceModal({
-            open: true,
-            mode: "create",
-            workspace: null,
-        });
-    };
-    const handleEditWorkspace = (workspace: any) => {
-        setWorkspaceModal({
-            open: true,
-            mode: "edit",
-            workspace,
-        });
-    };
-
-    const [deleteModal, setDeleteModal] = useState<{
-        open: boolean;
-        workspace: any | null;
-    }>({
-        open: false,
-        workspace: null,
-    });
-
-    const handleDeleteWorkspace = (
-        workspace: any
-    ) => {
-        setDeleteModal({
-            open: true,
-            workspace,
-        });
-    };
 
     return (
         <div className="px-6 py-8 xl:px-8">
