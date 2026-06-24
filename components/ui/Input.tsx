@@ -9,7 +9,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export function Input({ label, error, leftIcon, className = "", ...props }: InputProps) {
     return (
         <div className="flex flex-col gap-1">
-            {label && <label className="text-xs font-medium text-foreground">{label}</label>}
+            {label && <label className="text-base font-medium text-foreground">{label}</label>}
 
             <div className="relative">
                 {leftIcon && (

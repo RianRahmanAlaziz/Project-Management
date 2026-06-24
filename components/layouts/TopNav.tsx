@@ -119,7 +119,7 @@ export function TopNav({
                         type="button"
                         onClick={() => setShowSearch(true)}
                         aria-label="Open search"
-                        className="flex h-10 items-center gap-2 rounded-lg bg-muted/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        className="flex h-10 items-center gap-2 rounded-lg bg-muted/60 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
                     >
                         <Search size={17} />
 
@@ -140,7 +140,7 @@ export function TopNav({
                                 ? "Switch to light mode"
                                 : "Switch to dark mode"
                         }
-                        className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
                     >
                         {darkMode ? (
                             <Sun size={18} />
@@ -153,7 +153,7 @@ export function TopNav({
                         type="button"
                         onClick={() => onNavigate("notifications")}
                         aria-label={`Notifications, ${unreadNotifications} unread`}
-                        className="relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        className="relative flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground cursor-pointer"
                     >
                         <Bell size={18} />
 
@@ -170,7 +170,7 @@ export function TopNav({
                         type="button"
                         onClick={() => onNavigate("profile")}
                         aria-label="Open profile"
-                        className="flex h-10 items-center gap-2 rounded-lg pl-1 pr-2 transition-colors hover:bg-muted"
+                        className="flex h-10 items-center gap-2 rounded-lg pl-1 pr-2 transition-colors hover:bg-muted cursor-pointer"
                     >
                         <Avatar name={currentUser.name} size="md" />
 

@@ -163,7 +163,7 @@ export function Sidebar({
                                 type="button"
                                 onClick={() => onNavigate(item.id)}
                                 aria-current={active ? "page" : undefined}
-                                className={`cursor-pointer flex h-10 w-full items-center rounded-lg text-sm font-medium transition-colors ${active
+                                className={`cursor-pointer flex h-10 w-full items-center rounded-lg text-m font-medium transition-colors ${active
                                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-foreground"
                                     } ${collapsed
