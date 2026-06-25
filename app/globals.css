@@ -1,3 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "../styles/theme.css";
 @import "tailwindcss";
+
+
+/* .EmojiPickerReact {
+    --epr-bg-color: hsl(var(--card));
+    --epr-category-label-bg-color: hsl(var(--card));
+    --epr-hover-bg-color: hsl(var(--muted));
+    --epr-search-border-color: hsl(var(--border));
+    --epr-search-input-bg-color: hsl(var(--background));
+    --epr-text-color: hsl(var(--foreground));
+    --epr-picker-border-color: hsl(var(--border));
+
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: none !important;
+}
+
+.EmojiPickerReact {
+    --epr-bg-color: hsl(var(--card));
+    --epr-category-label-bg-color: hsl(var(--card));
+    --epr-hover-bg-color: hsl(var(--muted));
+    --epr-search-input-bg-color: hsl(var(--background));
+    --epr-search-border-color: hsl(var(--border));
+    --epr-text-color: hsl(var(--foreground));
+} */

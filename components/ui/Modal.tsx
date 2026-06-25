@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import clsx from "clsx";
@@ -24,16 +24,27 @@ const modalSizes = {
 };
 
 export function Modal({ open, onClose, title, children, size = "md", className, }: ModalProps) {
+    const [mounted, setMounted] = useState(open);
+
+    useEffect(() => {
+        if (open) {
+            setMounted(true);
+        }
+    }, [open]);
     return (
         <DialogPrimitive.Root
             open={open}
             onOpenChange={(value) => !value && onClose()}
         >
-            <DialogPrimitive.Portal>
-                <AnimatePresence>
+            <DialogPrimitive.Portal forceMount>
+                <AnimatePresence
+                    onExitComplete={() => {
+                        setMounted(false);
+                    }}
+                >
                     {open && (
                         <>
-                            <DialogPrimitive.Overlay asChild>
+                            <DialogPrimitive.Overlay forceMount asChild>
                                 <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -43,7 +54,7 @@ export function Modal({ open, onClose, title, children, size = "md", className, 
                                 />
                             </DialogPrimitive.Overlay>
 
-                            <DialogPrimitive.Content asChild>
+                            <DialogPrimitive.Content forceMount asChild>
                                 <motion.div
                                     initial={{ opacity: 0, scale: 0 }}
                                     animate={{ opacity: 1, scale: 1 }}
