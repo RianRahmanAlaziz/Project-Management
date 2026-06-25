@@ -8,13 +8,14 @@ import {
     TrendingUp,
 } from "lucide-react";
 
-import { PROJECTS, TASKS } from "@/data/data";
+import { PROJECTS, TASKS, USERS } from "@/data/data";
 import { DashboardStatCard } from "../components/DashboardStatCard";
 import { TaskCompletionChart } from "../components/TaskCompletionChart";
 import { ProjectProgressCard } from "../components/ProjectProgressCard";
 import { RecentActivityCard } from "../components/RecentActivityCard";
 import { MyTasksCard } from "../components/MyTasksCard";
 import { NotificationsCard } from "../components/NotificationsCard";
+import TeamPerformance from "../components/TeamPerformance";
 
 
 
@@ -82,6 +83,8 @@ export function DashboardView() {
                     <TaskCompletionChart />
                     <ProjectProgressCard onNavigate={handleNavigate} />
                 </div>
+
+                <TeamPerformance />
 
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                     <RecentActivityCard />
