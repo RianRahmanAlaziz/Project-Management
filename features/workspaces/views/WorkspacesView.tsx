@@ -20,7 +20,8 @@ export function WorkspacesView() {
         search,
         setSearch,
         filteredWorkspaces,
-        handleOpenWorkspace,
+        handleOpenProjects,
+        handleOpenMembers,
         workspaceModal,
         setWorkspaceModal,
         handleCreateWorkspace,
@@ -44,7 +45,8 @@ export function WorkspacesView() {
 
                 <WorkspaceGrid
                     workspaces={filteredWorkspaces}
-                    onOpenWorkspace={handleOpenWorkspace}
+                    onOpenProjects={handleOpenProjects}
+                    onOpenMembers={handleOpenMembers}
                     onCreateWorkspace={handleCreateWorkspace}
                     onEditWorkspace={handleEditWorkspace}
                     onDeleteWorkspace={handleDeleteWorkspace}

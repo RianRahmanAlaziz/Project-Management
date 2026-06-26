@@ -20,9 +20,13 @@ import MembersTable from "../components/MembersTable";
 import PermissionsTable from "../components/PermissionsTable";
 import InviteTeamMember from "../components/InviteTeamMember";
 
+type MembersViewProps = {
+    slug: string;
+};
 
-
-export default function MembersView() {
+export default function MembersView({
+    slug,
+}: MembersViewProps) {
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"members" | "permissions">("members");
 

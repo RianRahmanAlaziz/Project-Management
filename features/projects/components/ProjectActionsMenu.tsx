@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    FolderOpen,
     Pencil,
     Users,
     Settings,
@@ -26,7 +25,7 @@ interface ProjectActionsMenuProps {
     project: Project;
     onOpen?: (project: Project) => void;
     onEdit?: (project: Project) => void;
-    onMembers?: (project: Project) => void;
+    onOpenMembers?: (project: Project) => void;
     onSettings?: (project: Project) => void;
     onDelete?: (project: Project) => void;
 }
@@ -35,7 +34,7 @@ export default function ProjectActionsMenu({
     project,
     onOpen,
     onEdit,
-    onMembers,
+    onOpenMembers,
     onSettings,
     onDelete,
 }: ProjectActionsMenuProps) {
@@ -68,9 +67,14 @@ export default function ProjectActionsMenu({
                     onClick={() => onOpen?.(project)}
                 >
                     <SquareDashedKanban size={16} />
-                    Open Kanban Board
+                    Open Project Board
                 </DropdownMenuItem>
-
+                <DropdownMenuItem
+                    onClick={() => onOpenMembers?.(project)}
+                >
+                    <Users size={16} />
+                    Manage Members
+                </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={() => onEdit?.(project)}
                 >

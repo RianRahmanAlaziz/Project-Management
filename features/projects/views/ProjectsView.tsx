@@ -4,27 +4,16 @@ import { useMemo, useState } from "react";
 import {
     USERS,
     PROJECTS,
+    WORKSPACES,
 } from "@/data/data";
 import { useRouter } from "next/navigation";
-import { Plus, MoreHorizontal, Calendar, FolderOpen } from "lucide-react";
-import { Avatar, Badge, Button, ProgressBar, EmptyState } from "@/components/ui";
-import ProjectHeader from "../components/ProjectHeader";
+import { Plus, FolderOpen } from "lucide-react";
+import { Button, EmptyState } from "@/components/ui";
 import ProjectSearch from "../components/ProjectSearch";
 import ProjectCard from "../components/ProjectCard";
+import WorkspaceOverview from "@/features/workspaces/components/WorkspaceOverview";
+import ProjectHeader from "../components/ProjectHeader";
 
-
-const statusColors: Record<string, "indigo" | "yellow" | "green" | "gray"> = {
-    "In Progress": "indigo",
-    "Review": "yellow",
-    "Done": "green",
-    "Todo": "gray",
-};
-
-const priorityColors: Record<string, string> = {
-    High: "text-destructive",
-    Medium: "text-warning",
-    Low: "text-muted-foreground",
-};
 
 type ProjectsViewProps = {
     slug: string;
@@ -35,6 +24,10 @@ export default function ProjectsView({
 }: ProjectsViewProps) {
     const router = useRouter();
     const [search, setSearch] = useState("");
+
+    const workspace = WORKSPACES.find(
+        (item) => item.slug === slug
+    );
 
     const filtered = useMemo(() => {
         return PROJECTS.filter(project =>
@@ -51,6 +44,23 @@ export default function ProjectsView({
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
+
+                <WorkspaceOverview
+                    workspace={{
+                        name: workspace?.name ?? "",
+                        slug: workspace?.slug ?? "",
+                        description: workspace?.description ?? "",
+                        createdAt: "Jan 2024",
+                        initials: workspace?.initials ?? "",
+                        color: workspace?.color ?? "bg-indigo-500",
+                        totalProjects: workspace?.projects ?? 0,
+                        totalMembers: workspace?.members ?? 0,
+                        totalTasks: 89,
+                        completionRate: 76,
+                    }}
+                    onCreateProject={handleCreateProject}
+                />
+
                 <ProjectHeader
                     totalProjects={filtered.length}
                     onCreateProject={handleCreateProject}

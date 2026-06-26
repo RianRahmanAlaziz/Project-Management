@@ -1,7 +1,5 @@
 import { Search } from "lucide-react";
 
-import { Input } from "@/components/ui";
-
 interface WorkspaceSearchProps {
     value: string;
     onChange: (value: string) => void;
@@ -13,7 +11,7 @@ export function WorkspaceSearch({
 }: WorkspaceSearchProps) {
     return (
         <div className="relative mb-4">
-            <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
                 value={value}
                 onChange={(event) => onChange(event.target.value)}

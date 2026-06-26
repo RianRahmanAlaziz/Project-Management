@@ -10,7 +10,8 @@ import { WorkspaceCard } from "./WorkspaceCard";
 
 interface WorkspaceGridProps {
     workspaces: Workspace[];
-    onOpenWorkspace: (workspace: Workspace) => void;
+    onOpenProjects: (workspace: Workspace) => void;
+    onOpenMembers: (workspace: Workspace) => void;
     onCreateWorkspace: () => void;
     onEditWorkspace: (workspace: Workspace) => void;
     onDeleteWorkspace: (workspace: Workspace) => void;
@@ -18,7 +19,8 @@ interface WorkspaceGridProps {
 
 export function WorkspaceGrid({
     workspaces,
-    onOpenWorkspace,
+    onOpenProjects,
+    onOpenMembers,
     onCreateWorkspace,
     onEditWorkspace,
     onDeleteWorkspace,
@@ -52,7 +54,8 @@ export function WorkspaceGrid({
                 <WorkspaceCard
                     key={workspace.id}
                     workspace={workspace}
-                    onOpen={onOpenWorkspace}
+                    onOpenProjects={onOpenProjects}
+                    onOpenMembers={onOpenMembers}
                     onEdit={onEditWorkspace}
                     onDelete={onDeleteWorkspace}
                 />

@@ -7,14 +7,11 @@ import {
     BarChart2,
     Bell,
     Briefcase,
-    CheckSquare,
     ChevronLeft,
     ChevronRight,
-    FolderOpen,
     LayoutDashboard,
+    ListTodo,
     Plus,
-    SquareDashedKanban,
-    Users,
     Zap,
 } from "lucide-react";
 
@@ -51,29 +48,14 @@ const NAV_ITEMS: NavigationItem[] = [
         icon: Briefcase,
     },
     {
-        label: "Projects",
-        href: "/projects",
-        icon: FolderOpen,
-    },
-    {
-        label: "Kanban",
-        href: "/kanban",
-        icon: SquareDashedKanban,
-    },
-    {
         label: "My Tasks",
         href: "/tasks",
-        icon: CheckSquare,
+        icon: ListTodo,
     },
     {
         label: "Analytics",
         href: "/analytics",
         icon: BarChart2,
-    },
-    {
-        label: "Members",
-        href: "/members",
-        icon: Users,
     },
     {
         label: "Notifications",

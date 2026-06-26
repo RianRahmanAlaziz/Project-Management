@@ -20,9 +20,15 @@ export function useWorkspaceSearch<T extends { name: string }>(
         );
     }, [search, workspaces]);
 
-    const handleOpenWorkspace = (workspace: any) => {
+    const handleOpenProjects = (workspace: any) => {
         router.push(
-            `/workspaces/${workspace.slug}/projects`
+            `/workspaces/${workspace.slug}`
+        );
+    };
+
+    const handleOpenMembers = (workspace: any) => {
+        router.push(
+            `/workspaces/${workspace.slug}/members`
         );
     };
 
@@ -74,7 +80,8 @@ export function useWorkspaceSearch<T extends { name: string }>(
         search,
         setSearch,
         filteredWorkspaces,
-        handleOpenWorkspace,
+        handleOpenProjects,
+        handleOpenMembers,
         workspaceModal,
         setWorkspaceModal,
         handleCreateWorkspace,

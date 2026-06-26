@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Calendar, MoreHorizontal } from "lucide-react";
+import { Calendar, FolderOpen, ListTodo, MoreHorizontal, Users } from "lucide-react";
 
 import { Avatar, Badge, ProgressBar } from "@/components/ui";
 import { USERS } from "@/data/data";
@@ -26,6 +26,7 @@ type ProjectCardProps = {
     slug: string;
     project: Project;
     onOpen?: (project: Project) => void;
+    onOpenMembers?: (project: Project) => void;
     onEdit?: (project: Project) => void;
     onDelete?: (project: Project) => void;
 };
@@ -34,6 +35,7 @@ export default function ProjectCard({
     slug,
     project,
     onOpen,
+    onOpenMembers,
     onEdit,
     onDelete,
 }: ProjectCardProps) {
@@ -76,9 +78,7 @@ export default function ProjectCard({
                     project={project}
                     onOpen={onOpen}
                     onEdit={onEdit}
-                    onMembers={(workspace) => {
-                        console.log("Members", workspace.id);
-                    }}
+                    onOpenMembers={onOpenMembers}
                     onSettings={(workspace) => {
                         console.log("Settings", workspace.id);
                     }}
@@ -117,10 +117,16 @@ export default function ProjectCard({
 
             {/* Footer */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="flex -space-x-2">
+                <div className="flex items-center gap-4">
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <ListTodo size={15} />
+                        {project.tasks} Tasks
+                    </span>
 
-                    </div>
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Users size={15} />
+                        {members.length} members
+                    </span>
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">

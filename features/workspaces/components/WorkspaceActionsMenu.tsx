@@ -22,18 +22,18 @@ import type { Workspace } from "@/features/workspaces/types/workspace";
 interface WorkspaceActionsMenuProps {
     workspace: Workspace;
 
-    onOpen?: (workspace: Workspace) => void;
+    onOpenProjects?: (workspace: Workspace) => void;
+    onOpenMembers?: (workspace: Workspace) => void;
     onEdit?: (workspace: Workspace) => void;
-    onMembers?: (workspace: Workspace) => void;
     onSettings?: (workspace: Workspace) => void;
     onDelete?: (workspace: Workspace) => void;
 }
 
 export function WorkspaceActionsMenu({
     workspace,
-    onOpen,
+    onOpenProjects,
+    onOpenMembers,
     onEdit,
-    onMembers,
     onSettings,
     onDelete,
 }: WorkspaceActionsMenuProps) {
@@ -63,7 +63,7 @@ export function WorkspaceActionsMenu({
 
             <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                    onClick={() => onOpen?.(workspace)}
+                    onClick={() => onOpenProjects?.(workspace)}
                 >
                     <FolderOpen size={16} />
                     Open Workspace
@@ -77,7 +77,7 @@ export function WorkspaceActionsMenu({
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                    onClick={() => onMembers?.(workspace)}
+                    onClick={() => onOpenMembers?.(workspace)}
                 >
                     <Users size={16} />
                     Manage Members
