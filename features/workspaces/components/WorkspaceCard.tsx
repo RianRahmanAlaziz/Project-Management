@@ -27,12 +27,13 @@ export function WorkspaceCard({
                     </div>
 
                     <div className="min-w-0">
-                        <Link
-                            href={`/dashboard/projects?workspace=${workspace.id}`}
-                            className="block truncate text-base font-semibold text-foreground transition-colors hover:text-primary"
+
+                        <button
+                            onClick={() => onOpen?.(workspace)}
+                            className="block truncate text-base font-semibold text-foreground transition-colors hover:text-primary cursor-pointer"
                         >
                             {workspace.name}
-                        </Link>
+                        </button>
 
                         <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                             {workspace.description}

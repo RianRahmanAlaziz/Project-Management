@@ -7,10 +7,9 @@ import {
     ChevronLeft,
     ChevronRight,
     FolderOpen,
-    Hash,
     LayoutDashboard,
     Plus,
-    Search,
+    SquareDashedKanban,
     Users,
     Zap,
 } from "lucide-react";
@@ -56,7 +55,7 @@ const NAV_ITEMS: NavigationItem[] = [
     {
         id: "kanban",
         label: "Kanban Board",
-        icon: Hash,
+        icon: SquareDashedKanban,
     },
     {
         id: "tasks",

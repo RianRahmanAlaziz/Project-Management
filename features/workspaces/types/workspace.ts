@@ -1,6 +1,7 @@
 export interface Workspace {
     id: string | number;
     name: string;
+    slug: string;
     initials: string;
     description: string;
     color: string;

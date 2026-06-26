@@ -22,7 +22,7 @@ export function useWorkspaceSearch<T extends { name: string }>(
 
     const handleOpenWorkspace = (workspace: any) => {
         router.push(
-            `/dashboard/projects?workspace=${workspace.id}`
+            `/dashboard/workspaces/${workspace.slug}/projects`
         );
     };
 
