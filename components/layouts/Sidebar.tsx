@@ -119,8 +119,6 @@ export function Sidebar({
             className={`relative flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-[width] duration-300 ${collapsed ? "w-20" : "w-72"
                 }`}
         >
-            {/* Logo */}
-
             <div
                 className={`flex h-16 items-center border-b border-sidebar-border px-4 ${collapsed ? "justify-center" : "gap-3"
                     }`}
@@ -148,7 +146,7 @@ export function Sidebar({
 
             <button
                 onClick={onToggle}
-                className="absolute -right-3 top-5 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-sidebar shadow-sm"
+                className="absolute -right-3 top-5 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-sidebar-border bg-sidebar shadow-sm cursor-pointer"
             >
                 {collapsed ? (
                     <ChevronRight size={15} />

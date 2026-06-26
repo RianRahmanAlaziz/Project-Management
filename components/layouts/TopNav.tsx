@@ -114,7 +114,6 @@ export function TopNav({
                                             /
                                         </span>
                                     )}
-
                                     {isLast ? (
                                         <span className="font-semibold text-foreground">
                                             {item.label}
@@ -132,24 +131,19 @@ export function TopNav({
                         })}
                     </nav>
                 </div>
-
                 <div className="flex items-center gap-2">
-
                     <button
                         onClick={() => setShowSearch(true)}
                         className="cursor-pointer flex h-10 items-center gap-2 rounded-lg bg-muted/60 px-3 text-sm text-muted-foreground hover:bg-muted"
                     >
                         <Search size={17} />
-
                         <span className="hidden md:block">
                             Search...
                         </span>
-
                         <kbd className="hidden rounded border border-border bg-card px-1.5 py-0.5 text-[11px] md:block">
                             ⌘K
                         </kbd>
                     </button>
-
                     <button
                         onClick={onToggleDark}
                         className="flex h-10 w-10 items-center justify-center rounded-lg hover:bg-muted cursor-pointer"
@@ -160,7 +154,6 @@ export function TopNav({
                             <Moon size={18} />
                         )}
                     </button>
-
                     <button
                         onClick={() =>
                             router.push("/notifications")
@@ -168,21 +161,14 @@ export function TopNav({
                         className="relative flex h-10 w-10 items-center justify-center rounded-lg hover:bg-muted cursor-pointer"
                     >
                         <Bell size={18} />
-
                         {unreadNotifications > 0 && (
-
                             <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-white">
-
                                 {unreadNotifications > 9
                                     ? "9+"
                                     : unreadNotifications}
-
                             </span>
-
                         )}
                     </button>
-
-                    {/* Profile */}
 
                     <button
                         onClick={() =>
@@ -194,91 +180,63 @@ export function TopNav({
                             name={currentUser.name}
                             size="md"
                         />
-
                         <div className="hidden xl:block text-left">
-
                             <p className="max-w-28 truncate text-sm font-semibold">
                                 {currentUser.name}
                             </p>
-
                             <p className="text-xs text-muted-foreground">
                                 {currentUser.role}
                             </p>
-
                         </div>
-
                     </button>
-
                 </div>
-
             </header>
 
-            {/* Search Dialog */}
-
             {showSearch && (
-
                 <div
                     onClick={() => setShowSearch(false)}
                     className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-[15vh] backdrop-blur-sm"
                 >
-
                     <div
                         onClick={(e) => e.stopPropagation()}
                         className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
                     >
-
                         <div className="flex h-14 items-center gap-3 border-b border-border px-4">
-
                             <Search
                                 size={18}
                                 className="text-muted-foreground"
                             />
-
                             <input
                                 autoFocus
                                 type="search"
                                 placeholder="Search projects, tasks..."
                                 className="flex-1 bg-transparent outline-none"
                             />
-
                             <kbd className="rounded border border-border bg-muted px-2 py-1 text-xs">
                                 Esc
                             </kbd>
-
                         </div>
-
                         <div className="p-3">
-
                             <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                 Recent searches
                             </p>
 
                             {RECENT_SEARCHES.map((item) => (
-
                                 <button
                                     key={item}
                                     className="flex h-11 w-full items-center gap-3 rounded-lg px-3 hover:bg-muted"
                                 >
-
                                     <Search
                                         size={15}
                                         className="text-muted-foreground"
                                     />
-
                                     <span>{item}</span>
-
                                 </button>
-
                             ))}
-
                         </div>
-
                     </div>
-
                 </div>
-
             )}
-
         </>
     );
 }
