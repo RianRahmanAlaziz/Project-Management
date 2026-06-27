@@ -1,15 +1,15 @@
 
-import ProjectsView from '@/features/projects/views/ProjectsView'
+import WorkspaceOverview from '@/features/workspaces/views/WorkspaceOverview';
 
-type ProjectsPageProps = {
+type WorkspaceOverviewPageProps = {
     params: Promise<{
         slug: string;
     }>;
 };
 
-export default async function ProjectsPage({ params }: ProjectsPageProps) {
+export default async function WorkspaceOverviewPage({ params }: WorkspaceOverviewPageProps) {
     const { slug } = await params;
     return (
-        <ProjectsView slug={slug} />
+        <WorkspaceOverview slug={slug} />
     )
 }

@@ -2,16 +2,12 @@
 
 import { useMemo, useState } from "react";
 import {
-    USERS,
     PROJECTS,
-    WORKSPACES,
 } from "@/data/data";
-import { useRouter } from "next/navigation";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
 import ProjectSearch from "../components/ProjectSearch";
 import ProjectCard from "../components/ProjectCard";
-import WorkspaceOverview from "@/features/workspaces/components/WorkspaceOverview";
 import ProjectHeader from "../components/ProjectHeader";
 
 
@@ -22,12 +18,7 @@ type ProjectsViewProps = {
 export default function ProjectsView({
     slug,
 }: ProjectsViewProps) {
-    const router = useRouter();
     const [search, setSearch] = useState("");
-
-    const workspace = WORKSPACES.find(
-        (item) => item.slug === slug
-    );
 
     const filtered = useMemo(() => {
         return PROJECTS.filter(project =>
@@ -44,23 +35,6 @@ export default function ProjectsView({
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
-
-                <WorkspaceOverview
-                    workspace={{
-                        name: workspace?.name ?? "",
-                        slug: workspace?.slug ?? "",
-                        description: workspace?.description ?? "",
-                        createdAt: "Jan 2024",
-                        initials: workspace?.initials ?? "",
-                        color: workspace?.color ?? "bg-indigo-500",
-                        totalProjects: workspace?.projects ?? 0,
-                        totalMembers: workspace?.members ?? 0,
-                        totalTasks: 89,
-                        completionRate: 76,
-                    }}
-                    onCreateProject={handleCreateProject}
-                />
-
                 <ProjectHeader
                     totalProjects={filtered.length}
                     onCreateProject={handleCreateProject}
