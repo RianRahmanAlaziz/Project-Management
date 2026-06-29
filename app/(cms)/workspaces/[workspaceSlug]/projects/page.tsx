@@ -3,13 +3,13 @@ import ProjectsView from '@/features/projects/views/ProjectsView'
 
 type ProjectsPageProps = {
     params: Promise<{
-        slug: string;
+        workspaceSlug: string;
     }>;
 };
 
 export default async function ProjectsPage({ params }: ProjectsPageProps) {
-    const { slug } = await params;
+    const { workspaceSlug } = await params;
     return (
-        <ProjectsView slug={slug} />
+        <ProjectsView workspaceSlug={workspaceSlug} />
     )
 }

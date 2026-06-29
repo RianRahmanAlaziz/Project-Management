@@ -36,7 +36,7 @@ export function Avatar({ name, src, size = "sm", color }: AvatarProps) {
         .toUpperCase();
 
     return (
-        <AvatarPrimitive.Root className={`${sizes[size]} rounded-full overflow-hidden flex-shrink-0`}>
+        <AvatarPrimitive.Root className={`${sizes[size]} rounded-full overflow-hidden shrink-0`}>
             {src && <AvatarPrimitive.Image src={src} alt={name} className="w-full h-full object-cover" />}
             <AvatarPrimitive.Fallback
                 className={`w-full h-full ${bg} text-white flex items-center justify-center font-semibold`}

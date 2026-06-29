@@ -19,7 +19,7 @@ export function WorkspaceCard({
     onDelete,
 }: WorkspaceCardProps) {
     return (
-        <article className="group rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-sm">
+        <article className="group rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-xl">
             <div className="mb-5 flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                     <div

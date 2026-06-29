@@ -16,7 +16,7 @@ export default function WorkspaceStats({
     color,
 }: WorkspaceStatsProps) {
     return (
-        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5">
+        <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-5 shadow-xl">
             <div className="flex items-center justify-between">
                 <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                     {label}

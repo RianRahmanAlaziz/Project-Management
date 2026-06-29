@@ -107,7 +107,14 @@ export const PROJECTS = [
     },
 ];
 
-export const KANBAN_COLUMNS = ["Backlog", "Todo", "In Progress", "Review", "Done"];
+export const KANBAN_COLUMNS = [
+    "Backlog",
+    "Todo",
+    "In Progress",
+    "Review",
+    "Done",
+] as const;
+export type KanbanColumn = typeof KANBAN_COLUMNS[number];
 
 export const TASKS = [
     { id: "t1", title: "Set up CI/CD pipeline", column: "Done", priority: "High", assignee: "u1", dueDate: "2026-06-10", labels: ["DevOps"], attachments: 2, comments: 5, project: "p1" },

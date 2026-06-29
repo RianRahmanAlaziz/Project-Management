@@ -3,13 +3,13 @@ import WorkspaceOverview from '@/features/workspaces/views/WorkspaceOverview';
 
 type WorkspaceOverviewPageProps = {
     params: Promise<{
-        slug: string;
+        workspaceSlug: string;
     }>;
 };
 
 export default async function WorkspaceOverviewPage({ params }: WorkspaceOverviewPageProps) {
-    const { slug } = await params;
+    const { workspaceSlug } = await params;
     return (
-        <WorkspaceOverview slug={slug} />
+        <WorkspaceOverview slug={workspaceSlug} />
     )
 }

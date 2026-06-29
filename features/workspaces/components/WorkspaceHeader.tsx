@@ -26,7 +26,7 @@ export function WorkspaceHeader({
                 size="lg"
                 variant="primary"
                 onClick={onCreateWorkspace}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto shadow-xl"
             >
                 <Plus size={16} />
                 New Workspace

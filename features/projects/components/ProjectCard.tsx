@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Calendar, FolderOpen, ListTodo, MoreHorizontal, Users } from "lucide-react";
+import { Calendar, ListTodo, Users } from "lucide-react";
 
-import { Avatar, Badge, ProgressBar } from "@/components/ui";
+import { Badge, ProgressBar } from "@/components/ui";
 import { USERS } from "@/data/data";
 import ProjectActionsMenu from "./ProjectActionsMenu";
 
@@ -23,7 +23,7 @@ const priorityColors: Record<string, string> = {
 export type Project = (typeof import("@/data/data").PROJECTS)[number];
 
 type ProjectCardProps = {
-    slug: string;
+    workspaceSlug: string;
     project: Project;
     onOpen?: (project: Project) => void;
     onOpenMembers?: (project: Project) => void;
@@ -32,7 +32,7 @@ type ProjectCardProps = {
 };
 
 export default function ProjectCard({
-    slug,
+    workspaceSlug,
     project,
     onOpen,
     onOpenMembers,
@@ -46,14 +46,7 @@ export default function ProjectCard({
     );
 
     return (
-        <div
-            onClick={() =>
-                router.push(
-                    `/workspaces/${slug}/projects/${project.slug}`
-                )
-            }
-            className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group"
-        >
+        <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2.5">

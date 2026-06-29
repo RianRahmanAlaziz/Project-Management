@@ -36,7 +36,7 @@ export default function WorkspaceHero({
     onSettings,
 }: WorkspaceHeroProps) {
     return (
-        <div className="rounded-2xl border border-border bg-card p-7">
+        <div className="rounded-2xl border border-border bg-card p-7 shadow-xl">
             <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
                 <div className="flex gap-5">
                     <div

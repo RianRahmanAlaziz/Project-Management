@@ -11,7 +11,7 @@ export function TeamMembersCard({
     members,
 }: TeamMembersCardProps) {
     return (
-        <section className="rounded-2xl border border-border bg-card p-5 shadow-sm">
+        <section className="rounded-2xl border border-border bg-card p-5 shadow-xl">
             <div className="mb-4">
                 <h2 className="text-base font-semibold text-foreground">
                     Team Members

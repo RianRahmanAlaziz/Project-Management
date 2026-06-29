@@ -24,7 +24,7 @@ const icons = {
 
 export default function RecentActivity() {
     return (
-        <div className="rounded-2xl border border-border bg-card">
+        <div className="rounded-2xl border border-border bg-card shadow-xl">
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
                 <div>
                     <h2 className="text-lg font-semibold">

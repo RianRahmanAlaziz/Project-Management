@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     PROJECTS,
 } from "@/data/data";
@@ -9,17 +10,17 @@ import { Button, EmptyState } from "@/components/ui";
 import ProjectSearch from "../components/ProjectSearch";
 import ProjectCard from "../components/ProjectCard";
 import ProjectHeader from "../components/ProjectHeader";
-
+import type { Project } from "../components/ProjectCard";
 
 type ProjectsViewProps = {
-    slug: string;
+    workspaceSlug: string;
 };
 
 export default function ProjectsView({
-    slug,
+    workspaceSlug,
 }: ProjectsViewProps) {
     const [search, setSearch] = useState("");
-
+    const router = useRouter();
     const filtered = useMemo(() => {
         return PROJECTS.filter(project =>
             project.name
@@ -30,6 +31,12 @@ export default function ProjectsView({
 
     const handleCreateProject = () => {
         console.log("Create Project")
+    };
+
+    const handleOpenProjectBoard = (project: Project) => {
+        router.push(
+            `/workspaces/${workspaceSlug}/projects/${project.slug}/board`
+        );
     };
 
     return (
@@ -50,8 +57,9 @@ export default function ProjectsView({
                         {filtered.map(project => (
                             <ProjectCard
                                 key={project.id}
-                                slug={slug}
+                                workspaceSlug={workspaceSlug}
                                 project={project}
+                                onOpen={handleOpenProjectBoard}
                             />
                         ))}
                     </div>

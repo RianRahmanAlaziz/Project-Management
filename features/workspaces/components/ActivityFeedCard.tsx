@@ -12,7 +12,7 @@ export function ActivityFeedCard({
     activities,
 }: ActivityFeedCardProps) {
     return (
-        <section className="rounded-2xl border border-border bg-card shadow-sm p-5">
+        <section className="rounded-2xl border border-border bg-card shadow-xl p-5">
             <div className="mb-4 flex items-center gap-2">
                 <Activity
                     size={17}

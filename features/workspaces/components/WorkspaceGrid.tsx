@@ -27,7 +27,7 @@ export function WorkspaceGrid({
 }: WorkspaceGridProps) {
     if (workspaces.length === 0) {
         return (
-            <div className="rounded-2xl border border-border bg-card">
+            <div className="rounded-2xl border border-border bg-card shadow-xl">
                 <EmptyState
                     icon={<Briefcase size={22} />}
                     title="No workspaces found"
