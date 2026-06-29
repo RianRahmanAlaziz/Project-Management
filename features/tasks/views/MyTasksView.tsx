@@ -2,16 +2,17 @@
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import {
-    USERS,
     TASKS,
-    PROJECTS,
-    CHART_DATA,
 } from "@/data/data";
 
+import {
+    MyTasksHeader,
+    MyTasksTabs,
+    MyTasksTable
+} from "@/features/tasks/components";
+
 import TaskDrawerView from "@/features/tasks/views/TaskDrawerView";
-import MyTasksHeader from "../components/MyTasksHeader";
-import MyTasksTabs from "../components/MyTasksTabs";
-import MyTasksTable from "../components/MyTasksTable";
+
 
 export default function MyTasksView() {
     const [filter, setFilter] = useState<"all" | "mine" | "overdue">("mine");

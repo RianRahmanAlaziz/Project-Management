@@ -1,5 +1,5 @@
-import MyTasksView from '@/features/mytasks/views/MyTasksView'
-import React from 'react'
+import MyTasksView from '@/features/tasks/views/MyTasksView'
+
 
 export default function MyPage() {
     return (

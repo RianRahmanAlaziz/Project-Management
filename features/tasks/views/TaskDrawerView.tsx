@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { motion } from "motion/react";
 import {
     USERS,
     TASKS,
 } from "@/data/data";
 
-import TaskHeader from "../components/TaskHeader";
-import TaskContent from "../components/TaskContent";
-import TaskCommentInput from "../components/TaskCommentInput";
+import {
+    TaskHeader,
+    TaskContent,
+    TaskCommentInput,
+} from "@/features/tasks/components";
 
 interface TaskDrawerProps {
     taskId: string;
@@ -52,7 +54,6 @@ export default function TaskDrawerView({
                 }}
             />
 
-            {/* Drawer */}
             <motion.div
                 initial={{
                     x: "100%",
@@ -75,7 +76,7 @@ export default function TaskDrawerView({
                     damping: 28,
                     mass: 0.9,
                 }}
-                className="relative ml-auto flex h-full w-full max-w-[520px] flex-col overflow-hidden border-l border-border bg-card shadow-2xl"
+                className="relative ml-auto flex h-full w-full max-w-130 flex-col overflow-hidden border-l border-border bg-card shadow-2xl"
             >
                 <TaskHeader
                     tasks={task}

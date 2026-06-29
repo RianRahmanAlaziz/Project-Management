@@ -2,10 +2,12 @@
 
 import { Tabs } from '@/components/ui'
 
-import TaskMeta from './TaskMeta'
-import TaskComment from './TaskComment'
-import TaskAttachments from './TaskAttachments'
-import TaskActivity from './TaskActivity'
+import {
+    TaskMeta,
+    TaskComment,
+    TaskActivity,
+    TaskAttachments,
+} from "@/features/tasks/components";
 
 import type { Tasks } from '@/features/tasks/types/tasks'
 
