@@ -8,14 +8,15 @@ import {
 
 import { WORKSPACES } from "@/features/workspaces/mock/workspaces";
 
-import { ActivityFeedCard } from "../components/ActivityFeedCard";
-import { TeamMembersCard } from "../components/TeamMembersCard";
-import { WorkspaceGrid } from "../components/WorkspaceGrid";
-import { WorkspaceHeader } from "../components/WorkspaceHeader";
-import { WorkspaceSearch } from "../components/WorkspaceSearch";
+import {
+    WorkspaceGrid,
+    WorkspaceSearch,
+    WorkspaceHeader,
+    WorkspaceFormModal,
+    DeleteWorkspaceModal,
+} from "@/features/workspaces/components";
+
 import { useWorkspaceSearch } from "../hooks/useWorkspaceSearch";
-import WorkspaceFormModal from "../components/WorkspaceFormModal";
-import DeleteWorkspaceModal from "../components/DeleteWorkspaceModal";
 
 export function WorkspacesView() {
     const {
@@ -53,11 +54,6 @@ export function WorkspacesView() {
                     onEditWorkspace={handleEditWorkspace}
                     onDeleteWorkspace={handleDeleteWorkspace}
                 />
-
-                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                    <TeamMembersCard members={USERS} />
-                    <ActivityFeedCard activities={ACTIVITIES} />
-                </div>
             </div>
 
             <WorkspaceFormModal

@@ -2,13 +2,13 @@ import { Activity } from "lucide-react";
 
 import { Avatar } from "@/components/ui";
 
-import type { WorkspaceActivity } from "../types/workspace";
+import type { WorkspaceActivity } from "../../types/workspace";
 
 interface ActivityFeedCardProps {
     activities: WorkspaceActivity[];
 }
 
-export function ActivityFeedCard({
+export default function ActivityFeedCard({
     activities,
 }: ActivityFeedCardProps) {
     return (

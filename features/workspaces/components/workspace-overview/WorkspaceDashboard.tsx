@@ -7,10 +7,13 @@ import {
     Users,
 } from "lucide-react";
 
-import WorkspaceHero from "./WorkspaceHero";
-import WorkspaceStats from "./WorkspaceStats";
-import RecentActivity from "./RecentActivity";
-import RecentProjects from "./RecentProjects";
+import {
+    WorkspaceHero,
+    WorkspaceStats,
+    RecentActivity,
+    RecentProjects,
+} from "@/features/workspaces/components";
+
 import type { Project } from "@/features/projects/components/ProjectCard";
 import TeamPerformance from "@/features/dashboard/components/TeamPerformance";
 

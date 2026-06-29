@@ -5,8 +5,11 @@ import {
     EmptyState,
 } from "@/components/ui";
 
-import type { Workspace } from "../types/workspace";
-import { WorkspaceCard } from "./WorkspaceCard";
+import type { Workspace } from "../../types/workspace";
+
+import {
+    WorkspaceCard,
+} from "@/features/workspaces/components";
 
 interface WorkspaceGridProps {
     workspaces: Workspace[];
@@ -17,7 +20,7 @@ interface WorkspaceGridProps {
     onDeleteWorkspace: (workspace: Workspace) => void;
 }
 
-export function WorkspaceGrid({
+export default function WorkspaceGrid({
     workspaces,
     onOpenProjects,
     onOpenMembers,

@@ -6,7 +6,7 @@ interface WorkspaceHeaderProps {
     onCreateWorkspace: () => void;
 }
 
-export function WorkspaceHeader({
+export default function WorkspaceHeader({
     onCreateWorkspace,
 }: WorkspaceHeaderProps) {
     return (

@@ -5,7 +5,7 @@ interface WorkspaceSearchProps {
     onChange: (value: string) => void;
 }
 
-export function WorkspaceSearch({
+export default function WorkspaceSearch({
     value,
     onChange,
 }: WorkspaceSearchProps) {

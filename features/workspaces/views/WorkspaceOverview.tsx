@@ -2,24 +2,13 @@
 
 import { useMemo, useState } from "react";
 import {
-    USERS,
     PROJECTS,
-    WORKSPACES,
 } from "@/data/data";
+import { WORKSPACES } from "@/features/workspaces/mock/workspaces";
 
 import {
-    Plus,
-    FolderOpen,
-    BarChart3,
-    BriefcaseBusiness,
-    Clock3,
-    Users,
-} from "lucide-react";
-
-import { Button, EmptyState } from "@/components/ui";
-import ProjectSearch from "@/features/projects/components/ProjectSearch";
-import ProjectCard from "@/features/projects/components/ProjectCard";
-import WorkspaceDashboard from "../components/WorkspaceDashboard";
+    WorkspaceDashboard,
+} from "@/features/workspaces/components";
 
 interface WorkspaceOverviewProps {
     slug: string;

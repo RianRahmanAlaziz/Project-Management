@@ -63,7 +63,6 @@ export default function TaskCard({
             className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${dragging ? "opacity-40" : ""}`}
         >
             <div className="mb-2 flex items-center gap-2">
-
                 {task.labels.slice(0, 2).map((label: string) => (
                     <Badge
                         key={label}
@@ -75,7 +74,6 @@ export default function TaskCard({
                         }
                     />
                 ))}
-
                 {/* <button className="ml-auto">
                     <MoreHorizontal size={14} />
                 </button> */}
@@ -90,28 +88,21 @@ export default function TaskCard({
                         size="sm"
                     />
                 )}
-
                 <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
-
                     <span className="flex items-center gap-1">
                         <Calendar size={11} />
                         {task.dueDate.slice(5)}
                     </span>
-
                     <span className="flex items-center gap-1">
                         <Paperclip size={11} />
                         {task.attachments}
                     </span>
-
                     <span className="flex items-center gap-1">
                         <MessageSquare size={11} />
                         {task.comments}
                     </span>
-
                 </div>
-
             </div>
-
         </div>
     );
 }

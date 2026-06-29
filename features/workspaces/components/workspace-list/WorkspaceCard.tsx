@@ -1,7 +1,7 @@
 
 import { Users, FolderOpen, } from "lucide-react";
-import type { Workspace } from "../types/workspace";
-import { WorkspaceActionsMenu } from "./WorkspaceActionsMenu";
+import type { Workspace } from "@/features/workspaces/types/workspace";
+import WorkspaceActionsMenu from "./WorkspaceActionsMenu";
 
 interface WorkspaceCardProps {
     workspace: Workspace;
@@ -11,7 +11,7 @@ interface WorkspaceCardProps {
     onDelete?: (workspace: Workspace) => void;
 }
 
-export function WorkspaceCard({
+export default function WorkspaceCard({
     workspace,
     onOpenProjects,
     onOpenMembers,

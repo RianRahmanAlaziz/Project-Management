@@ -28,7 +28,7 @@ interface WorkspaceActionsMenuProps {
     onDelete?: (workspace: Workspace) => void;
 }
 
-export function WorkspaceActionsMenu({
+export default function WorkspaceActionsMenu({
     workspace,
     onOpenProjects,
     onOpenMembers,
