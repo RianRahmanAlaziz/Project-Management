@@ -2,9 +2,6 @@
 
 import {
     FolderOpen,
-    Globe,
-    Lock,
-    Plus,
     Settings,
 } from "lucide-react";
 

@@ -4,8 +4,10 @@
 import {
     ACTIVITIES,
     USERS,
-    WORKSPACES,
 } from "@/data/data";
+
+import { WORKSPACES } from "@/features/workspaces/mock/workspaces";
+
 import { ActivityFeedCard } from "../components/ActivityFeedCard";
 import { TeamMembersCard } from "../components/TeamMembersCard";
 import { WorkspaceGrid } from "../components/WorkspaceGrid";

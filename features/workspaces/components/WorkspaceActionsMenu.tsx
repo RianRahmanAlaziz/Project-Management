@@ -4,7 +4,6 @@ import {
     FolderOpen,
     Pencil,
     Users,
-    Settings,
     Trash2,
     MoreHorizontal,
 } from "lucide-react";

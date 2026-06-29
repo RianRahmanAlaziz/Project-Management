@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle } from "lucide-react";
-import { Modal, Button, Input } from "@/components/ui";
+import { Modal, Button } from "@/components/ui";
 
 import type { Workspace } from "@/features/workspaces/types/workspace";
 
