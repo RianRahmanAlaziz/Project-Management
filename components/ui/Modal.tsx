@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { AnimatePresence, motion } from "motion/react";
+import { X } from "lucide-react";
 import clsx from "clsx";
 
 interface ModalProps {
@@ -23,71 +24,91 @@ const modalSizes = {
     full: "max-w-[95vw] h-[90vh]",
 };
 
-export function Modal({ open, onClose, title, children, size = "md", className, }: ModalProps) {
-    const [mounted, setMounted] = useState(open);
-
-    useEffect(() => {
-        if (open) {
-            setMounted(true);
-        }
-    }, [open]);
+export function Modal({
+    open,
+    onClose,
+    title,
+    children,
+    size = "md",
+    className,
+}: ModalProps) {
     return (
         <DialogPrimitive.Root
             open={open}
-            onOpenChange={(value) => !value && onClose()}
+            onOpenChange={(value) => {
+                if (!value) onClose();
+            }}
         >
-            <DialogPrimitive.Portal forceMount>
-                <AnimatePresence
-                    onExitComplete={() => {
-                        setMounted(false);
-                    }}
-                >
-                    {open && (
-                        <>
-                            <DialogPrimitive.Overlay forceMount asChild>
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-                                />
-                            </DialogPrimitive.Overlay>
+            <AnimatePresence>
+                {open && (
+                    <DialogPrimitive.Portal forceMount>
+                        {/* Overlay */}
+                        <DialogPrimitive.Overlay asChild>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+                            />
+                        </DialogPrimitive.Overlay>
 
-                            <DialogPrimitive.Content forceMount asChild>
-                                <motion.div
-                                    initial={{ opacity: 0, scale: 0 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0 }}
-                                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                                    className={clsx(
-                                        "fixed left-1/2 top-1/2 z-50",
-                                        "-translate-x-1/2 -translate-y-1/2",
-                                        "w-[95vw]",
-                                        modalSizes[size],
-                                        "bg-card border border-border",
-                                        "rounded-xl shadow-2xl",
-                                        "p-6 focus:outline-none",
-                                        "overflow-y-auto",
-                                        className
-                                    )}
-                                >
-                                    {title && (
-                                        <div className="mb-10 flex items-center justify-between">
-                                            <h3 className="font-semibold text-2xl text-foreground">
-                                                {title}
-                                            </h3>
-                                        </div>
-                                    )}
+                        {/* Content */}
+                        <DialogPrimitive.Content
+                            forceMount
+                            className="fixed inset-0 z-50 flex items-center justify-center p-4 outline-none"
+                        >
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
+                                    scale: 0.95,
+                                    y: 20,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                    scale: 1,
+                                    y: 0,
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    scale: 0.95,
+                                    y: 20,
+                                }}
+                                transition={{
+                                    duration: 0.2,
+                                    ease: "easeOut",
+                                }}
+                                className={clsx(
+                                    "relative w-full rounded-xl border border-border bg-card shadow-2xl",
+                                    modalSizes[size],
+                                    className
+                                )}
+                            >
+                                {title && (
+                                    <div className="flex items-center justify-between border-b border-border px-6 py-5">
+                                        <DialogPrimitive.Title className="text-xl font-semibold text-foreground">
+                                            {title}
+                                        </DialogPrimitive.Title>
 
+                                        <DialogPrimitive.Close asChild>
+                                            <button
+                                                type="button"
+                                                className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </DialogPrimitive.Close>
+                                    </div>
+                                )}
+
+                                <div className="max-h-[80vh] overflow-y-auto p-6">
                                     {children}
-                                </motion.div>
-
-                            </DialogPrimitive.Content>
-                        </>
-                    )}
-                </AnimatePresence>
-            </DialogPrimitive.Portal>
+                                </div>
+                            </motion.div>
+                        </DialogPrimitive.Content>
+                    </DialogPrimitive.Portal>
+                )}
+            </AnimatePresence>
         </DialogPrimitive.Root>
     );
 }

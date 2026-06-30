@@ -64,7 +64,7 @@ interface KanbanBoardProps {
 
     setDraggingId: (id: string | null) => void;
     setDragOverCol: (col: string | null) => void;
-
+    onCreateTask: (column: string) => void;
     onDrop: (column: string) => void;
 }
 
@@ -75,6 +75,7 @@ export default function KanbanBoard({
     setDraggingId,
     setDragOverCol,
     onDrop,
+    onCreateTask,
 }: KanbanBoardProps) {
     return (
         <div className="overflow-x-auto overflow-y-hidden">
@@ -98,6 +99,7 @@ export default function KanbanBoard({
                                 setDraggingId(null);
                                 setDragOverCol(null);
                             }}
+                            onCreateTask={onCreateTask}
                         />
                     ))
                 }

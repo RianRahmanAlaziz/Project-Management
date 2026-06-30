@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Modal, Button, Input, Select } from "@/components/ui";
+import { Modal, Button, Input } from "@/components/ui";
 
 import {
     Shield,
@@ -10,6 +10,7 @@ import {
     UserCheck,
     Crown,
 } from "lucide-react";
+import { Combobox } from "@/components/ui/combobox";
 
 interface InviteTeamMemberProps {
     open: boolean;
@@ -58,31 +59,36 @@ export default function InviteTeamMember({
                     }
                 />
 
-                <Select
+                <Combobox
                     label="Role"
                     value={role}
                     onValueChange={setRole}
                     placeholder="Select role"
+                    searchable={false}
                     options={[
                         {
                             value: "Owner",
                             label: "Owner",
-                            icon: <Crown size={16} />,
+                            description: "Full access to workspace",
+                            icon: <Crown size={16} className="text-amber-500" />,
                         },
                         {
                             value: "Admin",
                             label: "Admin",
-                            icon: <Shield size={16} />,
+                            description: "Manage projects and members",
+                            icon: <Shield size={16} className="text-indigo-500" />,
                         },
                         {
                             value: "Member",
                             label: "Member",
-                            icon: <UserCheck size={16} />,
+                            description: "Can create and update tasks",
+                            icon: <UserCheck size={16} className="text-emerald-500" />,
                         },
                         {
                             value: "Viewer",
                             label: "Viewer",
-                            icon: <Eye size={16} />,
+                            description: "Read-only access",
+                            icon: <Eye size={16} className="text-slate-500" />,
                         },
                     ]}
                 />

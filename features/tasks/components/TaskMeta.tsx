@@ -1,9 +1,10 @@
 "use client";
 
 import { Calendar } from "lucide-react";
-import { Avatar, Badge, Select } from "@/components/ui";
+import { Avatar, Badge } from "@/components/ui";
 
 import type { Tasks } from "@/features/tasks/types/tasks";
+import { Combobox } from "@/components/ui/combobox";
 
 interface Users {
     id: number | string;
@@ -24,6 +25,34 @@ interface TaskMetaProps {
 const statusOptions = ["Backlog", "Todo", "In Progress", "Review", "Done"];
 const priorityOptions = ["Low", "Medium", "High"];
 
+const statusColors: Record<string, string> = {
+    Backlog: "bg-slate-400",
+    Todo: "bg-blue-500",
+    "In Progress": "bg-amber-500",
+    Review: "bg-purple-500",
+    Done: "bg-emerald-500",
+};
+
+const statusDescriptions: Record<string, string> = {
+    Backlog: "Not started yet",
+    Todo: "Ready to start",
+    "In Progress": "Currently working",
+    Review: "Waiting for review",
+    Done: "Completed",
+};
+
+const priorityColors: Record<string, string> = {
+    Low: "bg-emerald-500",
+    Medium: "bg-amber-500",
+    High: "bg-red-500",
+};
+
+const priorityDescriptions: Record<string, string> = {
+    Low: "Low priority",
+    Medium: "Normal priority",
+    High: "High priority",
+};
+
 
 export default function TaskMeta({
     task,
@@ -36,26 +65,40 @@ export default function TaskMeta({
     return (
         <div className="px-5 pb-4 space-y-2.5">
             {/* Status */}
-            <Select
+            <Combobox
                 label="Status"
-                className="cursor-pointer"
                 value={status}
                 onValueChange={setStatus}
+                placeholder="Select status"
+                searchable={false}
                 options={statusOptions.map((item) => ({
                     value: item,
                     label: item,
+                    description: statusDescriptions[item],
+                    icon: (
+                        <span
+                            className={`h-2.5 w-2.5 rounded-full ${statusColors[item]}`}
+                        />
+                    ),
                 }))}
             />
 
             {/* Priority */}
-            <Select
+            <Combobox
                 label="Priority"
-                className="cursor-pointer"
                 value={priority}
                 onValueChange={setPriority}
+                placeholder="Select priority"
+                searchable={false}
                 options={priorityOptions.map((item) => ({
                     value: item,
                     label: item,
+                    description: priorityDescriptions[item],
+                    icon: (
+                        <span
+                            className={`h-2.5 w-2.5 rounded-full ${priorityColors[item]}`}
+                        />
+                    ),
                 }))}
             />
 

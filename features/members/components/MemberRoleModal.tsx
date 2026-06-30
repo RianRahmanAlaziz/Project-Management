@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal, Button, Select } from "@/components/ui";
+import { Modal, Button } from "@/components/ui";
 import { Shield, Eye, UserCheck, Crown } from "lucide-react";
 import type { Members } from "@/features/members/types/members";
+import { Combobox } from "@/components/ui/combobox";
 
 interface MemberRoleModalProps {
     open: boolean;
@@ -50,30 +51,36 @@ export default function MemberRoleModal({
             <div className="space-y-5">
 
                 <div className="space-y-2">
-                    <Select
+                    <Combobox
                         label="Role"
                         value={role}
                         onValueChange={setRole}
+                        placeholder="Select role"
+                        searchable={false}
                         options={[
                             {
                                 value: "Owner",
                                 label: "Owner",
-                                icon: <Crown size={16} />,
+                                description: "Full access to workspace",
+                                icon: <Crown size={16} className="text-amber-500" />,
                             },
                             {
                                 value: "Admin",
                                 label: "Admin",
-                                icon: <Shield size={16} />,
+                                description: "Manage projects and members",
+                                icon: <Shield size={16} className="text-indigo-500" />,
                             },
                             {
                                 value: "Member",
                                 label: "Member",
-                                icon: <UserCheck size={16} />,
+                                description: "Can create and update tasks",
+                                icon: <UserCheck size={16} className="text-emerald-500" />,
                             },
                             {
                                 value: "Viewer",
                                 label: "Viewer",
-                                icon: <Eye size={16} />,
+                                description: "Read-only access",
+                                icon: <Eye size={16} className="text-slate-500" />,
                             },
                         ]}
                     />

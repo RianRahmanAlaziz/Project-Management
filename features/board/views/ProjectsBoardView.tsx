@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { TASKS } from "@/data/data";
 import KanbanBoard from "../components/KanbanBoard";
+import TaskFormModal from "@/features/tasks/components/modals/TaskFormModal";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;
@@ -33,6 +34,27 @@ export default function ProjectsBoardView({
         setDragOverCol(null);
     };
 
+    const [taskModal, setTaskModal] = useState<{
+        open: boolean;
+        mode: "create" | "edit";
+        task: null,
+        column: "",
+    }>({
+        open: false,
+        mode: "create",
+        task: null,
+        column: "",
+    });
+
+    const handleCreateTask = (column: string) => {
+        setTaskModal({
+            open: true,
+            mode: "create",
+            task: null,
+            column,
+        });
+    };
+
     return (
         <div className="w-full space-y-6">
             <KanbanBoard
@@ -42,6 +64,26 @@ export default function ProjectsBoardView({
                 setDraggingId={setDraggingId}
                 setDragOverCol={setDragOverCol}
                 onDrop={handleDrop}
+                onCreateTask={handleCreateTask}
+            />
+
+            <TaskFormModal
+                open={taskModal.open}
+                mode={taskModal.mode}
+                task={taskModal.workspace}
+                onClose={() =>
+                    setTaskModal((prev) => ({
+                        ...prev,
+                        open: false,
+                    }))
+                }
+                onSubmit={(data) => {
+                    if (taskModal.mode === "create") {
+                        console.log("Create Tasks", data);
+                    } else {
+                        console.log("Update Tasks", data);
+                    }
+                }}
             />
         </div>
     );

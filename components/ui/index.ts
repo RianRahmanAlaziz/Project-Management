@@ -6,6 +6,5 @@ export * from "./EmptyState";
 export * from "./Input";
 export * from "./Modal";
 export * from "./ProgressBar";
-export * from "./Select";
 export * from "./Tabs";
 export * from "./Tooltip";
