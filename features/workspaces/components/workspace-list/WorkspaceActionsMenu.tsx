@@ -41,6 +41,7 @@ export default function WorkspaceActionsMenu({
             <DropdownMenuTrigger asChild>
                 <button
                     type="button"
+                    onClick={(e) => e.stopPropagation()}
                     aria-label={`Open ${workspace.name} menu`}
                     className={clsx(
                         "cursor-pointer",
@@ -62,21 +63,30 @@ export default function WorkspaceActionsMenu({
 
             <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                    onClick={() => onOpenProjects?.(workspace)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onOpenProjects?.(workspace)
+                    }}
                 >
                     <FolderOpen size={16} />
                     Open Workspace
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                    onClick={() => onEdit?.(workspace)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit?.(workspace)
+                    }}
                 >
                     <Pencil size={16} />
                     Edit Workspace
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
-                    onClick={() => onOpenMembers?.(workspace)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onOpenMembers?.(workspace)
+                    }}
                 >
                     <Users size={16} />
                     Manage Members
@@ -92,7 +102,10 @@ export default function WorkspaceActionsMenu({
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                    onClick={() => onDelete?.(workspace)}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onDelete?.(workspace)
+                    }}
                     className="
                         text-red-500
                         focus:text-red-500

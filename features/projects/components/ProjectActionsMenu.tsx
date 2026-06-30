@@ -3,7 +3,6 @@
 import {
     Pencil,
     Users,
-    Settings,
     Trash2,
     MoreHorizontal,
     SquareDashedKanban,
@@ -17,7 +16,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
-import type { Projects } from "@/features/projects/types/projects";
 
 export type Project = (typeof import("@/data/data").PROJECTS)[number];
 
@@ -44,6 +42,7 @@ export default function ProjectActionsMenu({
                 <button
                     type="button"
                     aria-label={`Open ${project.name} menu`}
+                    onClick={(e) => e.stopPropagation()}
                     className={clsx(
                         "cursor-pointer",
                         "flex h-8 w-8 shrink-0",
@@ -64,26 +63,38 @@ export default function ProjectActionsMenu({
 
             <DropdownMenuContent align="end">
                 <DropdownMenuItem
-                    onClick={() => onOpen?.(project)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onOpen?.(project)
+                    }}
                 >
                     <SquareDashedKanban size={16} />
                     Open Project Board
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    onClick={() => onOpenMembers?.(project)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenMembers?.(project)
+                    }}
                 >
                     <Users size={16} />
                     Manage Members
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                    onClick={() => onEdit?.(project)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit?.(project);
+                    }}
                 >
                     <Pencil size={16} />
                     Edit Project
                 </DropdownMenuItem>
 
                 {/* <DropdownMenuItem
-                          onClick={() => onSettings?.(project)}
+                          onClick={(e) => {
+                           e.stopPropagation();
+                          onSettings?.(project)
+                          }}
                       >
                           <Settings size={16} />
                           Settings
@@ -92,12 +103,11 @@ export default function ProjectActionsMenu({
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
-                    onClick={() => onDelete?.(project)}
-                    className="
-                              text-red-500
-                              focus:text-red-500
-                              hover:bg-red-500/10
-                          "
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete?.(project)
+                    }}
+                    className="text-red-500 focus:text-red-500hover:bg-red-500/10"
                 >
                     <Trash2 size={16} />
                     Delete Workspace

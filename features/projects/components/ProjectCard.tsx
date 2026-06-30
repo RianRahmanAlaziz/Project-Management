@@ -5,7 +5,9 @@ import { Calendar, ListTodo, Users } from "lucide-react";
 
 import { Badge, ProgressBar } from "@/components/ui";
 import { USERS } from "@/data/data";
-import ProjectActionsMenu from "./ProjectActionsMenu";
+import {
+    ProjectActionsMenu,
+} from "@/features/projects/components";
 
 const statusColors: Record<string, "indigo" | "yellow" | "green" | "gray"> = {
     "In Progress": "indigo",
@@ -39,14 +41,15 @@ export default function ProjectCard({
     onEdit,
     onDelete,
 }: ProjectCardProps) {
-    const router = useRouter();
 
     const members = USERS.filter(user =>
         project.members.includes(user.id)
     );
 
     return (
-        <div className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group">
+        <div
+            onClick={() => onOpen?.(project)}
+            className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2.5">

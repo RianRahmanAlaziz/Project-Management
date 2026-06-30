@@ -19,7 +19,9 @@ export default function WorkspaceCard({
     onDelete,
 }: WorkspaceCardProps) {
     return (
-        <article className="group rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-xl">
+        <article
+            onClick={() => onOpenProjects?.(workspace)}
+            className="group rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-xl cursor-pointer">
             <div className="mb-5 flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                     <div
@@ -27,15 +29,10 @@ export default function WorkspaceCard({
                     >
                         {workspace.initials}
                     </div>
-
                     <div className="min-w-0">
-
-                        <button
-                            onClick={() => onOpenProjects?.(workspace)}
-                            className="block truncate text-base font-semibold text-foreground transition-colors hover:text-primary cursor-pointer"
-                        >
+                        <h3 className="block truncate text-base font-semibold text-foreground group-hover:text-primary transition-colors cursor-pointer">
                             {workspace.name}
-                        </button>
+                        </h3>
 
                         <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                             {workspace.description}

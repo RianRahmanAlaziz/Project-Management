@@ -7,10 +7,13 @@ import {
 } from "@/data/data";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
-import ProjectSearch from "../components/ProjectSearch";
-import ProjectCard from "../components/ProjectCard";
-import ProjectHeader from "../components/ProjectHeader";
 import type { Project } from "../components/ProjectCard";
+
+import {
+    ProjectSearch,
+    ProjectCard,
+    ProjectHeader
+} from "@/features/projects/components";
 
 type ProjectsViewProps = {
     workspaceSlug: string;
