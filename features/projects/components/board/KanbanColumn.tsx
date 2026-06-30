@@ -2,7 +2,9 @@
 
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import TaskCard from "./TaskCard";
+import {
+    TaskCard
+} from "@/features/tasks/components";
 
 interface KanbanColumnProps {
     column: string;
@@ -22,6 +24,7 @@ interface KanbanColumnProps {
     onDragOver: () => void;
     onDragLeave: () => void;
     onCreateTask: (column: string) => void;
+    onOpenTask: (taskId: string) => void;
     setDraggingId: (id: string) => void;
     clearDrag: () => void;
 }
@@ -38,6 +41,7 @@ export default function KanbanColumn({
     onDragOver,
     onDragLeave,
     onCreateTask,
+    onOpenTask,
     setDraggingId,
     clearDrag,
 }: KanbanColumnProps) {
@@ -78,6 +82,7 @@ export default function KanbanColumn({
                         task={task}
                         style={style}
                         dragging={draggingId === task.id}
+                        onClick={() => onOpenTask(task.id)}
                         onDragStart={() => setDraggingId(task.id)}
                         onDragEnd={clearDrag}
                     />

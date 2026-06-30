@@ -14,7 +14,7 @@ import {
     RecentProjects,
 } from "@/features/workspaces/components";
 
-import type { Project } from "@/features/projects/components/ProjectCard";
+import type { Project } from "@/features/projects/components/list/ProjectCard";
 import TeamPerformance from "@/features/dashboard/components/TeamPerformance";
 
 type WorkspaceDashboardProps = {

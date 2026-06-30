@@ -39,6 +39,7 @@ interface TaskCardProps {
         ring: string;
         hoverBorder: string;
     };
+    onClick: () => void;
     onDragStart: () => void;
     onDragEnd: () => void;
 }
@@ -47,6 +48,7 @@ export default function TaskCard({
     task,
     style,
     dragging,
+    onClick,
     onDragStart,
     onDragEnd,
 }: TaskCardProps) {
@@ -58,6 +60,7 @@ export default function TaskCard({
     return (
         <div
             draggable
+            onClick={onClick}
             onDragStart={onDragStart}
             onDragEnd={onDragEnd}
             className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${dragging ? "opacity-40" : ""}`}

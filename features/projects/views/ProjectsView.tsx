@@ -7,7 +7,7 @@ import {
 } from "@/data/data";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
-import type { Project } from "../components/ProjectCard";
+import type { Project } from "../components/list/ProjectCard";
 
 import {
     ProjectSearch,

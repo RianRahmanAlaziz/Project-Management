@@ -16,7 +16,7 @@ interface TaskDrawerProps {
     onClose: () => void;
 }
 
-export default function TaskDrawerView({
+export default function TaskDrawer({
     taskId,
     onClose,
 }: TaskDrawerProps) {

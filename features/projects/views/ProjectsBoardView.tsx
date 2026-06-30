@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
+import { AnimatePresence } from "motion/react";
 import { TASKS } from "@/data/data";
-import KanbanBoard from "../components/KanbanBoard";
+import KanbanBoard from "../../projects/components/board/KanbanBoard";
 import TaskFormModal from "@/features/tasks/components/modals/TaskFormModal";
+import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;
@@ -18,6 +19,7 @@ export default function ProjectsBoardView({
     const [tasks, setTasks] = useState(TASKS);
     const [draggingId, setDraggingId] = useState<string | null>(null);
     const [dragOverCol, setDragOverCol] = useState<string | null>(null);
+    const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
     const handleDrop = (column: string) => {
         if (!draggingId) return;
@@ -51,7 +53,7 @@ export default function ProjectsBoardView({
             open: true,
             mode: "create",
             task: null,
-            column,
+            column: "",
         });
     };
 
@@ -65,12 +67,23 @@ export default function ProjectsBoardView({
                 setDragOverCol={setDragOverCol}
                 onDrop={handleDrop}
                 onCreateTask={handleCreateTask}
+                onOpenTask={setOpenTaskId}
             />
+
+            <AnimatePresence initial={false} mode="wait">
+                {openTaskId && (
+                    <TaskDrawer
+                        key={openTaskId}
+                        taskId={openTaskId}
+                        onClose={() => setOpenTaskId(null)}
+                    />
+                )}
+            </AnimatePresence>
 
             <TaskFormModal
                 open={taskModal.open}
                 mode={taskModal.mode}
-                task={taskModal.workspace}
+                task={taskModal.task}
                 onClose={() =>
                     setTaskModal((prev) => ({
                         ...prev,

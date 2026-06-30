@@ -11,7 +11,7 @@ import {
     MyTasksTable
 } from "@/features/tasks/components";
 
-import TaskDrawerView from "@/features/tasks/views/TaskDrawerView";
+import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
 
 export default function MyTasksView() {
@@ -19,7 +19,6 @@ export default function MyTasksView() {
     const filtered = filter === "mine" ? TASKS.filter(t => t.assignee === "u1") :
         filter === "overdue" ? TASKS.filter(t => t.dueDate < "2026-06-17") : TASKS;
 
-    const priorityDot: Record<string, string> = { High: "bg-destructive", Medium: "bg-warning", Low: "bg-muted-foreground" };
     const [openTaskId, setOpenTaskId] = useState<string | null>(null);
 
     return (
@@ -38,9 +37,9 @@ export default function MyTasksView() {
                 onTaskClick={setOpenTaskId}
             />
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence initial={false} mode="wait">
                 {openTaskId && (
-                    <TaskDrawerView
+                    <TaskDrawer
                         key={openTaskId}
                         taskId={openTaskId}
                         onClose={() => setOpenTaskId(null)}

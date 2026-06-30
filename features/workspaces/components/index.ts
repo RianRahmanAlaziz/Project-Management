@@ -1,3 +1,3 @@
-export * from "./workspace-overview";
-export * from "./workspace-list";
+export * from "./overview";
+export * from "./list";
 export * from "./modals";

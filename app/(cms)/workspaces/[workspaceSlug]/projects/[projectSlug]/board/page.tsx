@@ -1,4 +1,4 @@
-import ProjectsBoardView from "@/features/board/views/ProjectsBoardView";
+import ProjectsBoardView from "@/features/projects/views/ProjectsBoardView";
 
 type ProjectsBoardPageProps = {
     params: Promise<{

@@ -24,8 +24,8 @@ const COLUMN_STYLES = {
         text: "text-muted-foreground",
         bg: "bg-muted/40",
         border: "border-border",
-        ring: "ring-ring",
-        hoverBorder: "hover:ring-ring",
+        ring: "",
+        hoverBorder: "hover:border-muted-foreground",
     },
     Todo: {
         text: "text-blue-500",
@@ -66,6 +66,7 @@ interface KanbanBoardProps {
     setDragOverCol: (col: string | null) => void;
     onCreateTask: (column: string) => void;
     onDrop: (column: string) => void;
+    onOpenTask: (taskId: string) => void;
 }
 
 export default function KanbanBoard({
@@ -75,6 +76,7 @@ export default function KanbanBoard({
     setDraggingId,
     setDragOverCol,
     onDrop,
+    onOpenTask,
     onCreateTask,
 }: KanbanBoardProps) {
     return (
@@ -100,6 +102,7 @@ export default function KanbanBoard({
                                 setDragOverCol(null);
                             }}
                             onCreateTask={onCreateTask}
+                            onOpenTask={onOpenTask}
                         />
                     ))
                 }

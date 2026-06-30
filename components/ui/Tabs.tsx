@@ -13,7 +13,7 @@ export function Tabs({ tabs, active, onChange }: TabsProps) {
                 <button
                     key={tab}
                     onClick={() => onChange(tab)}
-                    className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${active === tab
+                    className={`cursor-pointer px-4 py-2 text-sm font-medium border-b-2 transition-colors ${active === tab
                         ? "border-primary text-primary"
                         : "border-transparent text-muted-foreground hover:text-foreground"
                         }`}

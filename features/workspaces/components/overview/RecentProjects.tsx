@@ -5,7 +5,7 @@ import { ArrowRight, Calendar } from "lucide-react";
 
 import { Badge, ProgressBar } from "@/components/ui";
 
-import type { Project } from "@/features/projects/components/ProjectCard";
+import type { Project } from "@/features/projects/components/list/ProjectCard";
 
 type RecentProjectsProps = {
     workspaceSlug: string;
