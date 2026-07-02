@@ -1,14 +1,11 @@
 import React from 'react'
 import { Avatar, Badge } from "@/components/ui";
 import { Shield, Eye, UserCheck, Crown } from "lucide-react";
-import type { Members } from "../types/members";
+import type { Members } from "@/features/members/types/members";
 
 import {
-    ACTIVITIES,
-    USERS,
-    WORKSPACES,
-} from "@/data/data";
-import { MemberActionsMenu } from './MemberActionsMenu';
+    MemberActionsMenu,
+} from "@/features/members/components"
 
 interface MembersTableProps {
     users: Members[];

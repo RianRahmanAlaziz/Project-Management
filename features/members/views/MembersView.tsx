@@ -1,24 +1,21 @@
 "use client";
 
 import {
-    ACTIVITIES,
     USERS,
-    WORKSPACES,
 } from "@/data/data";
 
+import { useState } from "react";
 
-import React, { useState } from "react";
-import { Search, Shield, Eye, UserCheck, Crown } from "lucide-react";
-
-import { MemberActionsMenu } from "../components/MemberActionsMenu";
-import RemoveMemberModal from "../components/RemoveMemberModal";
-import MemberRoleModal from "../components/MemberRoleModal";
-import MembersHeader from "../components/MembersHeader";
-import MembersTabs from "../components/MembersTabs";
-import { MembersSearch } from "../components/MembersSearch";
-import MembersTable from "../components/MembersTable";
-import PermissionsTable from "../components/PermissionsTable";
-import InviteTeamMember from "../components/InviteTeamMember";
+import {
+    RemoveMemberModal,
+    MemberRoleModal,
+    MembersHeader,
+    MembersTabs,
+    MembersSearch,
+    MembersTable,
+    PermissionsTable,
+    InviteTeamMember
+} from "@/features/members/components"
 
 type MembersViewProps = {
     slug: string;

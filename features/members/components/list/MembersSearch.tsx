@@ -5,7 +5,7 @@ interface MembersSearchProps {
     onChange: (value: string) => void;
 }
 
-export function MembersSearch({
+export default function MembersSearch({
     value,
     onChange,
 }: MembersSearchProps) {

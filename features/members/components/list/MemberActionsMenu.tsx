@@ -28,7 +28,7 @@ interface MemberActionsMenuProps {
     onRemove?: (member: Members) => void;
 }
 
-export function MemberActionsMenu({
+export default function MemberActionsMenu({
     member,
     onView,
     onChangeRole,

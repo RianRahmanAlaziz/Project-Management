@@ -61,7 +61,7 @@ export function Combobox({
                         className={clsx(
                             "flex h-12 w-full items-center justify-between",
                             "rounded-lg border border-border",
-                            "bg-card px-4",
+                            "bg-background px-4",
                             "text-left",
                             "transition-colors",
                             "hover:border-primary/40",

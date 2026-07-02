@@ -3,7 +3,7 @@
 import React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { AnimatePresence, motion } from "motion/react";
-import { X } from "lucide-react";
+
 import clsx from "clsx";
 
 interface ModalProps {
@@ -90,14 +90,6 @@ export function Modal({
                                             {title}
                                         </DialogPrimitive.Title>
 
-                                        <DialogPrimitive.Close asChild>
-                                            <button
-                                                type="button"
-                                                className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                                            >
-                                                <X size={18} />
-                                            </button>
-                                        </DialogPrimitive.Close>
                                     </div>
                                 )}
 

@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
 import { Modal, Button, Input } from "@/components/ui";
-
 import {
     Shield,
     Eye,
@@ -15,7 +13,6 @@ import { Combobox } from "@/components/ui/combobox";
 interface InviteTeamMemberProps {
     open: boolean;
     onClose: () => void;
-
     onConfirm: (
         email: string,
         role: string
@@ -58,7 +55,6 @@ export default function InviteTeamMember({
                         setEmail(e.target.value)
                     }
                 />
-
                 <Combobox
                     label="Role"
                     value={role}
@@ -92,7 +88,6 @@ export default function InviteTeamMember({
                         },
                     ]}
                 />
-
                 <div className="flex justify-end gap-2">
                     <Button
                         variant="outline"
@@ -101,7 +96,6 @@ export default function InviteTeamMember({
                     >
                         Cancel
                     </Button>
-
                     <Button
                         variant="primary"
                         size="lg"

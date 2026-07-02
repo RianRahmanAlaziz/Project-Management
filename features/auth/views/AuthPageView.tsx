@@ -24,7 +24,7 @@ export function AuthPageView() {
 
     return (
         <main className="flex min-h-screen bg-background">
-            <section className="flex flex-1 items-center justify-center px-12 py-12 lg:max-w-[700px]">
+            <section className="flex flex-1 items-center justify-center px-12 py-12 lg:max-w-175">
                 <div className="w-full max-w-lg">
                     <AuthBrand />
 

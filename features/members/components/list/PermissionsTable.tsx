@@ -21,12 +21,6 @@ const roleIcons: Record<string, React.ReactNode> = {
     Viewer: <Eye size={18} />,
 };
 
-const roleColors: Record<string, "indigo" | "blue" | "green" | "gray"> = {
-    Owner: "indigo",
-    Admin: "blue",
-    Member: "green",
-    Viewer: "gray",
-};
 
 export default function PermissionsTable() {
     return (
