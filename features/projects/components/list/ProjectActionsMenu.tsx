@@ -17,15 +17,15 @@ import {
 } from "@/components/ui/DropdownMenu";
 
 
-export type Project = (typeof import("@/data/data").PROJECTS)[number];
+import type { Projects } from "@/features/projects/types/projects";
 
 interface ProjectActionsMenuProps {
-    project: Project;
-    onOpen?: (project: Project) => void;
-    onEdit?: (project: Project) => void;
-    onOpenMembers?: (project: Project) => void;
-    onSettings?: (project: Project) => void;
-    onDelete?: (project: Project) => void;
+    project: Projects;
+    onOpen?: (project: Projects) => void;
+    onEdit?: (project: Projects) => void;
+    onOpenMembers?: (project: Projects) => void;
+    onSettings?: (project: Projects) => void;
+    onDelete?: (project: Projects) => void;
 }
 
 export default function ProjectActionsMenu({

@@ -1,10 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-    PROJECTS,
-} from "@/data/data";
-import { WORKSPACES } from "@/features/workspaces/mock/workspaces";
+import { PROJECTS } from "@/features/projects/mocks/projects";
+import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
 
 import {
     WorkspaceDashboard,
@@ -19,16 +17,16 @@ export default function WorkspaceOverview({
 }: WorkspaceOverviewProps) {
     const [search, setSearch] = useState("");
 
-    const workspace = WORKSPACES.find(
+    const workspace = WORKSPACES.data.find(
         (item) => item.slug === slug
     );
 
     const filtered = useMemo(() => {
         if (!workspace) return [];
 
-        return PROJECTS.filter((project) => {
+        return PROJECTS.data.filter((project) => {
             const matchWorkspace =
-                project.workspace === workspace.id;
+                project.workspace_id === workspace.id;
 
             const matchSearch =
                 project.name
@@ -55,8 +53,8 @@ export default function WorkspaceOverview({
                         color: workspace?.color ?? "bg-indigo-500",
                         visibility: "Public",
                         createdAt: "Jan 2024",
-                        projects: workspace?.projects ?? 0,
-                        members: workspace?.members ?? 0,
+                        projects: workspace?.projects_count ?? 0,
+                        members: workspace?.members_count ?? 0,
                         tasks: 89,
                         completion: 76,
                     }}

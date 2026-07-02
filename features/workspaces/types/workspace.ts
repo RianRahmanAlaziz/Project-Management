@@ -5,8 +5,8 @@ export interface Workspace {
     initials: string;
     description: string;
     color: string;
-    members: number;
-    projects: number;
+    members_count: number;
+    projects_count: number;
 }
 
 export interface WorkspaceMember {

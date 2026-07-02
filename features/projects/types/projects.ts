@@ -1,12 +1,13 @@
 export interface Projects {
-    id: string;
+    id: number;
+    workspace_id: number;
     slug: string;
     name: string;
     color: string;
     status: string;
     priority: string;
     progress: number;
-    tasks: number;
-    dueDate: string;
-    members: string[];
+    due_date: string;
+    member_id: number[];
+    total_tasks: number;
 }

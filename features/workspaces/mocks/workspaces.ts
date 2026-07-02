@@ -1,0 +1,36 @@
+export const WORKSPACES = {
+    success: true,
+    message: "Workspaces retrieved successfully.",
+    data: [
+        {
+            id: 1,
+            slug: "acme-corp",
+            name: "Acme Corp",
+            description: "Main product workspace",
+            members_count: 12,
+            projects_count: 8,
+            color: "bg-indigo-500",
+            initials: "AC",
+        },
+        {
+            id: 2,
+            slug: "design-hub",
+            name: "Design Hub",
+            description: "UI/UX and brand projects",
+            members_count: 5,
+            projects_count: 4,
+            color: "bg-violet-500",
+            initials: "DH",
+        },
+        {
+            id: 3,
+            slug: "growth-team",
+            name: "Growth Team",
+            description: "Marketing and analytics",
+            members_count: 7,
+            projects_count: 6,
+            color: "bg-emerald-500",
+            initials: "GT",
+        },
+    ],
+};

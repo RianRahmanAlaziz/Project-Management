@@ -2,12 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-    PROJECTS,
-} from "@/data/data";
+
+import { PROJECTS } from "@/features/projects/mocks/projects";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
-import type { Project } from "../components/list/ProjectCard";
+import type { Projects } from "@/features/projects/types/projects";
 
 import {
     ProjectSearch,
@@ -22,10 +21,12 @@ type ProjectsViewProps = {
 export default function ProjectsView({
     workspaceSlug,
 }: ProjectsViewProps) {
+
     const [search, setSearch] = useState("");
     const router = useRouter();
+
     const filtered = useMemo(() => {
-        return PROJECTS.filter(project =>
+        return PROJECTS.data.filter(project =>
             project.name
                 .toLowerCase()
                 .includes(search.toLowerCase())
@@ -36,7 +37,7 @@ export default function ProjectsView({
         console.log("Create Project")
     };
 
-    const handleOpenProjectBoard = (project: Project) => {
+    const handleOpenProjectBoard = (project: Projects) => {
         router.push(
             `/workspaces/${workspaceSlug}/projects/${project.slug}/board`
         );

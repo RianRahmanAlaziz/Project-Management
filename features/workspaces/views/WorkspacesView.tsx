@@ -1,12 +1,6 @@
 "use client";
 
-
-import {
-    ACTIVITIES,
-    USERS,
-} from "@/data/data";
-
-import { WORKSPACES } from "@/features/workspaces/mock/workspaces";
+import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
 
 import {
     WorkspaceGrid,
@@ -32,7 +26,7 @@ export function WorkspacesView() {
         deleteModal,
         setDeleteModal,
         handleDeleteWorkspace,
-    } = useWorkspaceSearch(WORKSPACES);
+    } = useWorkspaceSearch(WORKSPACES.data);
 
     return (
         <div className="px-6 py-8 xl:px-8">

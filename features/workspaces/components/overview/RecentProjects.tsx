@@ -5,11 +5,11 @@ import { ArrowRight, Calendar } from "lucide-react";
 
 import { Badge, ProgressBar } from "@/components/ui";
 
-import type { Project } from "@/features/projects/components/list/ProjectCard";
+import type { Projects } from "@/features/projects/types/projects";
 
 type RecentProjectsProps = {
     workspaceSlug: string;
-    projects: Project[];
+    projects: Projects[];
 };
 
 const statusColors: Record<
@@ -67,7 +67,7 @@ export default function RecentProjects({
                                         }
                                     />
                                     <span className="text-xs text-muted-foreground">
-                                        {project.tasks} Tasks
+                                        {project.total_tasks} Tasks
                                     </span>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@ export default function RecentProjects({
                             </span>
                             <span className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Calendar size={13} />
-                                {project.dueDate?.slice(5) ?? "-"}
+                                {project.due_date?.slice(5) ?? "-"}
                             </span>
                         </div>
                     </Link>

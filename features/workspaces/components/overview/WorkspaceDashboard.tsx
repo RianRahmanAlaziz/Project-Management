@@ -14,7 +14,8 @@ import {
     RecentProjects,
 } from "@/features/workspaces/components";
 
-import type { Project } from "@/features/projects/components/list/ProjectCard";
+import type { Projects } from "@/features/projects/types/projects";
+
 import TeamPerformance from "@/features/dashboard/components/TeamPerformance";
 
 type WorkspaceDashboardProps = {
@@ -31,7 +32,7 @@ type WorkspaceDashboardProps = {
         tasks: number;
         completion: number;
     };
-    projects: Project[];
+    projects: Projects[];
     onCreateProject?: () => void;
     onSettings?: () => void;
 };

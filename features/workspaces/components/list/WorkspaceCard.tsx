@@ -55,12 +55,12 @@ export default function WorkspaceCard({
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-border pt-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-2">
                     <Users size={15} />
-                    {workspace.members} members
+                    {workspace.members_count} members
                 </span>
 
                 <span className="flex items-center gap-2">
                     <FolderOpen size={15} />
-                    {workspace.projects} projects
+                    {workspace.projects_count} projects
                 </span>
             </div>
         </article>

@@ -1,13 +1,13 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Calendar, ListTodo, Users } from "lucide-react";
-
-import { Badge, ProgressBar } from "@/components/ui";
-import { USERS } from "@/data/data";
 import {
     ProjectActionsMenu,
 } from "@/features/projects/components";
+import { Badge, ProgressBar } from "@/components/ui";
+import { USERS } from "@/features/users/mocks/users";
+import type { Projects } from "@/features/projects/types/projects";
+
 
 const statusColors: Record<string, "indigo" | "yellow" | "green" | "gray"> = {
     "In Progress": "indigo",
@@ -22,15 +22,14 @@ const priorityColors: Record<string, string> = {
     Low: "text-muted-foreground",
 };
 
-export type Project = (typeof import("@/data/data").PROJECTS)[number];
 
 type ProjectCardProps = {
     workspaceSlug: string;
-    project: Project;
-    onOpen?: (project: Project) => void;
-    onOpenMembers?: (project: Project) => void;
-    onEdit?: (project: Project) => void;
-    onDelete?: (project: Project) => void;
+    project: Projects;
+    onOpen?: (project: Projects) => void;
+    onOpenMembers?: (project: Projects) => void;
+    onEdit?: (project: Projects) => void;
+    onDelete?: (project: Projects) => void;
 };
 
 export default function ProjectCard({
@@ -42,8 +41,8 @@ export default function ProjectCard({
     onDelete,
 }: ProjectCardProps) {
 
-    const members = USERS.filter(user =>
-        project.members.includes(user.id)
+    const members = USERS.data.filter(user =>
+        project.member_id.includes(user.id)
     );
 
     return (
@@ -65,7 +64,7 @@ export default function ProjectCard({
                         </p>
 
                         <p className="text-xs text-muted-foreground">
-                            {project.tasks} tasks
+                            {project.total_tasks} tasks
                         </p>
                     </div>
                 </div>
@@ -116,7 +115,7 @@ export default function ProjectCard({
                 <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <ListTodo size={15} />
-                        {project.tasks} Tasks
+                        {project.total_tasks} Tasks
                     </span>
 
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -127,7 +126,7 @@ export default function ProjectCard({
 
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
                     <Calendar size={12} />
-                    <span>{project.dueDate.slice(5)}</span>
+                    <span>{project.due_date.slice(5)}</span>
                 </div>
             </div>
         </div>

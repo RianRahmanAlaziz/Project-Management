@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import type { Workspace } from "../types/workspace";
 
 export function useWorkspaceSearch<T extends { name: string }>(
     workspaces: T[],
@@ -20,13 +20,13 @@ export function useWorkspaceSearch<T extends { name: string }>(
         );
     }, [search, workspaces]);
 
-    const handleOpenProjects = (workspace: any) => {
+    const handleOpenProjects = (workspace: Workspace) => {
         router.push(
             `/workspaces/${workspace.slug}`
         );
     };
 
-    const handleOpenMembers = (workspace: any) => {
+    const handleOpenMembers = (workspace: Workspace) => {
         router.push(
             `/workspaces/${workspace.slug}/members`
         );
@@ -35,7 +35,7 @@ export function useWorkspaceSearch<T extends { name: string }>(
     const [workspaceModal, setWorkspaceModal] = useState<{
         open: boolean;
         mode: "create" | "edit";
-        workspace: any;
+        workspace: Workspace | null;
     }>({
         open: false,
         mode: "create",
@@ -50,7 +50,7 @@ export function useWorkspaceSearch<T extends { name: string }>(
         });
     };
 
-    const handleEditWorkspace = (workspace: any) => {
+    const handleEditWorkspace = (workspace: Workspace) => {
         setWorkspaceModal({
             open: true,
             mode: "edit",
@@ -60,14 +60,14 @@ export function useWorkspaceSearch<T extends { name: string }>(
 
     const [deleteModal, setDeleteModal] = useState<{
         open: boolean;
-        workspace: any | null;
+        workspace: Workspace | null;
     }>({
         open: false,
         workspace: null,
     });
 
     const handleDeleteWorkspace = (
-        workspace: any
+        workspace: Workspace
     ) => {
         setDeleteModal({
             open: true,
