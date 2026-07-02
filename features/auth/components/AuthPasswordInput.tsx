@@ -13,7 +13,7 @@ interface AuthPasswordInputProps {
     onChange: (value: string) => void;
 }
 
-export function AuthPasswordInput({
+export default function AuthPasswordInput({
     id,
     name,
     label,

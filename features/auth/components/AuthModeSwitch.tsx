@@ -3,7 +3,7 @@ interface AuthModeSwitchProps {
     onSwitchMode: () => void;
 }
 
-export function AuthModeSwitch({ isLogin, onSwitchMode }: AuthModeSwitchProps) {
+export default function AuthModeSwitch({ isLogin, onSwitchMode }: AuthModeSwitchProps) {
     return (
         <p className="mt-5 text-center text-xs text-muted-foreground">
             {isLogin ? "Don't have an account? " : "Already have an account? "}
@@ -11,7 +11,7 @@ export function AuthModeSwitch({ isLogin, onSwitchMode }: AuthModeSwitchProps) {
             <button
                 type="button"
                 onClick={onSwitchMode}
-                className="font-medium text-primary hover:underline"
+                className="font-medium text-primary hover:underline cursor-pointer"
             >
                 {isLogin ? "Sign up free" : "Sign in"}
             </button>

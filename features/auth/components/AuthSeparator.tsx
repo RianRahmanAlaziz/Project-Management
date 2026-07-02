@@ -1,4 +1,4 @@
-export function AuthSeparator() {
+export default function AuthSeparator() {
     return (
         <div className="mb-5 flex items-center gap-2">
             <div className="h-px flex-1 bg-border" />

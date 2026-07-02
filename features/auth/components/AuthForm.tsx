@@ -3,7 +3,7 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { AuthPasswordInput } from "./AuthPasswordInput";
+import AuthPasswordInput from "./AuthPasswordInput";
 import { AuthForm as AuthFormType } from "../types/auth";
 
 interface AuthFormProps {
@@ -16,7 +16,7 @@ interface AuthFormProps {
     onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export function AuthForm({
+export default function AuthForm({
     form,
     error,
     loading,
@@ -99,7 +99,7 @@ export function AuthForm({
 
                         <button
                             type="button"
-                            className="text-xs text-primary hover:underline"
+                            className="text-xs text-primary hover:underline cursor-pointer"
                         >
                             Forgot password?
                         </button>
@@ -112,7 +112,7 @@ export function AuthForm({
                     size="lg"
                     loading={loading}
                     disabled={loading}
-                    className="mt-1 w-full"
+                    className="mt-1 w-full cursor-pointer"
                 >
                     {isLogin ? "Sign in" : "Create account"}
                     {!loading && <ArrowRight size={14} />}

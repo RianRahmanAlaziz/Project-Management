@@ -1,7 +1,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 
-export function AuthSocialButtons() {
+export default function AuthSocialButtons() {
     return (
         <div className="mb-5 grid grid-cols-2 gap-2">
             <button

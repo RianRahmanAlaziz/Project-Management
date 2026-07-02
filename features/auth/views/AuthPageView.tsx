@@ -1,11 +1,13 @@
 "use client";
 
-import { AuthBrand } from "../components/AuthBrand";
-import { AuthForm } from "../components/AuthForm";
-import { AuthHeroPanel } from "../components/AuthHeroPanel";
-import { AuthModeSwitch } from "../components/AuthModeSwitch";
-import { AuthSeparator } from "../components/AuthSeparator";
-import { AuthSocialButtons } from "../components/AuthSocialButtons";
+import {
+    AuthBrand,
+    AuthForm,
+    AuthHeroPanel,
+    AuthModeSwitch,
+    AuthSeparator,
+    AuthSocialButtons
+} from "@/features/auth/components";
 import { useAuthForm } from "../hooks/useAuthForm";
 
 export function AuthPageView() {

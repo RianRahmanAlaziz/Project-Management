@@ -1,7 +1,7 @@
 import { Check, Zap } from "lucide-react";
 import { AUTH_FEATURES } from "../constants/authFeatures";
 
-export function AuthHeroPanel() {
+export default function AuthHeroPanel() {
     return (
         <section className="relative hidden flex-1 items-center justify-center overflow-hidden bg-primary px-12 py-10 lg:flex">
             <div className="absolute inset-0 overflow-hidden">
