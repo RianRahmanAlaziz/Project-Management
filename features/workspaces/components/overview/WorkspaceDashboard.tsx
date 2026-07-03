@@ -1,9 +1,11 @@
 "use client";
 
 import {
+    BarChart2,
     BarChart3,
     BriefcaseBusiness,
-    Clock3,
+    FolderOpen,
+    ListTodo,
     Users,
 } from "lucide-react";
 
@@ -53,7 +55,7 @@ export default function WorkspaceDashboard({
 
             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 <WorkspaceStats
-                    icon={<BriefcaseBusiness size={18} />}
+                    icon={<FolderOpen size={18} />}
                     label="Total Projects"
                     value={workspace.projects}
                     color="bg-indigo-500"
@@ -65,13 +67,13 @@ export default function WorkspaceDashboard({
                     color="bg-blue-500"
                 />
                 <WorkspaceStats
-                    icon={<Clock3 size={18} />}
+                    icon={<ListTodo size={18} />}
                     label="Tasks This Week"
                     value={workspace.tasks}
                     color="bg-violet-500"
                 />
                 <WorkspaceStats
-                    icon={<BarChart3 size={18} />}
+                    icon={<BarChart2 size={18} />}
                     label="Completion"
                     value={`${workspace.completion}%`}
                     color="bg-success"

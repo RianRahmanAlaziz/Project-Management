@@ -1,10 +1,12 @@
 export interface Tasks {
-    id: string;
-    project: string;
+    id: number;
+    project_id: number;
     title: string;
-    column: string;
+    status: string;
     priority: string;
-    dueDate: string;
-    assignee: string;
+    assignee_id: number
+    due_date: string;
     labels: string[];
+    attachments_count: number;
+    comments_count: number;
 }

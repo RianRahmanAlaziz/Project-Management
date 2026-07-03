@@ -39,7 +39,7 @@ export default function ProjectsView({
 
     const handleOpenProjectBoard = (project: Projects) => {
         router.push(
-            `/workspaces/${workspaceSlug}/projects/${project.slug}/board`
+            `/workspaces/${workspaceSlug}/projects/${project.slug}`
         );
     };
 
