@@ -3,9 +3,14 @@
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { TASKS } from "@/data/data";
-import KanbanBoard from "../../projects/components/board/KanbanBoard";
+
 import TaskFormModal from "@/features/tasks/components/modals/TaskFormModal";
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
+
+import {
+    KanbanBoard,
+}
+    from "@/features/projects/components";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;

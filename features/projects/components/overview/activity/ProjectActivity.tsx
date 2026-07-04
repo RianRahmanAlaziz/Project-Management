@@ -1,71 +1,84 @@
-import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-} from "recharts";
+import { Avatar } from "@/components/ui";
+
+import { ACTIVITIES } from "@/features/activities/mocks/activities";
+import { USERS } from "@/features/users/mocks/users";
+
 import type { Projects } from "@/features/projects/types/projects";
 
-const COMPLETION_DATA = [
-    { week: "Wk 1", done: 3, total: 8 },
-    { week: "Wk 2", done: 5, total: 9 },
-    { week: "Wk 3", done: 7, total: 10 },
-    { week: "Wk 4", done: 6, total: 8 },
-    { week: "Wk 5", done: 9, total: 11 },
-    { week: "Wk 6", done: 8, total: 10 },
-];
+import {
+    Clock,
+} from "lucide-react";
+
 
 interface ProjectActivityProps {
     project: Projects;
 }
-export default function ProjectActivity({ project }: ProjectActivityProps) {
-    const startDate = new Date(project.start_date);
-    const dueDate = new Date(project.due_date);
-    const today = new Date();
 
-    const totalDays = Math.max(
-        1,
-        Math.ceil(
-            (dueDate.getTime() - startDate.getTime()) /
-            (1000 * 60 * 60 * 24)
-        )
+
+export default function ProjectActivity({
+    project,
+}: ProjectActivityProps) {
+
+
+    const activities = ACTIVITIES.data.filter(
+        (activity) =>
+            activity.project_id === project.id
     );
 
-    const passedDays = Math.min(
-        totalDays,
-        Math.max(
-            0,
-            Math.ceil(
-                (today.getTime() - startDate.getTime()) /
-                (1000 * 60 * 60 * 24)
-            )
-        )
-    );
+
     return (
-        <div className="bg-card border border-border rounded-xl p-4 shadow-xl">
-            <div className="flex items-center justify-between mb-3">
-                <div>
-                    <p className="font-semibold text-foreground text-base">Weekly Completion</p>
-                    <p className="text-sm text-muted-foreground">Tasks completed per week</p>
+        <div className="space-y-4">
+            <div className="rounded-xl border border-border bg-card p-5 shadow-sm">
+                <div className="mb-5">
+                    <h3 className="font-semibold text-foreground">
+                        Project Activity Feed
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                        Latest project updates and changes
+                    </p>
                 </div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Completed</span>
-                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-muted-foreground inline-block" />Total</span>
+                <div className="space-y-5">
+                    {activities.map((activity, index) => {
+                        const user = USERS.data.find(
+                            item =>
+                                item.id === activity.user_id
+                        );
+                        return (
+                            <div
+                                key={activity.id}
+                                className="flex gap-3"
+                            >
+                                <div className="flex flex-col items-center">
+                                    <Avatar
+                                        name={user?.name ?? "Unknown"}
+                                        size="sm"
+                                    />
+                                    {index < activities.length - 1 && (
+                                        <div className="mt-2 h-6 w-px bg-border" />
+                                    )}
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-sm text-foreground">
+                                        <span className="font-semibold">
+                                            {user?.name}
+                                        </span>
+                                        {" "}
+                                        {activity.action}
+                                        {" "}
+                                        <span className="font-medium text-primary">
+                                            {activity.target}
+                                        </span>
+                                    </p>
+                                    <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                                        <Clock size={12} />
+                                        {activity.created_at}
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
-            <ResponsiveContainer width="100%" height={150}>
-                <AreaChart data={COMPLETION_DATA}>
-                    <defs>
-                        <linearGradient id="pg1" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.15} />
-                            <stop offset="95%" stopColor="#4F46E5" stopOpacity={0} />
-                        </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                    <XAxis dataKey="week" tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 10, fill: "var(--muted-foreground)" }} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "12px" }} />
-                    <Area type="monotone" dataKey="total" stroke="var(--muted-foreground)" strokeWidth={1.5} fill="none" strokeDasharray="3 2" dot={false} />
-                    <Area type="monotone" dataKey="done" stroke="#4F46E5" strokeWidth={2} fill="url(#pg1)" dot={false} />
-                </AreaChart>
-            </ResponsiveContainer>
         </div>
-    )
+    );
 }

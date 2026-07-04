@@ -1,19 +1,25 @@
 "use client";
-
-import ProjectsDashboard from '../components/overview/ProjectDashboard';
+import { useRouter } from "next/navigation";
 import { PROJECTS } from "../mocks/projects";
+import type { Projects } from "@/features/projects/types/projects";
+import {
+    ProjectDashboard,
+}
+    from "@/features/projects/components";
 
 interface ProjectsOverviewProps {
-    slug: string;
+    workspaceSlug: string;
+    projectSlug: string;
 }
 
 
 export default function ProjectsOverview({
-    slug,
+    workspaceSlug,
+    projectSlug,
 }: ProjectsOverviewProps) {
-
+    const router = useRouter();
     const project = PROJECTS.data.find(
-        (item) => item.slug === slug
+        (item) => item.slug === projectSlug
     );
 
     if (!project) {
@@ -28,14 +34,16 @@ export default function ProjectsOverview({
         console.log("Create Tasks")
     };
 
-    const onOpenBoard = () => {
-        console.log("Open Board")
+    const onOpenBoard = (project: Projects) => {
+        router.push(
+            `/workspaces/${workspaceSlug}/projects/${project.slug}/board`
+        );
     };
 
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
-                <ProjectsDashboard
+                <ProjectDashboard
                     project={project}
                     onCreateTasks={onCreateTasks}
                     onOpenBoard={onOpenBoard}

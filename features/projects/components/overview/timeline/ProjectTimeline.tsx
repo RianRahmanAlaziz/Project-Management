@@ -3,7 +3,7 @@
 
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Projects } from "@/features/projects/types/projects";
-import { CalendarDays, Flag, Clock3 } from "lucide-react";
+import { CalendarDays, Flag } from "lucide-react";
 
 interface ProjectTimelineProps {
     project: Projects;

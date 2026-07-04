@@ -1,17 +1,26 @@
+
+import { Plus } from "lucide-react";
 import { Avatar, Button, ProgressBar } from "@/components/ui";
-import { USERS } from "@/features/users/mocks/users";
+
+import {
+    ProjectMemberActionsMenu,
+}
+    from "@/features/projects/components";
 import type { Tasks } from "@/features/tasks/types/tasks";
 import type { Users } from "@/features/users/types/users";
-import { Plus } from "lucide-react";
 
 interface ProjectMembersProps {
     members: Users[];
     tasks: Tasks[];
+    onRole?: (member: Users) => void;
+    onRemove?: (member: Users) => void;
 }
 
 export default function ProjectMembers({
     members,
     tasks,
+    onRole,
+    onRemove,
 }: ProjectMembersProps) {
     return (
         <div className="space-y-4">
@@ -49,19 +58,26 @@ export default function ProjectMembers({
                             key={member.id}
                             className="rounded-xl border border-border bg-card p-5 shadow-sm"
                         >
-                            <div className="mb-4 flex items-center gap-3">
-                                <Avatar
-                                    name={member.name}
-                                    size="md"
-                                />
-                                <div>
-                                    <h4 className="font-semibold text-foreground">
-                                        {member.name}
-                                    </h4>
-                                    <p className="text-sm text-muted-foreground">
-                                        {member.role}
-                                    </p>
+                            <div className="mb-4 flex items-start justify-between">
+                                <div className="flex items-center gap-3">
+                                    <Avatar
+                                        name={member.name}
+                                        size="md"
+                                    />
+                                    <div>
+                                        <h4 className="font-semibold text-foreground">
+                                            {member.name}
+                                        </h4>
+                                        <p className="text-sm text-muted-foreground">
+                                            {member.role}
+                                        </p>
+                                    </div>
                                 </div>
+                                <ProjectMemberActionsMenu
+                                    member={member}
+                                    onRole={onRole}
+                                    onRemove={onRemove}
+                                />
                             </div>
                             <div className="space-y-3">
                                 <div className="flex justify-between text-sm">
@@ -93,17 +109,11 @@ export default function ProjectMembers({
                                 <p className="text-xs text-muted-foreground">
                                     {completionRate}% completion rate
                                 </p>
-
                             </div>
-
                         </div>
-
                     );
-
                 })}
-
             </div>
-
         </div>
     );
 }

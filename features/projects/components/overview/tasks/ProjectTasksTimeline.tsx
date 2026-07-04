@@ -5,7 +5,7 @@ interface ProjectTasksTimelineProps {
     tasks: Tasks[];
 }
 
-export default function ProjectTimeline({
+export default function ProjectTasksTimeline({
     tasks,
 }: ProjectTasksTimelineProps) {
     return (

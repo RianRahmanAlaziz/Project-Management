@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-
 import type { ProjectTab } from "@/features/projects/constants/tabs";
 
 interface ProjectTabItem {

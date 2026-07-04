@@ -8,12 +8,6 @@ import { Button } from "@/components/ui";
 import type { Projects } from "@/features/projects/types/projects";
 import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
 
-const priorityDot: Record<string, string> = {
-    High: "bg-destructive",
-    Medium: "bg-warning",
-    Low: "bg-muted-foreground",
-};
-
 const statusColor: Record<string, string> = {
     Done: "text-success bg-green-50 dark:bg-green-950/30",
     "In Progress": "text-primary bg-indigo-50 dark:bg-indigo-950/30",
@@ -22,17 +16,17 @@ const statusColor: Record<string, string> = {
     Backlog: "text-muted-foreground bg-muted",
 };
 
-type ProjectsHeroProps = {
+type ProjectHeroProps = {
     project: Projects;
     onCreateTasks?: () => void;
-    onOpenBoard?: () => void;
+    onOpenBoard?: (project: Projects) => void;
 };
 
-export default function ProjectsHero({
+export default function ProjectHero({
     project,
     onCreateTasks,
-    onOpenBoard
-}: ProjectsHeroProps) {
+    onOpenBoard,
+}: ProjectHeroProps) {
     const workspace = WORKSPACES.data.find(
         (item) => item.id === project.workspace_id
     );
@@ -65,7 +59,7 @@ export default function ProjectsHero({
                     <Button
                         variant="outline"
                         size="md"
-                        onClick={onOpenBoard}
+                        onClick={() => onOpenBoard?.(project)}
                     >
                         <SquareDashedKanban size={16} />
                         Open Board

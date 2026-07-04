@@ -1,7 +1,10 @@
 "use client";
 
 import { KANBAN_COLUMNS } from "@/data/data";
-import KanbanColumn from "./KanbanColumn";
+import {
+    KanbanColumn,
+}
+    from "@/features/projects/components";
 
 const colColors: Record<string, string> = {
     Backlog: "text-muted-foreground",

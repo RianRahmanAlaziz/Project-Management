@@ -91,7 +91,6 @@ export function TopNav({
                 handleKeyDown
             );
     }, []);
-    console.log("DashboardShell", breadcrumbs);
     return (
         <>
             <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-5 lg:px-6">

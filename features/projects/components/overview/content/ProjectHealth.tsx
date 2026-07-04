@@ -5,7 +5,6 @@ import {
     AlertTriangle,
     CalendarClock,
     CheckCircle2,
-    Clock3,
     Users,
 } from "lucide-react";
 

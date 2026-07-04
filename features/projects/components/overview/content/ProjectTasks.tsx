@@ -1,7 +1,6 @@
-import { Avatar, Button } from "@/components/ui";
+import { Avatar } from "@/components/ui";
 import type { Tasks } from "@/features/tasks/types/tasks";
 import { USERS } from "@/features/users/mocks/users";
-import { Plus } from "lucide-react";
 
 interface ProjectTasksProps {
     tasks: Tasks[];

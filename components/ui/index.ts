@@ -8,3 +8,4 @@ export * from "./Modal";
 export * from "./ProgressBar";
 export * from "./Tabs";
 export * from "./Tooltip";
+export * from "./DropdownMenu";

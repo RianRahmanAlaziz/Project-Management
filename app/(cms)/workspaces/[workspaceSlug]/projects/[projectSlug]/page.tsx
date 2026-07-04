@@ -9,8 +9,11 @@ type ProjectsOverviewPage = {
 };
 
 export default async function ProjectsOverviewPage({ params }: ProjectsOverviewPage) {
-    const { projectSlug } = await params;
+    const { projectSlug, workspaceSlug } = await params;
     return (
-        <ProjectsOverview slug={projectSlug} />
+        <ProjectsOverview
+            workspaceSlug={workspaceSlug}
+            projectSlug={projectSlug}
+        />
     )
 }

@@ -1,32 +1,35 @@
 
 import { useState } from 'react';
-import ProjectsContent from './ProjectContent';
-import ProjectsHero from './ProjectHero'
-import type { Projects } from "@/features/projects/types/projects";
 
 import {
     PROJECT_TABS,
     type ProjectTab,
 } from "@/features/projects/constants/tabs";
 
-import ProjectTabs from './content/ProjectTabs';
-import ProjectTasksTimeline from './tasks/ProjectTasksTimeline';
+import {
+    ProjectTabs,
+    ProjectTasks,
+    ProjectMembers,
+    ProjectTasksActivity,
+    ProjectTasksTimeline,
+    ProjectHero,
+    ProjectContent,
+    ProjectActivity
+}
+    from "@/features/projects/components";
+
 import { TASKS } from '@/features/tasks/mocks/tasks';
 import { USERS } from '@/features/users/mocks/users';
-import ProjectTasks from './content/ProjectTasks';
-
-import ProjectActivity from './activity/ProjectActivity';
-import ProjectMembers from './members/ProjectMembers';
-
+import type { Projects } from "@/features/projects/types/projects";
 
 
 type ProjectsDashboardProps = {
     project: Projects;
     onCreateTasks?: () => void;
-    onOpenBoard?: () => void;
+    onOpenBoard?: (project: Projects) => void;
 };
 
-export default function ProjectsDashboard({
+export default function ProjectDashboard({
     project,
     onCreateTasks,
     onOpenBoard,
@@ -43,7 +46,7 @@ export default function ProjectsDashboard({
 
     return (
         <section className="space-y-6">
-            <ProjectsHero
+            <ProjectHero
                 project={project}
                 onCreateTasks={onCreateTasks}
                 onOpenBoard={onOpenBoard}
@@ -55,7 +58,7 @@ export default function ProjectsDashboard({
                 onChange={setActiveTab}
             />
             {activeTab === "overview" && (
-                <ProjectsContent project={project} />
+                <ProjectContent project={project} />
             )}
 
             {activeTab === "tasks" && (
@@ -74,7 +77,10 @@ export default function ProjectsDashboard({
             )}
 
             {activeTab === "activity" && (
-                <ProjectActivity project={project} />
+                <>
+                    <ProjectActivity project={project} />
+                    <ProjectTasksActivity project={project} />
+                </>
             )}
         </section>
     )
