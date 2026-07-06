@@ -1,25 +1,13 @@
 export interface Workspace {
-    id: string | number;
-    name: string;
+    id: number;
+    owner_id: number;
     slug: string;
+    name: string;
     initials: string;
     description: string;
     color: string;
+    member_id: number[];
     members_count: number;
     projects_count: number;
-}
-
-export interface WorkspaceMember {
-    id: string | number;
-    name: string;
-    email: string;
-    role: string;
-}
-
-export interface WorkspaceActivity {
-    id: string | number;
-    user: string;
-    action: string;
-    target: string;
-    time: string;
+    created_at: string;
 }

@@ -2,38 +2,30 @@
 
 import {
     FolderOpen,
+    MoreHorizontal,
     Settings,
 } from "lucide-react";
-
+import type { Workspace } from "@/features/workspaces/types/workspace";
 import { Button } from "@/components/ui";
+import ActionsMenu from "./ActionsMenu";
 
 type WorkspaceHeroProps = {
-    workspace: {
-        name: string;
-        slug: string;
-        description: string;
-        initials: string;
-        color: string;
-        visibility: "Public" | "Private";
-        createdAt: string;
-        projects: number;
-        members: number;
-        tasks: number;
-        completion: number;
-    };
-
+    workspace: Workspace;
     onCreateProject?: () => void;
-
+    onOpenMembers?: () => void;
+    onEdit?: () => void;
     onSettings?: () => void;
 };
 
 export default function WorkspaceHero({
     workspace,
     onCreateProject,
+    onOpenMembers,
+    onEdit,
     onSettings,
 }: WorkspaceHeroProps) {
     return (
-        <div className="rounded-2xl border border-border bg-card p-7 shadow-xl">
+        <div className="rounded-2xl border border-border bg-card p-7 shadow-sm">
             <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
                 <div className="flex gap-5">
                     <div
@@ -52,20 +44,12 @@ export default function WorkspaceHero({
                         </p>
                         <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
                             <span>
-                                Created: {workspace.createdAt}
+                                Created: {workspace.created_at}
                             </span>
                         </div>
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <Button
-                        variant="outline"
-                        size="md"
-                        onClick={onSettings}
-                    >
-                        <Settings size={16} />
-                        Settings
-                    </Button>
                     <Button
                         variant="primary"
                         size="md"
@@ -74,6 +58,22 @@ export default function WorkspaceHero({
                         <FolderOpen size={16} />
                         Open Project
                     </Button>
+
+                    <ActionsMenu
+                        workspace={workspace}
+                        onOpenMembers={onOpenMembers}
+                        onEdit={onEdit}
+                        onSettings={(workspace) => {
+                            console.log("Settings", workspace.id);
+                        }}
+                    />
+                    {/* <Button
+                        variant="outline"
+                        size="md"
+                        onClick={onSettings}
+                    >
+                        <MoreHorizontal size={17} />
+                    </Button> */}
                 </div>
             </div>
         </div>

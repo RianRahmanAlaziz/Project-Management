@@ -61,7 +61,7 @@ export const PROJECTS = {
             initials: "BR",
             description:
                 "Refresh the company branding, including logo, typography, color palette, and marketing assets.",
-            status: "Todo",
+            status: "In Progress",
             priority: "Low",
             progress: 10,
             color: "bg-pink-500",

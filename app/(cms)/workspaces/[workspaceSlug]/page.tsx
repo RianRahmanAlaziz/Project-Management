@@ -10,6 +10,6 @@ type WorkspaceOverviewPageProps = {
 export default async function WorkspaceOverviewPage({ params }: WorkspaceOverviewPageProps) {
     const { workspaceSlug } = await params;
     return (
-        <WorkspaceOverview slug={workspaceSlug} />
+        <WorkspaceOverview workspaceSlug={workspaceSlug} />
     )
 }

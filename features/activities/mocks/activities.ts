@@ -4,6 +4,7 @@ export const ACTIVITIES = {
     data: [
         {
             id: 1,
+            workspace_id: 1,
             project_id: 1,
             user_id: 1,
             action: "created task",
@@ -13,6 +14,7 @@ export const ACTIVITIES = {
         },
         {
             id: 2,
+            workspace_id: 1,
             project_id: 1,
             user_id: 2,
             action: "moved task",
@@ -22,6 +24,7 @@ export const ACTIVITIES = {
         },
         {
             id: 3,
+            workspace_id: 1,
             project_id: 1,
             user_id: 3,
             action: "commented on",
@@ -31,6 +34,7 @@ export const ACTIVITIES = {
         },
         {
             id: 4,
+            workspace_id: 1,
             project_id: 1,
             user_id: 4,
             action: "uploaded file",
@@ -40,6 +44,7 @@ export const ACTIVITIES = {
         },
         {
             id: 5,
+            workspace_id: 1,
             project_id: 1,
             user_id: 1,
             action: "completed task",
@@ -49,6 +54,7 @@ export const ACTIVITIES = {
         },
         {
             id: 6,
+            workspace_id: 2,
             project_id: 1,
             user_id: 5,
             action: "joined project",

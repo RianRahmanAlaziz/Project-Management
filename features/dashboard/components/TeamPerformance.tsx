@@ -4,7 +4,7 @@ import { Avatar, ProgressBar } from '@/components/ui';
 
 export default function TeamPerformance() {
     return (
-        <div className="bg-card border border-border rounded-xl p-4 shadow-xl">
+        <div className="bg-card border border-border rounded-xl p-4 shadow-sm">
             <p className="font-semibold text-foreground text-base mb-3">Team Performance</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
                 {USERS.map((user) => {

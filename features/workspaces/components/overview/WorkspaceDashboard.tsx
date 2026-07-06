@@ -2,8 +2,6 @@
 
 import {
     BarChart2,
-    BarChart3,
-    BriefcaseBusiness,
     FolderOpen,
     ListTodo,
     Users,
@@ -12,30 +10,19 @@ import {
 import {
     WorkspaceHero,
     WorkspaceStats,
-    RecentActivity,
-    RecentProjects,
+    WorkspaceRecentProjects,
+    WorkspaceActivity,
 } from "@/features/workspaces/components";
 
 import type { Projects } from "@/features/projects/types/projects";
-
-import TeamPerformance from "@/features/dashboard/components/TeamPerformance";
+import type { Workspace } from "@/features/workspaces/types/workspace";
 
 type WorkspaceDashboardProps = {
-    workspace: {
-        name: string;
-        slug: string;
-        description: string;
-        initials: string;
-        color: string;
-        visibility: "Public" | "Private";
-        createdAt: string;
-        projects: number;
-        members: number;
-        tasks: number;
-        completion: number;
-    };
+    workspace: Workspace;
     projects: Projects[];
     onCreateProject?: () => void;
+    onOpenMembers?: () => void;
+    onEdit?: () => void;
     onSettings?: () => void;
 };
 
@@ -43,6 +30,8 @@ export default function WorkspaceDashboard({
     workspace,
     projects,
     onCreateProject,
+    onOpenMembers,
+    onEdit,
     onSettings,
 }: WorkspaceDashboardProps) {
     return (
@@ -50,6 +39,8 @@ export default function WorkspaceDashboard({
             <WorkspaceHero
                 workspace={workspace}
                 onCreateProject={onCreateProject}
+                onOpenMembers={onOpenMembers}
+                onEdit={onEdit}
                 onSettings={onSettings}
             />
 
@@ -57,43 +48,35 @@ export default function WorkspaceDashboard({
                 <WorkspaceStats
                     icon={<FolderOpen size={18} />}
                     label="Total Projects"
-                    value={workspace.projects}
+                    value={workspace.projects_count}
                     color="bg-indigo-500"
                 />
                 <WorkspaceStats
                     icon={<Users size={18} />}
                     label="Members"
-                    value={workspace.members}
+                    value={workspace.members_count}
                     color="bg-blue-500"
                 />
                 <WorkspaceStats
                     icon={<ListTodo size={18} />}
                     label="Tasks This Week"
-                    value={workspace.tasks}
+                    value={0}
                     color="bg-violet-500"
                 />
                 <WorkspaceStats
                     icon={<BarChart2 size={18} />}
                     label="Completion"
-                    value={`${workspace.completion}%`}
+                    value="0%"
                     color="bg-success"
                 />
             </div>
 
-            <TeamPerformance />
+            <WorkspaceRecentProjects
+                workspaceSlug={workspace.slug}
+                projects={projects}
+            />
 
-            <div className="grid gap-6 xl:grid-cols-5">
-                <div className="xl:col-span-3">
-                    <RecentProjects
-                        workspaceSlug={workspace.slug}
-                        projects={projects}
-                    />
-                </div>
-                <div className="xl:col-span-2">
-                    <RecentActivity />
-                </div>
-            </div>
-
-        </section>
+            <WorkspaceActivity workspace={workspace} />
+        </section >
     );
 }
