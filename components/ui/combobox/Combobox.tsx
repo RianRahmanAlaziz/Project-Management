@@ -13,7 +13,7 @@ import type {
 } from "./types";
 
 interface ComboboxProps {
-    label?: string;
+    label?: React.ReactNode;
     placeholder?: string;
     searchPlaceholder?: string;
     emptyMessage?: string;
@@ -46,7 +46,7 @@ export function Combobox({
     return (
         <div className="flex flex-col gap-2">
             {label && (
-                <label className="text-sm font-medium">
+                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
                     {label}
                 </label>
             )}

@@ -1,8 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Input, Modal } from "@/components/ui";
-import { Combobox } from "@/components/ui/combobox";
+import {
+    Button,
+    Input,
+    Modal,
+    Combobox,
+    DatePicker,
+} from "@/components/ui";
+
+import {
+    Calendar,
+    CheckSquare,
+    Clock,
+    Flag,
+    Hash,
+    Users,
+} from "lucide-react";
 
 interface Task {
     id?: string;
@@ -38,14 +52,55 @@ interface TaskFormModalProps {
     onSubmit: (task: Task) => void;
 }
 
+const PRIORITY_OPTIONS = [
+    {
+        value: "Low",
+        label: "Low",
+        icon: (
+            <span className="h-2 w-2 rounded-full bg-green-500" />
+        ),
+    },
+    {
+        value: "Medium",
+        label: "Medium",
+        icon: (
+            <span className="h-2 w-2 rounded-full bg-yellow-500" />
+        ),
+    },
+    {
+        value: "High",
+        label: "High",
+        icon: (
+            <span className="h-2 w-2 rounded-full bg-red-500" />
+        ),
+    },
+];
+
+
+const ESTIMATE_OPTIONS = [
+    "30m",
+    "1h",
+    "2h",
+    "4h",
+    "1d",
+    "2d",
+    "3d",
+    "1w",
+].map(item => ({
+    value: item,
+    label: item,
+}));
+
+
 export default function TaskFormModal({
     open,
     mode,
     task,
-    projects,
-    members,
-    columns,
-    labels,
+    projects = [],
+    members = [],
+    columns = [],
+    labels = [],
+
     onClose,
     onSubmit,
 }: TaskFormModalProps) {
@@ -132,117 +187,112 @@ export default function TaskFormModal({
             size="xl"
         >
             <div className="space-y-5">
-
-                <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Task title"
+                <textarea
+                    autoFocus
+                    placeholder="Task title…"
+                    rows={2}
+                    className="w-full bg-transparent text-foreground placeholder:text-muted-foreground text-base font-semibold focus:outline-none resize-none mb-1 leading-snug"
                 />
 
                 <textarea
-                    value={description}
-                    onChange={(e) =>
-                        setDescription(e.target.value)
-                    }
-                    placeholder="Task description"
-                    rows={5}
-                    className="
-                        w-full
-                        rounded-lg
-                        border
-                        border-border
-                        bg-background
-                        p-3
-                        text-sm
-                        text-foreground
-                        focus:outline-none
-                        focus:ring-2
-                        focus:ring-primary
-                    "
+                    placeholder="Add a description, notes, or acceptance criteria…"
+                    rows={3}
+                    className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none resize-none border-b border-border pb-4 mb-4"
                 />
 
                 <div className="grid grid-cols-2 gap-4">
 
-                    <Input
+                    <Combobox
+                        label={
+                            <>
+                                <Hash size={12} />
+                                Project
+                            </>
+                        }
                         value={projectId}
-                        onChange={(e) =>
-                            setProjectId(e.target.value)
+                        onValueChange={setProjectId}
+                        placeholder="Select project"
+                        options={
+                            projects.map(item => ({
+                                value: String(item.id),
+                                label: item.name,
+                            }))
                         }
-                        placeholder="Project"
-                    />
-
-                    <Input
-                        value={columnId}
-                        onChange={(e) =>
-                            setColumnId(e.target.value)
-                        }
-                        placeholder="Status"
                     />
 
                     <Combobox
+                        label={
+                            <>
+                                <CheckSquare size={12} />
+                                Status
+                            </>
+                        }
+                        value={columnId}
+                        onValueChange={setColumnId}
+                        placeholder="Select status"
+                        options={
+                            columns.map(item => ({
+                                value: String(item.id),
+                                label: item.name,
+                            }))
+                        }
+                    />
+
+                    <Combobox
+                        label={
+                            <>
+                                <Flag size={12} />
+                                Priority
+                            </>
+                        }
                         value={priority}
                         onValueChange={setPriority}
                         searchable={false}
-                        placeholder="Select priority"
-                        options={[
-                            {
-                                value: "Low",
-                                label: "Low",
-                                description: "Low priority",
-                                icon: (
-                                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-                                ),
-                            },
-                            {
-                                value: "Medium",
-                                label: "Medium",
-                                description: "Normal priority",
-                                icon: (
-                                    <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />
-                                ),
-                            },
-                            {
-                                value: "High",
-                                label: "High",
-                                description: "High priority",
-                                icon: (
-                                    <span className="h-2.5 w-2.5 rounded-full bg-red-500" />
-                                ),
-                            },
-                        ]}
+                        options={PRIORITY_OPTIONS}
                     />
 
-                    <Input
+                    <Combobox
+                        label={
+                            <>
+                                <Users size={12} />
+                                Assignee
+                            </>
+                        }
                         value={assigneeId}
-                        onChange={(e) =>
-                            setAssigneeId(e.target.value)
-                        }
-                        placeholder="Assignee"
-                    />
-
-                    <Input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) =>
-                            setStartDate(e.target.value)
+                        onValueChange={setAssigneeId}
+                        placeholder="Select member"
+                        options={
+                            members.map(user => ({
+                                value: String(user.id),
+                                label: user.name,
+                            }))
                         }
                     />
 
-                    <Input
-                        type="date"
+                    <DatePicker
+                        label={
+                            <>
+                                <Calendar size={11} />
+                                Due date
+                            </>
+                        }
                         value={dueDate}
-                        onChange={(e) =>
-                            setDueDate(e.target.value)
-                        }
+                        onChange={setDueDate}
+
                     />
 
-                    <Input
-                        type="number"
-                        value={estimateHours}
-                        onChange={(e) =>
-                            setEstimateHours(e.target.value)
+                    <Combobox
+                        label={
+                            <>
+                                <Clock size={12} />
+                                Estimate
+                            </>
                         }
-                        placeholder="Estimate Hours"
+                        value={estimateHours}
+                        onValueChange={setEstimateHours}
+                        placeholder="Estimate"
+                        searchable={false}
+                        options={ESTIMATE_OPTIONS}
                     />
 
                 </div>

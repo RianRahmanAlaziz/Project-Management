@@ -7,6 +7,9 @@ import { TASKS } from "@/data/data";
 import TaskFormModal from "@/features/tasks/components/modals/TaskFormModal";
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
+import { PROJECTS } from "@/features/projects/mocks/projects";
+import { USERS } from "@/features/users/mocks/users";
+
 import {
     KanbanBoard,
 }

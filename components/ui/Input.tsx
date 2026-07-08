@@ -1,7 +1,7 @@
 import React from "react";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-    label?: string;
+    label?: React.ReactNode;
     error?: string;
     leftIcon?: React.ReactNode;
 }
@@ -9,7 +9,11 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export function Input({ label, error, leftIcon, className = "", ...props }: InputProps) {
     return (
         <div className="flex flex-col gap-1">
-            {label && <label className="text-base font-medium text-foreground">{label}</label>}
+            {label &&
+                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
+                    {label}
+                </label>
+            }
 
             <div className="relative">
                 {leftIcon && (

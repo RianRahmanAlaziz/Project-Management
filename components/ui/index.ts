@@ -10,3 +10,4 @@ export * from "./Tabs";
 export * from "./Tooltip";
 export * from "./DropdownMenu";
 export * from "./combobox";
+export * from "./DatePicker";
