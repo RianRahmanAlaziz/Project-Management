@@ -1,9 +1,7 @@
 "use client";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import {
-    TASKS,
-} from "@/data/data";
+import { TASKS } from "@/features/tasks/mocks/tasks";
 
 import {
     MyTasksHeader,
@@ -16,10 +14,10 @@ import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
 export default function MyTasksView() {
     const [filter, setFilter] = useState<"all" | "mine" | "overdue">("mine");
-    const filtered = filter === "mine" ? TASKS.filter(t => t.assignee === "u1") :
-        filter === "overdue" ? TASKS.filter(t => t.dueDate < "2026-06-17") : TASKS;
 
-    const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+    const filtered = filter === "mine" ? TASKS.data.filter(task => task.assignee_id === 1) : filter === "overdue" ? TASKS.data.filter(task => task.due_date < "2026-06-17") : TASKS.data;
+
+    const [openTaskId, setOpenTaskId] = useState<number | null>(null);
 
     return (
         <div className="px-6 py-8 xl:px-8">

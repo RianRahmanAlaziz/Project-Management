@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { motion } from "motion/react";
-import {
-    USERS,
-    TASKS,
-} from "@/data/data";
+
+import { USERS } from "@/features/users/mocks/users";
+import { TASKS } from "@/features/tasks/mocks/tasks";
 
 import {
     TaskHeader,
@@ -12,7 +11,7 @@ import {
 } from "@/features/tasks/components";
 
 interface TaskDrawerProps {
-    taskId: string;
+    taskId: number | string;
     onClose: () => void;
 }
 
@@ -21,18 +20,22 @@ export default function TaskDrawer({
     onClose,
 }: TaskDrawerProps) {
 
-    const task = TASKS.find((t) => t.id === taskId);
+    const task = TASKS.data.find(
+        (item) => item.id === Number(taskId)
+    );
     const [activeTab, setActiveTab] = useState("Comments");
     const [comment, setComment] = useState("");
-    const [status, setStatus] = useState(task?.column ?? "Todo");
+    const [status, setStatus] = useState(task?.status ?? "Todo");
     const [priority, setPriority] = useState(task?.priority ?? "Medium");
 
 
     if (!task) return null;
 
-    const assignee = USERS.find(
-        (user) => user.id === task.assignee
-    );
+    const assignee =
+        USERS.data.find(
+            user =>
+                user.id === task.assignee_id
+        );
 
     const handleSendComment = (message: string) => {
         console.log("Send Comment:", message);
@@ -79,7 +82,7 @@ export default function TaskDrawer({
                 className="relative ml-auto flex h-full w-full max-w-130 flex-col overflow-hidden border-l border-border bg-card shadow-2xl"
             >
                 <TaskHeader
-                    tasks={task}
+                    task={task}
                     status={status}
                     onClose={onClose}
                 />

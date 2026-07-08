@@ -123,7 +123,7 @@ export default function TaskMeta({
                 <span className="text-base text-muted-foreground w-20 shrink-0">Due date</span>
                 <div className="flex items-center gap-1.5 text-base text-foreground">
                     <Calendar size={12} className="text-muted-foreground" />
-                    {task.dueDate}
+                    {task.due_date}
                 </div>
             </div>
 

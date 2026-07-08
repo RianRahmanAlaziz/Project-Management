@@ -4,18 +4,22 @@ import type { Tasks } from '@/features/tasks/types/tasks'
 
 
 interface TaskHeaderProps {
-    tasks: Tasks;
+    task: Tasks;
     status: string;
     onClose: () => void;
 }
 export default function TaskHeader({
-    tasks,
+    task,
     status,
     onClose }: TaskHeaderProps) {
     return (
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground font-mono">{tasks.project.toUpperCase()}-{tasks.id.slice(1)}</span>
+                <span className="text-xs text-muted-foreground font-mono">
+                    PROJECT-{task.project_id}
+                    -
+                    TASK-{task.id}
+                </span>
                 <Badge label={status} color={
                     status === "Done" ? "green" : status === "In Progress" ? "indigo" : status === "Review" ? "yellow" : "gray"
                 } />

@@ -3,18 +3,12 @@
 import {
     Calendar,
     MessageSquare,
-    MoreHorizontal,
     Paperclip,
 } from "lucide-react";
 
 import { Avatar, Badge } from "@/components/ui";
-import { USERS } from "@/data/data";
-
-const priorityConfig = {
-    High: "bg-destructive",
-    Medium: "bg-warning",
-    Low: "bg-muted-foreground",
-} as const;
+import { USERS } from "@/features/users/mocks/users";
+import type { Tasks } from "@/features/tasks/types/tasks";
 
 const labelColors = {
     Frontend: "blue",
@@ -30,7 +24,7 @@ const labelColors = {
 } as const;
 
 interface TaskCardProps {
-    task: any;
+    task: Tasks;
     dragging: boolean;
     style: {
         text: string;
@@ -53,8 +47,8 @@ export default function TaskCard({
     onDragEnd,
 }: TaskCardProps) {
 
-    const assignee = USERS.find(
-        (user) => user.id === task.assignee
+    const assignee = USERS.data.find(
+        (user) => user.id === task.assignee_id
     );
 
     return (
@@ -66,7 +60,7 @@ export default function TaskCard({
             className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${dragging ? "opacity-40" : ""}`}
         >
             <div className="mb-2 flex items-center gap-2">
-                {task.labels.slice(0, 2).map((label: string) => (
+                {task.labels?.slice(0, 2).map((label: string) => (
                     <Badge
                         key={label}
                         label={label}
@@ -94,15 +88,17 @@ export default function TaskCard({
                 <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                         <Calendar size={11} />
-                        {task.dueDate.slice(5)}
+                        {task.due_date
+                            ? task.due_date.slice(5)
+                            : "-"}
                     </span>
                     <span className="flex items-center gap-1">
                         <Paperclip size={11} />
-                        {task.attachments}
+                        {task.attachments_count}
                     </span>
                     <span className="flex items-center gap-1">
                         <MessageSquare size={11} />
-                        {task.comments}
+                        {task.comments_count}
                     </span>
                 </div>
             </div>

@@ -1,18 +1,11 @@
 
 import { Badge } from "@/components/ui";
 
-interface Tasks {
-    id: string;
-    title: string;
-    column: string;
-    priority: string;
-    dueDate: string;
-    assignee: string;
-}
+import type { Tasks } from "@/features/tasks/types/tasks";
 
 interface MyTasksTableProps {
     tasks: Tasks[];
-    onTaskClick: (taskId: string) => void;
+    onTaskClick: (taskId: number) => void;
 }
 
 const priorityDot: Record<string, string> = { High: "bg-destructive", Medium: "bg-warning", Low: "bg-muted-foreground" };
@@ -38,19 +31,19 @@ export default function MyTasksTable({
                             <td className="px-4 py-2.5">
                                 <div className="flex items-center gap-2.5">
                                     <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${priorityDot[task.priority]}`} />
-                                    <span className={`text-m ${task.column === "Done" ? "line-through text-muted-foreground" : "text-foreground"}`}>{task.title}</span>
+                                    <span className={`text-m ${task.status === "Done" ? "line-through text-muted-foreground" : "text-foreground"}`}>{task.title}</span>
                                 </div>
                             </td>
                             <td className="px-4 py-2.5 hidden md:table-cell">
                                 <Badge
                                     size="md"
-                                    label={task.column}
+                                    label={task.status}
                                     color={
-                                        task.column === "Done"
+                                        task.status === "Done"
                                             ? "green"
-                                            : task.column === "In Progress"
+                                            : task.status === "In Progress"
                                                 ? "indigo"
-                                                : task.column === "Review"
+                                                : task.status === "Review"
                                                     ? "yellow"
                                                     : "gray"
                                     }
@@ -60,7 +53,7 @@ export default function MyTasksTable({
                                 <span className={`text-m font-medium ${task.priority === "High" ? "text-destructive" : task.priority === "Medium" ? "text-warning" : "text-muted-foreground"}`}>{task.priority}</span>
                             </td>
                             <td className="px-4 py-2.5 hidden sm:table-cell">
-                                <span className="text-m text-muted-foreground">{task.dueDate}</span>
+                                <span className="text-m text-muted-foreground">{task.due_date}</span>
                             </td>
                         </tr>
                     ))}
