@@ -5,6 +5,7 @@ import {
     KanbanColumn,
 }
     from "@/features/projects/components";
+import type { Tasks } from "@/features/tasks/types/tasks";
 
 const colColors: Record<string, string> = {
     Backlog: "text-muted-foreground",
@@ -62,14 +63,13 @@ const COLUMN_STYLES = {
 
 interface KanbanBoardProps {
     tasks: any[];
-    draggingId: string | null;
+    draggingId: number | null;
     dragOverCol: string | null;
-
-    setDraggingId: (id: string | null) => void;
+    setDraggingId: (id: number | null) => void;
     setDragOverCol: (col: string | null) => void;
     onCreateTask: (column: string) => void;
     onDrop: (column: string) => void;
-    onOpenTask: (taskId: string) => void;
+    onOpenTask: (taskId: number) => void;
 }
 
 export default function KanbanBoard({
@@ -92,7 +92,11 @@ export default function KanbanBoard({
                             column={column}
                             color={colColors[column]}
                             background={colBg[column]}
-                            tasks={tasks.filter((t) => t.column === column)}
+                            tasks={
+                                tasks.filter(
+                                    (task) => task.status === column
+                                )
+                            }
                             draggingId={draggingId}
                             dragOver={dragOverCol === column}
                             onDrop={() => onDrop(column)}

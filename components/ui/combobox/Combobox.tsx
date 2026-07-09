@@ -59,7 +59,7 @@ export function Combobox({
                     <button
                         type="button"
                         className={clsx(
-                            "flex h-12 w-full items-center justify-between",
+                            "flex h-12 w-full items-center justify-between cursor-pointer",
                             "rounded-lg border border-border",
                             "bg-background px-4",
                             "text-left",

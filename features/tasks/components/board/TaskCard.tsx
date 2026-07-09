@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import {
     Calendar,
     MessageSquare,
@@ -47,6 +48,8 @@ export default function TaskCard({
     onDragEnd,
 }: TaskCardProps) {
 
+    const isDragging = useRef(false);
+
     const assignee = USERS.data.find(
         (user) => user.id === task.assignee_id
     );
@@ -54,9 +57,21 @@ export default function TaskCard({
     return (
         <div
             draggable
-            onClick={onClick}
-            onDragStart={onDragStart}
-            onDragEnd={onDragEnd}
+            onClick={() => {
+                if (isDragging.current) return;
+                onClick();
+            }}
+            onDragStart={() => {
+                isDragging.current = true;
+                onDragStart();
+            }}
+            onDragEnd={() => {
+                setTimeout(() => {
+                    isDragging.current = false;
+                }, 0);
+                onDragEnd();
+            }}
+
             className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${dragging ? "opacity-40" : ""}`}
         >
             <div className="mb-2 flex items-center gap-2">

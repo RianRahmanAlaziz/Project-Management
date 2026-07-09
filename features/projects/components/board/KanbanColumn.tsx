@@ -1,7 +1,6 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { useState } from "react";
 import {
     TaskCard
 } from "@/features/tasks/components";
@@ -11,7 +10,7 @@ interface KanbanColumnProps {
     color: string;
     background: string;
     tasks: any[];
-    draggingId: string | null;
+    draggingId: number | null;
     dragOver: boolean;
     style: {
         text: string;
@@ -24,8 +23,8 @@ interface KanbanColumnProps {
     onDragOver: () => void;
     onDragLeave: () => void;
     onCreateTask: (column: string) => void;
-    onOpenTask: (taskId: string) => void;
-    setDraggingId: (id: string) => void;
+    onOpenTask: (taskId: number) => void;
+    setDraggingId: (id: number) => void;
     clearDrag: () => void;
 }
 
@@ -45,7 +44,6 @@ export default function KanbanColumn({
     setDraggingId,
     clearDrag,
 }: KanbanColumnProps) {
-
 
     return (
         <div
@@ -97,7 +95,9 @@ export default function KanbanColumn({
             </div>
 
             <div className="border-t border-border p-1 bg-card  rounded-b-xl">
-                <button className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer">
+                <button
+                    onClick={() => onCreateTask(column)}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer">
                     <Plus size={14} />
                     Add task
                 </button>

@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
-import { TASKS } from "@/data/data";
+import { TASKS } from "@/features/tasks/mocks/tasks";
 
 import TaskFormModal from "@/features/tasks/components/modals/TaskFormModal";
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
-import { PROJECTS } from "@/features/projects/mocks/projects";
-import { USERS } from "@/features/users/mocks/users";
 
 import {
     KanbanBoard,
@@ -24,22 +22,24 @@ export default function ProjectsBoardView({
     workspaceSlug,
     projectSlug,
 }: ProjectsBoardViewProps) {
-    const [tasks, setTasks] = useState(TASKS);
-    const [draggingId, setDraggingId] = useState<string | null>(null);
+    const [tasks, setTasks] = useState(TASKS.data);
+    const [draggingId, setDraggingId] = useState<number | null>(null);
     const [dragOverCol, setDragOverCol] = useState<string | null>(null);
-    const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+    const [openTaskId, setOpenTaskId] = useState<number | null>(null);
 
-    const handleDrop = (column: string) => {
-        if (!draggingId) return;
-
-        setTasks((prev) =>
-            prev.map((task) =>
+    const handleDrop = (status: string) => {
+        if (draggingId === null) return;
+        setTasks(prev =>
+            prev.map(task =>
                 task.id === draggingId
-                    ? { ...task, column }
-                    : task
+                    ? {
+                        ...task,
+                        status
+                    }
+                    :
+                    task
             )
         );
-
         setDraggingId(null);
         setDragOverCol(null);
     };
@@ -75,11 +75,14 @@ export default function ProjectsBoardView({
                 setDragOverCol={setDragOverCol}
                 onDrop={handleDrop}
                 onCreateTask={handleCreateTask}
-                onOpenTask={setOpenTaskId}
+                onOpenTask={(id) => {
+                    console.log("OPEN DRAWER ID:", id);
+                    setOpenTaskId(id);
+                }}
             />
 
             <AnimatePresence initial={false} mode="wait">
-                {openTaskId && (
+                {openTaskId !== null && (
                     <TaskDrawer
                         key={openTaskId}
                         taskId={openTaskId}
