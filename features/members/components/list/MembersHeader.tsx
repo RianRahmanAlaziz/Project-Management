@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui";
 import {
     USERS,
-} from "@/data/data";
+} from "@/features/users/mocks/users";
 
 interface MembersHeaderProps {
     onInviteMembers: () => void;
@@ -20,7 +20,7 @@ export default function MembersHeader({
                 </h1>
 
                 <p className="mt-1 text-sm text-muted-foreground">
-                    {USERS.length} members in this workspace
+                    {USERS.data.length} members in this workspace
                 </p>
             </div>
 

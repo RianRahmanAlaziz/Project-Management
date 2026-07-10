@@ -2,7 +2,7 @@
 
 import {
     USERS,
-} from "@/data/data";
+} from "@/features/users/mocks/users";
 
 import { useState } from "react";
 
@@ -27,7 +27,7 @@ export default function MembersView({
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"members" | "permissions">("members");
 
-    const filtered = USERS.filter(u =>
+    const filtered = USERS.data.filter(u =>
         u.name.toLowerCase().includes(search.toLowerCase()) ||
         u.email.toLowerCase().includes(search.toLowerCase())
     );
