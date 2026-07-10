@@ -1,18 +1,15 @@
 "use client";
 
 import {
-    FolderOpen,
     Pencil,
     Users,
-    Trash2,
     MoreHorizontal,
+    Settings,
 } from "lucide-react";
-import clsx from "clsx";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
@@ -21,17 +18,16 @@ import { Button } from "@/components/ui";
 
 interface ActionsMenuActionsMenuProps {
     workspace: Workspace;
-
-    onOpenMembers?: (workspace: Workspace) => void;
+    onOpenMembers: (workspace: Workspace) => void;
     onEdit?: (workspace: Workspace) => void;
-    onSettings?: (workspace: Workspace) => void;
+    onOpenSetting: (workspace: Workspace) => void;
 }
 
 export default function ActionsMenu({
     workspace,
     onOpenMembers,
     onEdit,
-    onSettings,
+    onOpenSetting,
 }: ActionsMenuActionsMenuProps) {
     return (
         <DropdownMenu>
@@ -66,12 +62,15 @@ export default function ActionsMenu({
                     Manage Members
                 </DropdownMenuItem>
 
-                {/* <DropdownMenuItem
-                    onClick={() => onSettings?.(workspace)}
+                <DropdownMenuItem
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onOpenSetting?.(workspace)
+                    }}
                 >
                     <Settings size={16} />
                     Settings
-                </DropdownMenuItem> */}
+                </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

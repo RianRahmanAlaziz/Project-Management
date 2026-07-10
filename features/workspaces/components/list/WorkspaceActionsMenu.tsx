@@ -2,17 +2,15 @@
 
 import {
     FolderOpen,
-    Pencil,
     Users,
-    Trash2,
     MoreHorizontal,
+    Settings,
 } from "lucide-react";
 import clsx from "clsx";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
@@ -20,21 +18,16 @@ import type { Workspace } from "@/features/workspaces/types/workspace";
 
 interface WorkspaceActionsMenuProps {
     workspace: Workspace;
-
-    onOpenProjects?: (workspace: Workspace) => void;
+    onOpenWorkspace?: (workspace: Workspace) => void;
     onOpenMembers?: (workspace: Workspace) => void;
-    onEdit?: (workspace: Workspace) => void;
-    onSettings?: (workspace: Workspace) => void;
-    onDelete?: (workspace: Workspace) => void;
+    onOpenSetting?: (workspace: Workspace) => void;
 }
 
 export default function WorkspaceActionsMenu({
     workspace,
-    onOpenProjects,
+    onOpenWorkspace,
     onOpenMembers,
-    onEdit,
-    onSettings,
-    onDelete,
+    onOpenSetting,
 }: WorkspaceActionsMenuProps) {
     return (
         <DropdownMenu>
@@ -65,21 +58,11 @@ export default function WorkspaceActionsMenu({
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation()
-                        onOpenProjects?.(workspace)
+                        onOpenWorkspace?.(workspace)
                     }}
                 >
                     <FolderOpen size={16} />
                     Open Workspace
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onEdit?.(workspace)
-                    }}
-                >
-                    <Pencil size={16} />
-                    Edit Workspace
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -92,28 +75,14 @@ export default function WorkspaceActionsMenu({
                     Manage Members
                 </DropdownMenuItem>
 
-                {/* <DropdownMenuItem
-                    onClick={() => onSettings?.(workspace)}
-                >
-                    <Settings size={16} />
-                    Settings
-                </DropdownMenuItem> */}
-
-                <DropdownMenuSeparator />
-
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation()
-                        onDelete?.(workspace)
+                        onOpenSetting?.(workspace)
                     }}
-                    className="
-                        text-red-500
-                        focus:text-red-500
-                        hover:bg-red-500/10
-                    "
                 >
-                    <Trash2 size={16} />
-                    Delete Workspace
+                    <Settings size={16} />
+                    Settings
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

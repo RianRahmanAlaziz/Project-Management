@@ -13,20 +13,18 @@ import {
 
 interface WorkspaceGridProps {
     workspaces: Workspace[];
-    onOpenProjects: (workspace: Workspace) => void;
+    onOpenWorkspace: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
+    onOpenSetting: (workspace: Workspace) => void;
     onCreateWorkspace: () => void;
-    onEditWorkspace: (workspace: Workspace) => void;
-    onDeleteWorkspace: (workspace: Workspace) => void;
 }
 
 export default function WorkspaceGrid({
     workspaces,
-    onOpenProjects,
+    onOpenWorkspace,
     onOpenMembers,
+    onOpenSetting,
     onCreateWorkspace,
-    onEditWorkspace,
-    onDeleteWorkspace,
 }: WorkspaceGridProps) {
     if (workspaces.length === 0) {
         return (
@@ -57,10 +55,9 @@ export default function WorkspaceGrid({
                 <WorkspaceCard
                     key={workspace.id}
                     workspace={workspace}
-                    onOpenProjects={onOpenProjects}
+                    onOpenWorkspace={onOpenWorkspace}
                     onOpenMembers={onOpenMembers}
-                    onEdit={onEditWorkspace}
-                    onDelete={onDeleteWorkspace}
+                    onOpenSetting={onOpenSetting}
                 />
             ))}
         </div>

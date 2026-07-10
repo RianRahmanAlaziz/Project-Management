@@ -27,7 +27,7 @@ export function ProjectProgressCard({ onNavigate }: ProjectProgressCardProps) {
                 {PROJECT_PROGRESS_DATA.map((project) => (
                     <div key={project.name}>
                         <div className="mb-2 flex items-center justify-between">
-                            <span className="max-w-[180px] truncate text-sm text-foreground">
+                            <span className="max-w-45 truncate text-sm text-foreground">
                                 {project.name}
                             </span>
 

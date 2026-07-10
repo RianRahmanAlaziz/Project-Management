@@ -7,26 +7,32 @@ import {
     WorkspaceSearch,
     WorkspaceHeader,
     WorkspaceFormModal,
-    DeleteWorkspaceModal,
 } from "@/features/workspaces/components";
 
-import { useWorkspaceSearch } from "../hooks/useWorkspaceSearch";
+import {
+    useWorkspaceSearch,
+    useWorkspaceNavigation,
+    useWorkspaceModal,
+} from "../hooks";
 
 export function WorkspacesView() {
     const {
         search,
         setSearch,
         filteredWorkspaces,
-        handleOpenProjects,
+    } = useWorkspaceSearch(WORKSPACES.data);
+
+    const {
+        handleOpenWorkspace,
         handleOpenMembers,
+        handleOpenSetting,
+    } = useWorkspaceNavigation();
+
+    const {
         workspaceModal,
         setWorkspaceModal,
         handleCreateWorkspace,
-        handleEditWorkspace,
-        deleteModal,
-        setDeleteModal,
-        handleDeleteWorkspace,
-    } = useWorkspaceSearch(WORKSPACES.data);
+    } = useWorkspaceModal();
 
     return (
         <div className="px-6 py-8 xl:px-8">
@@ -42,11 +48,10 @@ export function WorkspacesView() {
 
                 <WorkspaceGrid
                     workspaces={filteredWorkspaces}
-                    onOpenProjects={handleOpenProjects}
+                    onOpenWorkspace={handleOpenWorkspace}
                     onOpenMembers={handleOpenMembers}
+                    onOpenSetting={handleOpenSetting}
                     onCreateWorkspace={handleCreateWorkspace}
-                    onEditWorkspace={handleEditWorkspace}
-                    onDeleteWorkspace={handleDeleteWorkspace}
                 />
             </div>
 
@@ -69,25 +74,6 @@ export function WorkspacesView() {
                 }}
             />
 
-            <DeleteWorkspaceModal
-                open={deleteModal.open}
-                workspace={deleteModal.workspace}
-                onClose={() =>
-                    setDeleteModal({
-                        open: false,
-                        workspace: null,
-                    })
-                }
-                onConfirm={(workspace) => {
-                    console.log(
-                        "Delete Workspace",
-                        workspace.id
-                    );
-
-                    // nanti:
-                    // DELETE /api/v1/workspaces/{id}
-                }}
-            />
         </div>
     );
 }

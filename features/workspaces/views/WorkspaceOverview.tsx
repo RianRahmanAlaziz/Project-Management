@@ -8,6 +8,10 @@ import {
     WorkspaceDashboard,
 } from "@/features/workspaces/components";
 
+import {
+    useWorkspaceNavigation,
+} from "../hooks";
+
 interface WorkspaceOverviewProps {
     workspaceSlug: string;
 }
@@ -28,13 +32,12 @@ export default function WorkspaceOverview({
         );
     }, [workspace]);
 
-    const handleCreateProject = () => {
-        console.log("Create Project");
-    };
+    const {
+        handleOpenProject,
+        handleOpenMembers,
+        handleOpenSetting,
+    } = useWorkspaceNavigation();
 
-    const handleOpenMembers = () => {
-        console.log("Open Members");
-    };
 
     const handleonEdit = () => {
         console.log("Open Edit");
@@ -50,9 +53,10 @@ export default function WorkspaceOverview({
                 <WorkspaceDashboard
                     workspace={workspace}
                     projects={projects}
-                    onCreateProject={handleCreateProject}
+                    onOpenProject={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onEdit={handleonEdit}
+                    onOpenSetting={handleOpenSetting}
                 />
             </div>
         </div>

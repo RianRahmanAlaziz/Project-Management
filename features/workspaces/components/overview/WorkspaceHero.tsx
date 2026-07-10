@@ -2,8 +2,6 @@
 
 import {
     FolderOpen,
-    MoreHorizontal,
-    Settings,
 } from "lucide-react";
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import { Button } from "@/components/ui";
@@ -11,18 +9,18 @@ import ActionsMenu from "./ActionsMenu";
 
 type WorkspaceHeroProps = {
     workspace: Workspace;
-    onCreateProject?: () => void;
-    onOpenMembers?: () => void;
+    onOpenProject?: (workspace: Workspace) => void;
+    onOpenMembers: (workspace: Workspace) => void;
     onEdit?: () => void;
-    onSettings?: () => void;
+    onOpenSetting: (workspace: Workspace) => void;
 };
 
 export default function WorkspaceHero({
     workspace,
-    onCreateProject,
+    onOpenProject,
     onOpenMembers,
     onEdit,
-    onSettings,
+    onOpenSetting,
 }: WorkspaceHeroProps) {
     return (
         <div className="rounded-2xl border border-border bg-card p-7 shadow-sm">
@@ -53,7 +51,7 @@ export default function WorkspaceHero({
                     <Button
                         variant="primary"
                         size="md"
-                        onClick={onCreateProject}
+                        onClick={() => onOpenProject?.(workspace)}
                     >
                         <FolderOpen size={16} />
                         Open Project
@@ -63,17 +61,8 @@ export default function WorkspaceHero({
                         workspace={workspace}
                         onOpenMembers={onOpenMembers}
                         onEdit={onEdit}
-                        onSettings={(workspace) => {
-                            console.log("Settings", workspace.id);
-                        }}
+                        onOpenSetting={onOpenSetting}
                     />
-                    {/* <Button
-                        variant="outline"
-                        size="md"
-                        onClick={onSettings}
-                    >
-                        <MoreHorizontal size={17} />
-                    </Button> */}
                 </div>
             </div>
         </div>

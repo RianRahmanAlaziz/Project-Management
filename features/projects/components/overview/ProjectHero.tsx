@@ -1,7 +1,7 @@
 "use client";
 
 import {
-    FolderOpen,
+    Plus,
     SquareDashedKanban,
 } from "lucide-react";
 import { Button } from "@/components/ui";
@@ -69,7 +69,7 @@ export default function ProjectHero({
                         size="md"
                         onClick={onCreateTasks}
                     >
-                        <FolderOpen size={16} />
+                        <Plus size={16} />
                         Add Tasks
                     </Button>
                 </div>

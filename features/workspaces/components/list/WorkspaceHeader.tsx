@@ -1,5 +1,4 @@
 import { Plus } from "lucide-react";
-
 import { Button } from "@/components/ui";
 
 interface WorkspaceHeaderProps {
@@ -20,7 +19,6 @@ export default function WorkspaceHeader({
                     Manage your team workspaces and projects.
                 </p>
             </div>
-
             <Button
                 type="button"
                 size="lg"

@@ -46,7 +46,7 @@ export function NotificationsCard({ onNavigate }: NotificationsCardProps) {
                         </div>
 
                         {!notification.read && (
-                            <div className="mt-2 h-2 w-2 flex-shrink-0 rounded-full bg-primary" />
+                            <div className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
                         )}
                     </div>
                 ))}

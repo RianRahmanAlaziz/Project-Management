@@ -31,7 +31,7 @@ export function MyTasksCard({ onNavigate }: MyTasksCardProps) {
                     .map((task) => (
                         <div key={task.id} className="flex items-center gap-3">
                             <div
-                                className={`h-2 w-2 flex-shrink-0 rounded-full ${priorityDotColors[task.priority] ?? "bg-muted-foreground"
+                                className={`h-2 w-2 shrink-0 rounded-full ${priorityDotColors[task.priority] ?? "bg-muted-foreground"
                                     }`}
                             />
 

@@ -2,15 +2,8 @@
 
 import Link from "next/link";
 import { ArrowRight, Calendar } from "lucide-react";
-
 import { Badge, ProgressBar } from "@/components/ui";
-
 import type { Projects } from "@/features/projects/types/projects";
-
-type WorkspaceRecentProjectsProps = {
-    workspaceSlug: string;
-    projects: Projects[];
-};
 
 const statusColors: Record<
     string,
@@ -20,6 +13,11 @@ const statusColors: Record<
     Review: "yellow",
     Done: "green",
     Todo: "gray",
+};
+
+interface WorkspaceRecentProjectsProps {
+    workspaceSlug: string;
+    projects: Projects[];
 };
 
 export default function WorkspaceRecentProjects({
@@ -39,7 +37,7 @@ export default function WorkspaceRecentProjects({
                 </div>
                 <Link
                     href={`/workspaces/${workspaceSlug}/projects`}
-                    className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                    className="flex items-center gap-1 text-sm font-medium text-primary"
                 >
                     View all
                     <ArrowRight size={15} />

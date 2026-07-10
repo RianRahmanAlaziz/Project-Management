@@ -5,22 +5,20 @@ import WorkspaceActionsMenu from "./WorkspaceActionsMenu";
 
 interface WorkspaceCardProps {
     workspace: Workspace;
-    onOpenProjects?: (workspace: Workspace) => void;
-    onOpenMembers?: (workspace: Workspace) => void;
-    onEdit?: (workspace: Workspace) => void;
-    onDelete?: (workspace: Workspace) => void;
+    onOpenWorkspace: (workspace: Workspace) => void;
+    onOpenMembers: (workspace: Workspace) => void;
+    onOpenSetting: (workspace: Workspace) => void;
 }
 
 export default function WorkspaceCard({
     workspace,
-    onOpenProjects,
+    onOpenWorkspace,
     onOpenMembers,
-    onEdit,
-    onDelete,
+    onOpenSetting,
 }: WorkspaceCardProps) {
     return (
         <article
-            onClick={() => onOpenProjects?.(workspace)}
+            onClick={() => onOpenWorkspace?.(workspace)}
             className="group rounded-2xl border border-border bg-card p-5 transition-all duration-200 hover:border-primary/40 hover:shadow-xl cursor-pointer">
             <div className="mb-5 flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
@@ -42,13 +40,9 @@ export default function WorkspaceCard({
 
                 <WorkspaceActionsMenu
                     workspace={workspace}
-                    onOpenProjects={onOpenProjects}
+                    onOpenWorkspace={onOpenWorkspace}
                     onOpenMembers={onOpenMembers}
-                    onEdit={onEdit}
-                    onSettings={(workspace) => {
-                        console.log("Settings", workspace.id);
-                    }}
-                    onDelete={onDelete}
+                    onOpenSetting={onOpenSetting}
                 />
             </div>
 
