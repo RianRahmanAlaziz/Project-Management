@@ -24,21 +24,21 @@ const priorityColors: Record<string, string> = {
 
 
 type ProjectCardProps = {
-    workspaceSlug: string;
     project: Projects;
-    onOpen?: (project: Projects) => void;
-    onOpenMembers?: (project: Projects) => void;
-    onEdit?: (project: Projects) => void;
-    onDelete?: (project: Projects) => void;
+    onOpenProject: (project: Projects) => void;
+    onOpenBoard: (project: Projects) => void;
+    onEditProject: (project: Projects) => void;
+    onSettingProject: (project: Projects) => void;
+    onDeleteProject: (project: Projects) => void;
 };
 
 export default function ProjectCard({
-    workspaceSlug,
     project,
-    onOpen,
-    onOpenMembers,
-    onEdit,
-    onDelete,
+    onOpenProject,
+    onOpenBoard,
+    onEditProject,
+    onSettingProject,
+    onDeleteProject,
 }: ProjectCardProps) {
 
     const members = USERS.data.filter(user =>
@@ -47,7 +47,7 @@ export default function ProjectCard({
 
     return (
         <div
-            onClick={() => onOpen?.(project)}
+            onClick={() => onOpenProject?.(project)}
             className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group">
             {/* Header */}
             <div className="flex items-start justify-between mb-3">
@@ -71,13 +71,10 @@ export default function ProjectCard({
 
                 <ProjectActionsMenu
                     project={project}
-                    onOpen={onOpen}
-                    onEdit={onEdit}
-                    onOpenMembers={onOpenMembers}
-                    onSettings={(workspace) => {
-                        console.log("Settings", workspace.id);
-                    }}
-                    onDelete={onDelete}
+                    onOpenBoard={onOpenBoard}
+                    onEditProject={onEditProject}
+                    onSettingProject={onSettingProject}
+                    onDeleteProject={onDeleteProject}
                 />
             </div>
 

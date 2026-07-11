@@ -2,10 +2,14 @@
 import { useRouter } from "next/navigation";
 import { PROJECTS } from "../mocks/projects";
 import type { Projects } from "@/features/projects/types/projects";
+
 import {
     ProjectDashboard,
-}
-    from "@/features/projects/components";
+} from "@/features/projects/components";
+
+import {
+    useProjectNavigation,
+} from "../hooks";
 
 interface ProjectsOverviewProps {
     workspaceSlug: string;
@@ -17,7 +21,6 @@ export default function ProjectsOverview({
     workspaceSlug,
     projectSlug,
 }: ProjectsOverviewProps) {
-    const router = useRouter();
     const project = PROJECTS.data.find(
         (item) => item.slug === projectSlug
     );
@@ -34,11 +37,10 @@ export default function ProjectsOverview({
         console.log("Create Tasks")
     };
 
-    const onOpenBoard = (project: Projects) => {
-        router.push(
-            `/workspaces/${workspaceSlug}/projects/${project.slug}/board`
-        );
-    };
+
+    const {
+        handleOpenProjectBoard,
+    } = useProjectNavigation(workspaceSlug);
 
     return (
         <div className="px-6 py-8 xl:px-8">
@@ -46,7 +48,7 @@ export default function ProjectsOverview({
                 <ProjectDashboard
                     project={project}
                     onCreateTasks={onCreateTasks}
-                    onOpenBoard={onOpenBoard}
+                    onOpenBoard={handleOpenProjectBoard}
                 />
             </div>
         </div>

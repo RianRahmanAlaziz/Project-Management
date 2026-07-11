@@ -6,6 +6,7 @@ import {
     Trash2,
     MoreHorizontal,
     SquareDashedKanban,
+    Settings,
 } from "lucide-react";
 import clsx from "clsx";
 import {
@@ -21,20 +22,18 @@ import type { Projects } from "@/features/projects/types/projects";
 
 interface ProjectActionsMenuProps {
     project: Projects;
-    onOpen?: (project: Projects) => void;
-    onEdit?: (project: Projects) => void;
-    onOpenMembers?: (project: Projects) => void;
-    onSettings?: (project: Projects) => void;
-    onDelete?: (project: Projects) => void;
+    onOpenBoard: (project: Projects) => void;
+    onEditProject: (project: Projects) => void;
+    onSettingProject: (project: Projects) => void;
+    onDeleteProject: (project: Projects) => void;
 }
 
 export default function ProjectActionsMenu({
     project,
-    onOpen,
-    onEdit,
-    onOpenMembers,
-    onSettings,
-    onDelete,
+    onOpenBoard,
+    onEditProject,
+    onSettingProject,
+    onDeleteProject,
 }: ProjectActionsMenuProps) {
     return (
         <DropdownMenu>
@@ -65,7 +64,7 @@ export default function ProjectActionsMenu({
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
-                        onOpen?.(project)
+                        onOpenBoard?.(project)
                     }}
                 >
                     <SquareDashedKanban size={16} />
@@ -74,38 +73,29 @@ export default function ProjectActionsMenu({
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
-                        onOpenMembers?.(project)
-                    }}
-                >
-                    <Users size={16} />
-                    Manage Members
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        onEdit?.(project);
+                        onEditProject?.(project);
                     }}
                 >
                     <Pencil size={16} />
                     Edit Project
                 </DropdownMenuItem>
 
-                {/* <DropdownMenuItem
-                          onClick={(e) => {
-                           e.stopPropagation();
-                          onSettings?.(project)
-                          }}
-                      >
-                          <Settings size={16} />
-                          Settings
-                      </DropdownMenuItem> */}
+                <DropdownMenuItem
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onSettingProject?.(project)
+                    }}
+                >
+                    <Settings size={16} />
+                    Settings
+                </DropdownMenuItem>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
-                        onDelete?.(project)
+                        onDeleteProject?.(project)
                     }}
                     className="text-red-500 focus:text-red-500hover:bg-red-500/10"
                 >

@@ -1,18 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-
 import { PROJECTS } from "@/features/projects/mocks/projects";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
-import type { Projects } from "@/features/projects/types/projects";
 
 import {
     ProjectSearch,
     ProjectCard,
     ProjectHeader
 } from "@/features/projects/components";
+
+import {
+    useProjectNavigation,
+    useProjectSearch,
+} from "../hooks";
 
 type ProjectsViewProps = {
     workspaceSlug: string;
@@ -22,26 +23,30 @@ export default function ProjectsView({
     workspaceSlug,
 }: ProjectsViewProps) {
 
-    const [search, setSearch] = useState("");
-    const router = useRouter();
-
-    const filtered = useMemo(() => {
-        return PROJECTS.data.filter(project =>
-            project.name
-                .toLowerCase()
-                .includes(search.toLowerCase())
-        );
-    }, [search]);
 
     const handleCreateProject = () => {
         console.log("Create Project")
     };
 
-    const handleOpenProjectBoard = (project: Projects) => {
-        router.push(
-            `/workspaces/${workspaceSlug}/projects/${project.slug}`
-        );
+    const handleEditProject = () => {
+        console.log("Edit Project")
     };
+
+    const handleDeleteProject = () => {
+        console.log("Delete Project")
+    };
+
+    const {
+        search,
+        setSearch,
+        filtered,
+    } = useProjectSearch(PROJECTS.data);
+
+    const {
+        handleOpenProjectBoard,
+        handleOpenProject,
+        handleSettingProject,
+    } = useProjectNavigation(workspaceSlug);
 
     return (
         <div className="px-6 py-8 xl:px-8">
@@ -61,9 +66,12 @@ export default function ProjectsView({
                         {filtered.map(project => (
                             <ProjectCard
                                 key={project.id}
-                                workspaceSlug={workspaceSlug}
                                 project={project}
-                                onOpen={handleOpenProjectBoard}
+                                onOpenProject={handleOpenProject}
+                                onOpenBoard={handleOpenProjectBoard}
+                                onEditProject={handleEditProject}
+                                onSettingProject={handleSettingProject}
+                                onDeleteProject={handleDeleteProject}
                             />
                         ))}
                     </div>
