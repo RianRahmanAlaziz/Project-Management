@@ -6,6 +6,7 @@ import WorkspaceActionsMenu from "./WorkspaceActionsMenu";
 interface WorkspaceCardProps {
     workspace: Workspace;
     onOpenWorkspace: (workspace: Workspace) => void;
+    onOpenProjects: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
 }
@@ -13,6 +14,7 @@ interface WorkspaceCardProps {
 export default function WorkspaceCard({
     workspace,
     onOpenWorkspace,
+    onOpenProjects,
     onOpenMembers,
     onOpenSetting,
 }: WorkspaceCardProps) {
@@ -40,7 +42,7 @@ export default function WorkspaceCard({
 
                 <WorkspaceActionsMenu
                     workspace={workspace}
-                    onOpenWorkspace={onOpenWorkspace}
+                    onOpenProjects={onOpenProjects}
                     onOpenMembers={onOpenMembers}
                     onOpenSetting={onOpenSetting}
                 />

@@ -4,10 +4,7 @@ import { useEffect, useState } from "react";
 
 import {
     Check,
-    Globe,
-    Lock,
     Palette,
-    Zap,
     X,
     Crown,
     Shield,
@@ -20,11 +17,6 @@ import {
     Button,
     Combobox,
 } from "@/components/ui";
-
-const VISIBILITY_OPTS = [
-    { id: "private", icon: Lock, label: "Private", desc: "Only invited members can access this workspace." },
-    { id: "public", icon: Globe, label: "Public", desc: "Anyone in your organisation can discover and join." },
-];
 
 const COLORS = [
     { label: "Indigo", bg: "bg-indigo-500", ring: "ring-indigo-500", hex: "#4F46E5" },
@@ -40,7 +32,6 @@ const COLORS = [
 
 const STEPS = [
     "Details",
-    "Visibility",
     "Invite",
 ] as const;
 
@@ -75,18 +66,16 @@ export default function WorkspaceFormModal({
 
     const [color, setColor] = useState(COLORS[0]);
 
-    const [form, setForm] =
-        useState({
-            name: "",
-            description: "",
-            visibility: "private",
-            invites: [
-                {
-                    email: "",
-                    role: "Member",
-                }
-            ],
-        });
+    const [form, setForm] = useState({
+        name: "",
+        description: "",
+        invites: [
+            {
+                email: "",
+                role: "Member",
+            }
+        ],
+    });
 
     const addInvite = () => {
         setForm(prev => ({
@@ -139,7 +128,6 @@ export default function WorkspaceFormModal({
                 name: workspace.name,
                 description:
                     workspace.description ?? "",
-                visibility: "private",
                 invites: [
                     {
                         email: "",
@@ -153,7 +141,6 @@ export default function WorkspaceFormModal({
         setForm({
             name: "",
             description: "",
-            visibility: "private",
             invites: [
                 {
                     email: "",
@@ -161,8 +148,6 @@ export default function WorkspaceFormModal({
                 }
             ]
         });
-
-
     }, [
         workspace,
         mode,
@@ -209,9 +194,7 @@ export default function WorkspaceFormModal({
             .slice(0, 2)
             .toUpperCase() || "W";
 
-    const canNext =
-        step === "Details" ? form.name.trim().length >= 2 :
-            step === "Visibility" ? true : true;
+    const canNext = form.name.trim().length >= 2;
 
     return (
         <Modal
@@ -294,46 +277,6 @@ export default function WorkspaceFormModal({
                                     </button>
                                 ))}
                             </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* STEP VISIBILITY */}
-                {step === "Visibility" && (
-                    <div className="space-y-3">
-                        <p className="text-xs text-muted-foreground mb-4">
-                            Choose who can access <span className="text-foreground font-semibold">{form.name}</span>.
-                        </p>
-                        {VISIBILITY_OPTS.map(opt => {
-                            const Icon = opt.icon;
-                            const active = form.visibility === opt.id;
-                            return (
-                                <button
-                                    key={opt.id}
-                                    onClick={() => setForm(f => ({ ...f, visibility: opt.id as "private" | "public" }))}
-                                    className={`cursor-pointer w-full flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${active ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/40"}`}
-                                >
-                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5 ${active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}>
-                                        <Icon size={16} />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className={`text-sm font-semibold ${active ? "text-primary" : "text-foreground"}`}>{opt.label}</p>
-                                        <p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
-                                    </div>
-                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 mt-1 ${active ? "border-primary" : "border-border"}`}>
-                                        {active && <div className="w-2 h-2 rounded-full bg-primary" />}
-                                    </div>
-                                </button>
-                            );
-                        })}
-
-                        {/* Plan note */}
-                        <div className="flex items-start gap-2.5 p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl mt-2">
-                            <Zap size={14} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-                            <p className="text-xs text-amber-700 dark:text-amber-300">
-                                Public workspaces require a <span className="font-semibold">Pro</span> plan or above.
-                                <button className="ml-1 underline">Upgrade now</button>
-                            </p>
                         </div>
                     </div>
                 )}
@@ -458,9 +401,8 @@ export default function WorkspaceFormModal({
                                 </div>
                                 <div>
                                     <p className="text-sm font-semibold text-foreground">{form.name}</p>
-                                    <p className="text-xs text-muted-foreground capitalize flex items-center gap-1">
-                                        {form.visibility === "private" ? <Lock size={10} /> : <Globe size={10} />}
-                                        {form.visibility}
+                                    <p className="text-xs text-muted-foreground">
+                                        {form.invites.filter(i => i.email).length} invited members
                                     </p>
                                 </div>
                             </div>

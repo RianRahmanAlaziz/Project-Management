@@ -26,6 +26,7 @@ export function WorkspacesView() {
         handleOpenWorkspace,
         handleOpenMembers,
         handleOpenSetting,
+        handleOpenProject,
     } = useWorkspaceNavigation();
 
     const {
@@ -49,6 +50,7 @@ export function WorkspacesView() {
                 <WorkspaceGrid
                     workspaces={filteredWorkspaces}
                     onOpenWorkspace={handleOpenWorkspace}
+                    onOpenProjects={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}
                     onCreateWorkspace={handleCreateWorkspace}

@@ -1,7 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { PROJECTS } from "../mocks/projects";
-import type { Projects } from "@/features/projects/types/projects";
 
 import {
     ProjectDashboard,

@@ -18,14 +18,14 @@ import type { Workspace } from "@/features/workspaces/types/workspace";
 
 interface WorkspaceActionsMenuProps {
     workspace: Workspace;
-    onOpenWorkspace?: (workspace: Workspace) => void;
+    onOpenProjects?: (workspace: Workspace) => void;
     onOpenMembers?: (workspace: Workspace) => void;
     onOpenSetting?: (workspace: Workspace) => void;
 }
 
 export default function WorkspaceActionsMenu({
     workspace,
-    onOpenWorkspace,
+    onOpenProjects,
     onOpenMembers,
     onOpenSetting,
 }: WorkspaceActionsMenuProps) {
@@ -58,11 +58,11 @@ export default function WorkspaceActionsMenu({
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation()
-                        onOpenWorkspace?.(workspace)
+                        onOpenProjects?.(workspace)
                     }}
                 >
                     <FolderOpen size={16} />
-                    Open Workspace
+                    Open Projects
                 </DropdownMenuItem>
 
                 <DropdownMenuItem

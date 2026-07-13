@@ -14,6 +14,7 @@ import {
 interface WorkspaceGridProps {
     workspaces: Workspace[];
     onOpenWorkspace: (workspace: Workspace) => void;
+    onOpenProjects: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
     onCreateWorkspace: () => void;
@@ -22,6 +23,7 @@ interface WorkspaceGridProps {
 export default function WorkspaceGrid({
     workspaces,
     onOpenWorkspace,
+    onOpenProjects,
     onOpenMembers,
     onOpenSetting,
     onCreateWorkspace,
@@ -56,6 +58,7 @@ export default function WorkspaceGrid({
                     key={workspace.id}
                     workspace={workspace}
                     onOpenWorkspace={onOpenWorkspace}
+                    onOpenProjects={onOpenProjects}
                     onOpenMembers={onOpenMembers}
                     onOpenSetting={onOpenSetting}
                 />
