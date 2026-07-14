@@ -1,6 +1,17 @@
-import type { WorkspaceColor } from "../types/settings";
+import {
+    FolderOpen, Users, Bell, Trash2, Link2, Tag, Workflow,
+} from "lucide-react";
 
-export const COLORS: WorkspaceColor[] = [
+export const NAV_Projets = [
+    { id: "general", label: "General", icon: FolderOpen },
+    { id: "workflow", label: "Workflow", icon: Workflow },
+    { id: "notifications", label: "Notifications", icon: Bell },
+    { id: "danger", label: "Danger Zone", icon: Trash2 },
+];
+
+import type { ProjectColor } from "../types/settings";
+
+export const PROJECT_COLORS: ProjectColor[] = [
     {
         label: "Indigo",
         bg: "bg-indigo-500",
@@ -31,36 +42,9 @@ export const COLORS: WorkspaceColor[] = [
         bg: "bg-amber-500",
         ring: "ring-amber-500",
     },
-];
-
-
-import {
-    Building2,
-    Bell,
-    Shield,
-    Trash2,
-} from "lucide-react";
-
-export const WORKSPACE_SETTINGS = [
     {
-        id: "general",
-        label: "General",
-        icon: Building2,
-    },
-    {
-        id: "security",
-        label: "Security",
-        icon: Shield,
-    },
-    {
-        id: "notifications",
-        label: "Notifications",
-        icon: Bell,
-    },
-    {
-        id: "danger",
-        label: "Danger Zone",
-        icon: Trash2,
-        danger: true,
+        label: "Sky",
+        bg: "bg-sky-500",
+        ring: "ring-sky-500",
     },
 ];

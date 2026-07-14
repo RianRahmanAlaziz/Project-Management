@@ -5,7 +5,7 @@ import { Input } from '@/components/ui';
 import {
     SettingSection,
     SettingFooter,
-} from "@/features/workspaces/components";
+} from "@/components/layouts/settings";
 
 import type {
     WorkspaceColor,

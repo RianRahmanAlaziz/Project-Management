@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 
 import {
     DangerCard
-} from "@/features/workspaces/components";
+} from "@/components/layouts/settings";
 
 
 interface DangerZoneSettingsProps {

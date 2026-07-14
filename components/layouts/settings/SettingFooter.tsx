@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui'
 import { Check } from 'lucide-react'
-import React from 'react'
 
 interface SettingFooterProps {
     onSave: () => void,

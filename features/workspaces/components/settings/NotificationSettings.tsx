@@ -2,7 +2,7 @@ import {
     SettingSection,
     SettingFooter,
     ToggleRow,
-} from "@/features/workspaces/components";
+} from "@/components/layouts/settings";
 
 
 type Toggle = {
@@ -17,14 +17,12 @@ interface NotificationSettingsProps {
     onSave: () => void;
 }
 
-export default function NotificationSettings(
-    {
-        toggles,
-        toggle,
-        saved,
-        onSave,
-    }: NotificationSettingsProps
-) {
+export default function NotificationSettings({
+    toggles,
+    toggle,
+    saved,
+    onSave,
+}: NotificationSettingsProps) {
     return (
         <SettingSection title="Workspace Notifications" desc="Choose what events send notifications.">
             <div className="space-y-3">

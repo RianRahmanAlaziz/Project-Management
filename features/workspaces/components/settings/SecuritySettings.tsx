@@ -4,7 +4,7 @@ import {
     SettingSection,
     SettingFooter,
     ToggleRow,
-} from "@/features/workspaces/components";
+} from "@/components/layouts/settings";
 
 type Toggle = {
     taskAssigned: boolean; taskUpdated: boolean; newComment: boolean;

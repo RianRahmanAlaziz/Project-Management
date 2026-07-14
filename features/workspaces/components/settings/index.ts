@@ -1,9 +1,4 @@
-export { default as DangerCard } from "./DangerCard";
 export { default as DangerZoneSettings } from "./DangerZoneSettings";
 export { default as GeneralSettings } from "./GeneralSettings";
 export { default as NotificationSettings } from "./NotificationSettings";
 export { default as SecuritySettings } from "./SecuritySettings";
-export { default as SettingFooter } from "./SettingFooter";
-export { default as SettingSection } from "./SettingSection";
-export { default as SettingsSidebar } from "./SettingsSidebar";
-export { default as ToggleRow } from "./ToggleRow";

@@ -7,8 +7,11 @@ import {
     NotificationSettings,
     SecuritySettings,
     GeneralSettings,
-    SettingsSidebar,
 } from "@/features/workspaces/components";
+
+import { SettingsSidebar } from "@/components/layouts/settings";
+
+import { WORKSPACE_SETTINGS } from "@/features/workspaces/constants/settings";
 
 const COLORS = [
     { label: "Indigo", bg: "bg-indigo-500", ring: "ring-indigo-500" },
@@ -63,11 +66,13 @@ export default function WorkspaceSettings({
     };
 
     return (
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex h-full flex-1 flex-col overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
 
                 <SettingsSidebar
-                    active={activeSection}
+                    title="Workspace"
+                    items={WORKSPACE_SETTINGS}
+                    activeItem={activeSection}
                     onChange={setActiveSection}
                 />
 
