@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from "react";
-import { GripVertical } from "lucide-react";
 
 import {
     SettingFooter,

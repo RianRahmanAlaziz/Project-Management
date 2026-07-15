@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { SettingsSidebar } from "@/components/layouts/settings";
-
 import { NAV_Projets } from "@/features/projects/constants/settings"
 
 import {
@@ -10,14 +9,35 @@ import {
 } from "@/features/projects/constants/settings";
 
 
-import GeneralSettings from "../components/settings/GeneralSettings";
-import WorkflowSettings from "../components/settings/WorkflowSettings";
-import NotificationsSettings from "../components/settings/NotificationsSettings";
-import DangerZoneSettings from "../components/settings/DangerZoneSettings";
+import {
+    GeneralSettings,
+    WorkflowSettings,
+    NotificationsSettings,
+    DangerZoneSettings,
+} from "@/features/projects/components";
+
+import type {
+    NotificationToggle,
+} from "@/features/projects/types/notifications";
+
 import { DEFAULT_WORKFLOW_COLUMNS } from "../constants/workflow";
 
+const [toggles, setToggles] =
+    useState<NotificationToggle>({
+        taskAssigned: true,
+        taskUpdated: false,
+        newComment: true,
+        dailyDigest: false,
+    });
 
-type Toggle = { taskAssigned: boolean; taskUpdated: boolean; newComment: boolean; dailyDigest: boolean; };
+const toggle = (
+    key: keyof NotificationToggle
+) => {
+    setToggles(prev => ({
+        ...prev,
+        [key]: !prev[key],
+    }));
+};
 
 interface ProjectSettingsViewProps {
     workspaceSlug: string;
@@ -37,7 +57,6 @@ export default function ProjectSettingsView({
         DEFAULT_WORKFLOW_COLUMNS
     );
 
-    const [toggles, setToggles] = useState<Toggle>({ taskAssigned: true, taskUpdated: false, newComment: true, dailyDigest: false });
     const [projForm, setProjForm] = useState({
         name: "ProjectFlow v2.0",
         description: "Rebuilding the core product — new architecture, redesigned UX, and full design system.",
@@ -48,7 +67,6 @@ export default function ProjectSettingsView({
         dueDate: "2026-07-15",
     });
 
-    const toggle = (k: keyof Toggle) => setToggles(t => ({ ...t, [k]: !t[k] }));
     const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
 
 
