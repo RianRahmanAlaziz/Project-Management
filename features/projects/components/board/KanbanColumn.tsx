@@ -1,17 +1,21 @@
-"use client";
-
 import { Plus } from "lucide-react";
+import { useDroppable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import {
+    SortableContext,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+
 import {
     TaskCard
 } from "@/features/tasks/components";
+import type { Tasks } from "@/features/tasks/types/tasks";
 
 interface KanbanColumnProps {
     column: string;
     color: string;
     background: string;
-    tasks: any[];
-    draggingId: number | null;
-    dragOver: boolean;
+    tasks: Tasks[];
     style: {
         text: string;
         bg: string;
@@ -19,13 +23,8 @@ interface KanbanColumnProps {
         ring: string;
         hoverBorder: string;
     };
-    onDrop: () => void;
-    onDragOver: () => void;
-    onDragLeave: () => void;
     onCreateTask: (column: string) => void;
     onOpenTask: (taskId: number) => void;
-    setDraggingId: (id: number) => void;
-    clearDrag: () => void;
 }
 
 export default function KanbanColumn({
@@ -33,27 +32,23 @@ export default function KanbanColumn({
     color,
     background,
     tasks,
-    draggingId,
-    dragOver,
     style,
-    onDrop,
-    onDragOver,
-    onDragLeave,
     onCreateTask,
     onOpenTask,
-    setDraggingId,
-    clearDrag,
 }: KanbanColumnProps) {
+
+    const { setNodeRef, isOver, } = useDroppable({
+        id: column,
+        data: {
+            type: "column",
+            column,
+        },
+    });
 
     return (
         <div
-            className={`flex flex-col w-full rounded-xl border border-border ${background} transition-colors ${dragOver ? `${style.border} ring-1 ${style.ring}` : ""}`}
-            onDragOver={(e) => {
-                e.preventDefault();
-                onDragOver();
-            }}
-            onDragLeave={onDragLeave}
-            onDrop={onDrop}
+            ref={setNodeRef}
+            className={`flex flex-col w-full rounded-xl border border-border ${background} transition-colors ${isOver ? `${style.border} ring-1 ${style.ring}` : ""}`}
         >
             <div className="flex items-center justify-between border-b border-border px-3 py-2 bg-card rounded-t-xl">
                 <div className="flex items-center gap-2">
@@ -73,25 +68,24 @@ export default function KanbanColumn({
                 </button>
             </div>
 
-            <div className="flex-1 space-y-2 p-2 overflow-y-auto">
-                {tasks.map((task) => (
-                    <TaskCard
-                        key={task.id}
-                        task={task}
-                        style={style}
-                        dragging={draggingId === task.id}
-                        onClick={() => onOpenTask(task.id)}
-                        onDragStart={() => setDraggingId(task.id)}
-                        onDragEnd={clearDrag}
-                    />
-                ))}
-
-                {tasks.length === 0 && (
-                    <div className="flex h-32 items-center justify-center text-xs text-muted-foreground">
-                        Drop tasks here
+            <div
+                className="flex-1 overflow-y-auto p-2"
+            >
+                <SortableContext
+                    items={tasks.map(task => task.id)}
+                    strategy={verticalListSortingStrategy}
+                >
+                    <div className="space-y-2">
+                        {tasks.map(task => (
+                            <TaskCard
+                                key={task.id}
+                                task={task}
+                                style={style}
+                                onClick={() => onOpenTask(task.id)}
+                            />
+                        ))}
                     </div>
-                )}
-
+                </SortableContext>
             </div>
 
             <div className="border-t border-border p-1 bg-card  rounded-b-xl">

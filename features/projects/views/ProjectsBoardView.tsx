@@ -23,26 +23,8 @@ export default function ProjectsBoardView({
     projectSlug,
 }: ProjectsBoardViewProps) {
     const [tasks, setTasks] = useState(TASKS.data);
-    const [draggingId, setDraggingId] = useState<number | null>(null);
-    const [dragOverCol, setDragOverCol] = useState<string | null>(null);
     const [openTaskId, setOpenTaskId] = useState<number | null>(null);
 
-    const handleDrop = (status: string) => {
-        if (draggingId === null) return;
-        setTasks(prev =>
-            prev.map(task =>
-                task.id === draggingId
-                    ? {
-                        ...task,
-                        status
-                    }
-                    :
-                    task
-            )
-        );
-        setDraggingId(null);
-        setDragOverCol(null);
-    };
 
     const [taskModal, setTaskModal] = useState<{
         open: boolean;
@@ -69,11 +51,7 @@ export default function ProjectsBoardView({
         <div className="w-full space-y-6">
             <KanbanBoard
                 tasks={tasks}
-                draggingId={draggingId}
-                dragOverCol={dragOverCol}
-                setDraggingId={setDraggingId}
-                setDragOverCol={setDragOverCol}
-                onDrop={handleDrop}
+                setTasks={setTasks}
                 onCreateTask={handleCreateTask}
                 onOpenTask={(id) => {
                     console.log("OPEN DRAWER ID:", id);

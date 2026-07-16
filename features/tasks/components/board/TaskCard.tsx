@@ -1,15 +1,18 @@
-"use client";
 
-import { useRef } from "react";
+import { CSS } from "@dnd-kit/utilities";
+import { useSortable } from "@dnd-kit/sortable";
+
 import {
     Calendar,
     MessageSquare,
     Paperclip,
 } from "lucide-react";
 
+
 import { Avatar, Badge } from "@/components/ui";
 import { USERS } from "@/features/users/mocks/users";
 import type { Tasks } from "@/features/tasks/types/tasks";
+
 
 const labelColors = {
     Frontend: "blue",
@@ -26,7 +29,7 @@ const labelColors = {
 
 interface TaskCardProps {
     task: Tasks;
-    dragging: boolean;
+    preview?: boolean;
     style: {
         text: string;
         bg: string;
@@ -34,45 +37,51 @@ interface TaskCardProps {
         ring: string;
         hoverBorder: string;
     };
-    onClick: () => void;
-    onDragStart: () => void;
-    onDragEnd: () => void;
+    onClick?: () => void;
 }
 
 export default function TaskCard({
     task,
+    preview = false,
     style,
-    dragging,
     onClick,
-    onDragStart,
-    onDragEnd,
 }: TaskCardProps) {
-
-    const isDragging = useRef(false);
 
     const assignee = USERS.data.find(
         (user) => user.id === task.assignee_id
     );
 
+    const sortable = useSortable({
+        id: task.id,
+        disabled: preview,
+        data: {
+            type: "task",
+            task,
+            column: task.status,
+        },
+    });
+
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+        isDragging,
+    } = sortable;
+
     return (
         <div
-            draggable
-            onClick={() => {
-                if (isDragging.current) return;
-                onClick();
+            ref={setNodeRef}
+            style={{
+                transform: CSS.Transform.toString(transform),
+                transition,
             }}
-            onDragStart={() => {
-                isDragging.current = true;
-                onDragStart();
-            }}
-            onDragEnd={() => {
-                setTimeout(() => {
-                    isDragging.current = false;
-                }, 0);
-                onDragEnd();
-            }}
+            {...attributes}
+            {...listeners}
+            onClick={onClick}
 
-            className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${dragging ? "opacity-40" : ""}`}
+            className={`rounded-lg border border-border bg-card p-3 cursor-pointer ${style.hoverBorder} hover:shadow-sm transition-all group ${isDragging ? "opacity-40" : ""}`}
         >
             <div className="mb-2 flex items-center gap-2">
                 {task.labels?.slice(0, 2).map((label: string) => (
@@ -103,9 +112,7 @@ export default function TaskCard({
                 <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                         <Calendar size={11} />
-                        {task.due_date
-                            ? task.due_date.slice(5)
-                            : "-"}
+                        {task.due_date ? task.due_date.slice(5) : "-"}
                     </span>
                     <span className="flex items-center gap-1">
                         <Paperclip size={11} />
