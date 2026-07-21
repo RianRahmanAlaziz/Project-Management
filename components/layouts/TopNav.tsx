@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
     Bell,
-    ChevronRight,
     Moon,
     Search,
     Sun,
@@ -14,7 +14,6 @@ import {
 import { Avatar } from "@/components/ui";
 import {
     NOTIFICATIONS,
-    USERS,
 } from "@/data/data";
 
 export interface BreadcrumbItem {
@@ -50,10 +49,7 @@ export function TopNav({
     const unreadNotifications =
         NOTIFICATIONS.filter((item) => !item.read).length;
 
-    const currentUser = USERS[0] ?? {
-        name: "Alex Rivera",
-        role: "Owner",
-    };
+    const { user, logout } = useAuth();
 
     const segments = pathname
         .split("/")
@@ -176,15 +172,15 @@ export function TopNav({
                         className="flex h-10 items-center gap-2 rounded-lg px-1 hover:bg-muted cursor-pointer"
                     >
                         <Avatar
-                            name={currentUser.name}
+                            name={user?.name ?? "User"}
                             size="md"
                         />
                         <div className="hidden xl:block text-left">
                             <p className="max-w-28 truncate text-sm font-semibold">
-                                {currentUser.name}
+                                {user?.name}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                                {currentUser.role}
+                                admin
                             </p>
                         </div>
                     </button>

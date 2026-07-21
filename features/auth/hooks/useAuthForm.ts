@@ -2,8 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AuthForm, AuthMode } from "../types/auth";
+
+import { register, login, getMe, logout } from "../api/authApi";
+import type { AuthForm, AuthMode } from "../types/auth";
+import { setAuthToken } from "@/lib/api/authToken";
 import { validateAuthForm } from "../utils/validateAuthForm";
+
+import { parseApiError } from "@/lib/api/apiError";
 
 const INITIAL_FORM: AuthForm = {
     name: "",
@@ -59,31 +64,27 @@ export function useAuthForm() {
         setError("");
 
         try {
-            if (isLogin) {
-                console.log("Login payload:", {
+            const response = isLogin
+                ? await login({
                     email: form.email,
                     password: form.password,
-                });
-            } else {
-                console.log("Register payload:", {
+                })
+                : await register({
                     name: form.name,
                     email: form.email,
                     password: form.password,
                     password_confirmation: form.confirmPassword,
                 });
-            }
 
-            await new Promise((resolve) => window.setTimeout(resolve, 800));
+            setAuthToken(response.data.access_token);
 
             router.push("/dashboard");
         } catch (submitError) {
-            console.error(submitError);
+            const apiError = parseApiError(submitError);
 
-            setError(
-                isLogin
-                    ? "Failed to sign in. Please check your credentials."
-                    : "Failed to create an account. Please try again.",
-            );
+            console.error("Auth error:", apiError);
+
+            setError(apiError.message);
         } finally {
             setLoading(false);
         }
