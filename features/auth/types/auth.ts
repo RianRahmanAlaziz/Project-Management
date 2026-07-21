@@ -50,3 +50,7 @@ export interface LogoutResponse {
     success: boolean;
     message: string;
 }
+
+export type AuthFieldErrors = Partial<
+    Record<keyof AuthForm, string[]>
+>;

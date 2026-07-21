@@ -4,21 +4,28 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import AuthPasswordInput from "./AuthPasswordInput";
-import { AuthForm as AuthFormType } from "../types/auth";
+import { AuthForm as AuthFormType, AuthFieldErrors } from "../types/auth";
 
 interface AuthFormProps {
     form: AuthFormType;
     error: string;
+    fieldErrors: AuthFieldErrors;
     loading: boolean;
     isLogin: boolean;
     isRegister: boolean;
-    updateForm: (field: keyof AuthFormType, value: string) => void;
-    onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+    updateForm: (
+        field: keyof AuthFormType,
+        value: string,
+    ) => void;
+    onSubmit: (
+        event: React.FormEvent<HTMLFormElement>,
+    ) => void;
 }
 
 export default function AuthForm({
     form,
     error,
+    fieldErrors,
     loading,
     isLogin,
     isRegister,
@@ -80,6 +87,7 @@ export default function AuthForm({
                         placeholder="Re-enter your password"
                         autoComplete="new-password"
                         onChange={(value) => updateForm("confirmPassword", value)}
+                        errors={fieldErrors.password}
                     />
                 )}
 

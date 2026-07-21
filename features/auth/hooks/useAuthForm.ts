@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { useAuth } from "./useAuth";
 import { register, login } from "../api/authApi";
-import type { AuthForm, AuthMode } from "../types/auth";
+import type {
+    AuthForm,
+    AuthMode,
+    AuthFieldErrors,
+} from "../types/auth";
 import { setAuthToken } from "@/lib/api/authToken";
 import { validateAuthForm } from "../utils/validateAuthForm";
 
@@ -22,17 +26,37 @@ export function useAuthForm() {
     const [form, setForm] = useState<AuthForm>(INITIAL_FORM);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
 
     const isLogin = mode === "login";
     const isRegister = mode === "register";
 
-    const updateForm = (field: keyof AuthForm, value: string) => {
+    const updateForm = (
+        field: keyof AuthForm,
+        value: string,
+    ) => {
         setForm((previousForm) => ({
             ...previousForm,
             [field]: value,
         }));
 
-        if (error) setError("");
+        if (error) {
+            setError("");
+        }
+
+        setFieldErrors((previousErrors) => {
+            if (!previousErrors[field]) {
+                return previousErrors;
+            }
+
+            const nextErrors = {
+                ...previousErrors,
+            };
+
+            delete nextErrors[field];
+
+            return nextErrors;
+        });
     };
 
     const resetForm = () => {
@@ -54,15 +78,17 @@ export function useAuthForm() {
     ) => {
         event.preventDefault();
 
-        const validationError = validateAuthForm(form, mode);
+        const validationErrors =
+            validateAuthForm(form, mode);
 
-        if (validationError) {
-            setError(validationError);
+        if (Object.keys(validationErrors).length > 0) {
+            setFieldErrors(validationErrors);
             return;
         }
 
         setLoading(true);
         setError("");
+        setFieldErrors({});
 
         try {
             const response = isLogin
@@ -84,9 +110,18 @@ export function useAuthForm() {
         } catch (submitError) {
             const apiError = parseApiError(submitError);
 
-            console.error("Auth error:", apiError);
+            console.error("Auth error:", apiError,);
 
             setError(apiError.message);
+
+            setFieldErrors({
+                name: apiError.errors.name,
+                email: apiError.errors.email,
+                password: apiError.errors.password,
+                confirmPassword:
+                    apiError.errors.password_confirmation,
+            });
+
             setLoading(false);
         }
     };
@@ -95,6 +130,7 @@ export function useAuthForm() {
         mode,
         form,
         error,
+        fieldErrors,
         loading,
         isLogin,
         isRegister,

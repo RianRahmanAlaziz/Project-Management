@@ -4,17 +4,29 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { Avatar } from "@/components/ui";
 import {
     Bell,
     Moon,
     Search,
     Sun,
+    LogOut,
+    Settings,
+    User,
 } from "lucide-react";
 
-import { Avatar } from "@/components/ui";
 import {
     NOTIFICATIONS,
 } from "@/data/data";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/DropdownMenu";
+import { LogoutModal } from "@/features/auth/components/LogoutModal";
 
 export interface BreadcrumbItem {
     label: string;
@@ -45,6 +57,10 @@ export function TopNav({
     const router = useRouter();
     const pathname = usePathname();
     const [showSearch, setShowSearch] = useState(false);
+
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const unreadNotifications =
         NOTIFICATIONS.filter((item) => !item.read).length;
@@ -87,6 +103,17 @@ export function TopNav({
                 handleKeyDown
             );
     }, []);
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+
+        try {
+            await logout();
+        } finally {
+            setIsLoggingOut(false);
+        }
+    };
+
     return (
         <>
             <header className="flex h-16 items-center gap-4 border-b border-border bg-card px-5 lg:px-6">
@@ -165,25 +192,56 @@ export function TopNav({
                         )}
                     </button>
 
-                    <button
-                        onClick={() =>
-                            router.push("/profile")
-                        }
-                        className="flex h-10 items-center gap-2 rounded-lg px-1 hover:bg-muted cursor-pointer"
-                    >
-                        <Avatar
-                            name={user?.name ?? "User"}
-                            size="md"
-                        />
-                        <div className="hidden xl:block text-left">
-                            <p className="max-w-28 truncate text-sm font-semibold">
-                                {user?.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                                admin
-                            </p>
-                        </div>
-                    </button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                type="button"
+                                className="flex h-10 cursor-pointer items-center gap-2 rounded-lg px-1 hover:bg-muted"
+                            >
+                                <Avatar
+                                    name={user?.name ?? "User"}
+                                    size="md"
+                                />
+
+                                <div className="hidden text-left xl:block">
+                                    <p className="max-w-28 truncate text-sm font-semibold">
+                                        {user?.name}
+                                    </p>
+
+                                    <p className="text-xs text-muted-foreground">
+                                        admin
+                                    </p>
+                                </div>
+                            </button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                            align="end"
+                            className="w-56"
+                        >
+                            <DropdownMenuItem
+                                onSelect={() =>
+                                    router.push("/profile")
+                                }
+                            >
+                                <User size={16} />
+
+                                Profile
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem
+                                onSelect={() => {
+                                    setShowLogoutModal(true);
+                                }}
+                            >
+                                <LogOut size={16} />
+
+                                Log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </header>
 
@@ -232,6 +290,17 @@ export function TopNav({
                     </div>
                 </div>
             )}
+
+            <LogoutModal
+                open={showLogoutModal}
+                loading={isLoggingOut}
+                onClose={() => {
+                    if (!isLoggingOut) {
+                        setShowLogoutModal(false);
+                    }
+                }}
+                onConfirm={handleLogout}
+            />
         </>
     );
 }

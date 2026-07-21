@@ -11,6 +11,7 @@ interface AuthPasswordInputProps {
     placeholder: string;
     autoComplete: string;
     onChange: (value: string) => void;
+    errors?: string[];
 }
 
 export default function AuthPasswordInput({
@@ -21,6 +22,7 @@ export default function AuthPasswordInput({
     placeholder,
     autoComplete,
     onChange,
+    errors,
 }: AuthPasswordInputProps) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -41,7 +43,7 @@ export default function AuthPasswordInput({
                     autoComplete={autoComplete}
                     required
                     minLength={8}
-                    className="h-12 w-full rounded-md border border-border bg-input-background px-3 pr-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
+                    className="h-12 w-full rounded-md border border-border bg-background px-3 pr-9 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
                 />
 
                 <button
@@ -53,6 +55,18 @@ export default function AuthPasswordInput({
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
             </div>
+            {errors && errors.length > 0 && (
+                <div className="space-y-1">
+                    {errors.map((error) => (
+                        <p
+                            key={error}
+                            className="text-xs text-destructive"
+                        >
+                            {error}
+                        </p>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
