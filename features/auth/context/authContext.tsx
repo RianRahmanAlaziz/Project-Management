@@ -25,6 +25,7 @@ interface AuthContextValue {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
+    refreshUser: () => Promise<void>;
     logout: () => Promise<void>;
 }
 
@@ -86,6 +87,7 @@ export function AuthProvider({
                 user,
                 isAuthenticated: Boolean(user),
                 isLoading,
+                refreshUser: fetchUser,
                 logout,
             }}
         >

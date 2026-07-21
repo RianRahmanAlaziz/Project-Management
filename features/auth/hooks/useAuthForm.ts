@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { register, login, getMe, logout } from "../api/authApi";
+import { useAuth } from "./useAuth";
+import { register, login } from "../api/authApi";
 import type { AuthForm, AuthMode } from "../types/auth";
 import { setAuthToken } from "@/lib/api/authToken";
 import { validateAuthForm } from "../utils/validateAuthForm";
@@ -18,8 +17,7 @@ const INITIAL_FORM: AuthForm = {
 };
 
 export function useAuthForm() {
-    const router = useRouter();
-
+    const { refreshUser } = useAuth();
     const [mode, setMode] = useState<AuthMode>("login");
     const [form, setForm] = useState<AuthForm>(INITIAL_FORM);
     const [loading, setLoading] = useState(false);
@@ -50,7 +48,10 @@ export function useAuthForm() {
         resetForm();
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (
+        event: React.FormEvent<HTMLFormElement>,
+        onSuccess?: () => void,
+    ) => {
         event.preventDefault();
 
         const validationError = validateAuthForm(form, mode);
@@ -78,14 +79,14 @@ export function useAuthForm() {
 
             setAuthToken(response.data.access_token);
 
-            router.push("/dashboard");
+            await refreshUser();
+            onSuccess?.();
         } catch (submitError) {
             const apiError = parseApiError(submitError);
 
             console.error("Auth error:", apiError);
 
             setError(apiError.message);
-        } finally {
             setLoading(false);
         }
     };

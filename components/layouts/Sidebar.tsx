@@ -2,15 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { LucideIcon } from "lucide-react";
+import { NAV_ITEMS } from "./navigation";
 import {
-    BarChart2,
-    Bell,
-    Briefcase,
     ChevronLeft,
     ChevronRight,
-    LayoutDashboard,
-    ListTodo,
     Plus,
     Zap,
 } from "lucide-react";
@@ -23,11 +18,6 @@ interface SidebarProps {
     onToggle: () => void;
 }
 
-interface NavigationItem {
-    label: string;
-    href: string;
-    icon: LucideIcon;
-}
 
 interface WorkspaceItem {
     id: string;
@@ -36,33 +26,6 @@ interface WorkspaceItem {
     color: string;
 }
 
-const NAV_ITEMS: NavigationItem[] = [
-    {
-        label: "Dashboard",
-        href: "/dashboard",
-        icon: LayoutDashboard,
-    },
-    {
-        label: "Workspaces",
-        href: "/workspaces",
-        icon: Briefcase,
-    },
-    {
-        label: "My Tasks",
-        href: "/tasks",
-        icon: ListTodo,
-    },
-    {
-        label: "Analytics",
-        href: "/analytics",
-        icon: BarChart2,
-    },
-    {
-        label: "Notifications",
-        href: "/notifications",
-        icon: Bell,
-    },
-];
 
 const WORKSPACES: WorkspaceItem[] = [
     {

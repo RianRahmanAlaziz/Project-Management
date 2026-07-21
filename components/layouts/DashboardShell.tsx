@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
+import { MobileBottomNav } from "./MobileBottomNav";
 
 interface DashboardShellProps {
     children: React.ReactNode;
@@ -40,27 +40,32 @@ export function DashboardShell({
     }, [darkMode]);
 
     return (
-        <div className="flex h-screen overflow-hidden bg-background">
-            {/* Sidebar */}
-            <div className="hidden md:block shrink-0">
-                <Sidebar
-                    collapsed={sidebarCollapsed}
-                    onToggle={() =>
-                        setSidebarCollapsed((prev) => !prev)
-                    }
-                />
+        <div className="h-screen flex flex-col bg-background overflow-hidden">
+            <div className="flex flex-1 overflow-hidden">
+                {/* Sidebar */}
+                <div className="hidden md:block shrink-0">
+                    <Sidebar
+                        collapsed={sidebarCollapsed}
+                        onToggle={() =>
+                            setSidebarCollapsed((prev) => !prev)
+                        }
+                    />
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+                    <TopNav
+                        darkMode={darkMode}
+                        onToggleDark={() =>
+                            setDarkMode((prev) => !prev)
+                        }
+                    />
+                    <main className="flex-1 overflow-y-auto">
+                        {children}
+                    </main>
+                </div>
             </div>
-            <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-                <TopNav
-                    darkMode={darkMode}
-                    onToggleDark={() =>
-                        setDarkMode((prev) => !prev)
-                    }
-                />
-                <main className="flex-1 overflow-y-auto">
-                    {children}
-                </main>
-            </div>
+
+            <MobileBottomNav />
         </div>
+
     );
 }
