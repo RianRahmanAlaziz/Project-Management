@@ -1,13 +1,46 @@
+export type WorkspaceRole =
+    | "owner"
+    | "admin"
+    | "member"
+    | "viewer";
+
+export interface WorkspaceOwner {
+    id: number;
+    name: string;
+    email: string;
+    email_verified_at: string | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface Workspace {
     id: number;
-    owner_id: number;
-    slug: string;
     name: string;
-    initials: string;
-    description: string;
+    slug: string;
+    description: string | null;
     color: string;
-    member_id: number[];
+    owner: WorkspaceOwner;
+    current_user_role: WorkspaceRole;
+    project_count: number;
     members_count: number;
-    projects_count: number;
     created_at: string;
+    updated_at: string;
+}
+
+export interface WorkspacePagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+}
+
+export interface WorkspaceListResponse {
+    success: boolean;
+    message: string;
+    data: Workspace[];
+    meta: {
+        pagination: WorkspacePagination;
+    };
 }

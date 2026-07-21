@@ -1,6 +1,7 @@
 "use client";
 
-import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
+import { useWorkspaces } from "@/features/workspaces/hooks";
+import { WorkspacesSkeleton } from "@/features/workspaces/components/skeletons";
 
 import {
     WorkspaceGrid,
@@ -16,11 +17,18 @@ import {
 } from "../hooks";
 
 export function WorkspacesView() {
+
+    const {
+        workspaces,
+        isLoading,
+        error,
+    } = useWorkspaces();
+
     const {
         search,
         setSearch,
         filteredWorkspaces,
-    } = useWorkspaceSearch(WORKSPACES.data);
+    } = useWorkspaceSearch(workspaces);
 
     const {
         handleOpenWorkspace,
@@ -34,6 +42,10 @@ export function WorkspacesView() {
         setWorkspaceModal,
         handleCreateWorkspace,
     } = useWorkspaceModal();
+
+    if (isLoading) {
+        return <WorkspacesSkeleton />;
+    }
 
     return (
         <div className="px-6 py-8 xl:px-8">

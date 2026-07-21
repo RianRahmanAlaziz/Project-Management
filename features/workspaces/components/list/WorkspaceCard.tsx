@@ -2,6 +2,7 @@
 import { Users, FolderOpen, } from "lucide-react";
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import WorkspaceActionsMenu from "./WorkspaceActionsMenu";
+import { getWorkspaceInitials } from "../../utils/getWorkspaceInitials";
 
 interface WorkspaceCardProps {
     workspace: Workspace;
@@ -18,6 +19,7 @@ export default function WorkspaceCard({
     onOpenMembers,
     onOpenSetting,
 }: WorkspaceCardProps) {
+    const initials = getWorkspaceInitials(workspace.name);
     return (
         <article
             onClick={() => onOpenWorkspace?.(workspace)}
@@ -27,7 +29,7 @@ export default function WorkspaceCard({
                     <div
                         className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white ${workspace.color}`}
                     >
-                        {workspace.initials}
+                        {initials}
                     </div>
                     <div className="min-w-0">
                         <h3 className="block truncate text-base font-semibold text-foreground group-hover:text-primary transition-colors cursor-pointer">
@@ -56,7 +58,7 @@ export default function WorkspaceCard({
 
                 <span className="flex items-center gap-2">
                     <FolderOpen size={15} />
-                    {workspace.projects_count} projects
+                    {workspace.project_count} projects
                 </span>
             </div>
         </article>
