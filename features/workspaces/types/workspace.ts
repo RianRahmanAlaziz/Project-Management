@@ -44,3 +44,27 @@ export interface WorkspaceListResponse {
         pagination: WorkspacePagination;
     };
 }
+
+export interface CreateWorkspacePayload {
+    name: string;
+    description?: string;
+    color: string;
+}
+
+export interface WorkspaceResponse {
+    success: boolean;
+    message: string;
+    data: Workspace;
+}
+
+export interface WorkspaceInviteFormData {
+    email: string;
+    role: string;
+}
+
+export interface WorkspaceFormData {
+    name: string;
+    description: string;
+    color: string;
+    invites: WorkspaceInviteFormData[];
+}

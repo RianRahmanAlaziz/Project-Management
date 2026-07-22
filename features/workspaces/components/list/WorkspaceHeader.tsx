@@ -2,11 +2,11 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui";
 
 interface WorkspaceHeaderProps {
-    onCreateWorkspace: () => void;
+    OpenCreateWorkspace: () => void;
 }
 
 export default function WorkspaceHeader({
-    onCreateWorkspace,
+    OpenCreateWorkspace,
 }: WorkspaceHeaderProps) {
     return (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -23,7 +23,7 @@ export default function WorkspaceHeader({
                 type="button"
                 size="lg"
                 variant="primary"
-                onClick={onCreateWorkspace}
+                onClick={OpenCreateWorkspace}
                 className="w-full sm:w-auto shadow-xl"
             >
                 <Plus size={16} />

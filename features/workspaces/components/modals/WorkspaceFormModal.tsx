@@ -18,16 +18,14 @@ import {
     Combobox,
 } from "@/components/ui";
 
-const COLORS = [
-    { label: "Indigo", bg: "bg-indigo-500", ring: "ring-indigo-500", hex: "#4F46E5" },
-    { label: "Violet", bg: "bg-violet-500", ring: "ring-violet-500", hex: "#7C3AED" },
-    { label: "Blue", bg: "bg-blue-500", ring: "ring-blue-500", hex: "#3B82F6" },
-    { label: "Emerald", bg: "bg-emerald-500", ring: "ring-emerald-500", hex: "#10B981" },
-    { label: "Rose", bg: "bg-rose-500", ring: "ring-rose-500", hex: "#F43F5E" },
-    { label: "Amber", bg: "bg-amber-500", ring: "ring-amber-500", hex: "#F59E0B" },
-    { label: "Cyan", bg: "bg-cyan-500", ring: "ring-cyan-500", hex: "#06B6D4" },
-    { label: "Fuchsia", bg: "bg-fuchsia-500", ring: "ring-fuchsia-500", hex: "#D946EF" },
-];
+import {
+    WORKSPACE_COLORS,
+    type WorkspaceColor,
+} from "../../constants/workspaceStyles";
+
+import type {
+    Workspace,
+} from "../../types/workspace";
 
 
 const STEPS = [
@@ -35,23 +33,26 @@ const STEPS = [
     "Invite",
 ] as const;
 
-
 type Step = typeof STEPS[number];
 
-
-interface Workspace {
-    id?: number | string;
+interface WorkspaceFormData {
     name: string;
-    description?: string;
+    description: string;
+    color: string;
+    invites: {
+        email: string;
+        role: string;
+    }[];
 }
 
-
-interface Props {
+interface WorkspaceFormModalProps {
     open: boolean;
     mode: "create" | "edit";
     workspace?: Workspace | null;
     onClose: () => void;
-    onSubmit: (data: any) => void;
+    onSubmit: (
+        data: WorkspaceFormData,
+    ) => Promise<void> | void;
 }
 
 
@@ -61,10 +62,10 @@ export default function WorkspaceFormModal({
     workspace,
     onClose,
     onSubmit,
-}: Props) {
+}: WorkspaceFormModalProps) {
     const [step, setStep] = useState<Step>("Details");
 
-    const [color, setColor] = useState(COLORS[0]);
+    const [color, setColor] = useState<WorkspaceColor>(WORKSPACE_COLORS[0],);
 
     const [form, setForm] = useState({
         name: "",
@@ -123,6 +124,7 @@ export default function WorkspaceFormModal({
 
     useEffect(() => {
         setStep("Details");
+
         if (mode === "edit" && workspace) {
             setForm({
                 name: workspace.name,
@@ -132,9 +134,18 @@ export default function WorkspaceFormModal({
                     {
                         email: "",
                         role: "Member",
-                    }
-                ]
+                    },
+                ],
             });
+
+            const workspaceColor =
+                WORKSPACE_COLORS.find(
+                    (item) =>
+                        item.bg === workspace.color,
+                ) ?? WORKSPACE_COLORS[0];
+
+            setColor(workspaceColor);
+
             return;
         }
 
@@ -145,13 +156,15 @@ export default function WorkspaceFormModal({
                 {
                     email: "",
                     role: "Member",
-                }
-            ]
+                },
+            ],
         });
+
+        setColor(WORKSPACE_COLORS[0]);
     }, [
         workspace,
         mode,
-        open
+        open,
     ]);
 
 
@@ -159,14 +172,12 @@ export default function WorkspaceFormModal({
         STEPS.indexOf(step);
 
 
-    const next = () => {
+    const next = async () => {
         if (step === "Invite") {
             onSubmit({
-                ...workspace,
                 ...form,
                 color: color.bg,
             });
-            onClose();
             return;
         }
         setStep(
@@ -266,16 +277,33 @@ export default function WorkspaceFormModal({
                                 <Palette size={11} className="inline mr-1" />Color
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {COLORS.map(c => (
-                                    <button
-                                        key={c.label}
-                                        onClick={() => setColor(c)}
-                                        title={c.label}
-                                        className={`cursor-pointer w-7 h-7 rounded-lg ${c.bg} flex items-center justify-center transition-all ${color.label === c.label ? `ring-2 ring-offset-2 ring-offset-card ${c.ring}` : "opacity-70 hover:opacity-100"}`}
-                                    >
-                                        {color.label === c.label && <Check size={12} className="text-white" strokeWidth={3} />}
-                                    </button>
-                                ))}
+                                {WORKSPACE_COLORS.map((colorOption) => {
+                                    const isSelected =
+                                        colorOption.bg === color.bg;
+
+                                    return (
+                                        <button
+                                            key={colorOption.bg}
+                                            type="button"
+                                            onClick={() =>
+                                                setColor(colorOption)
+                                            }
+                                            title={colorOption.label}
+                                            className={`flex h-7 w-7 cursor-pointer items-center justify-center rounded-lg ${colorOption.bg} transition-all ${isSelected
+                                                ? `ring-2 ring-offset-2 ring-offset-card ${colorOption.ring}`
+                                                : "opacity-70 hover:opacity-100"
+                                                }`}
+                                        >
+                                            {isSelected && (
+                                                <Check
+                                                    size={12}
+                                                    className="text-white"
+                                                    strokeWidth={3}
+                                                />
+                                            )}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>

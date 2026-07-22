@@ -16,7 +16,7 @@ export function useWorkspaceModal() {
         workspace: null,
     });
 
-    const handleCreateWorkspace = () => {
+    const OpenCreateWorkspace = () => {
         setWorkspaceModal({
             open: true,
             mode: "create",
@@ -27,6 +27,6 @@ export function useWorkspaceModal() {
     return {
         workspaceModal,
         setWorkspaceModal,
-        handleCreateWorkspace,
+        OpenCreateWorkspace,
     };
 }

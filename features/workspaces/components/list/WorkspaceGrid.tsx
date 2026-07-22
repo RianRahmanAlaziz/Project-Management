@@ -17,7 +17,7 @@ interface WorkspaceGridProps {
     onOpenProjects: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
-    onCreateWorkspace: () => void;
+    OpenCreateWorkspace: () => void;
 }
 
 export default function WorkspaceGrid({
@@ -26,7 +26,7 @@ export default function WorkspaceGrid({
     onOpenProjects,
     onOpenMembers,
     onOpenSetting,
-    onCreateWorkspace,
+    OpenCreateWorkspace,
 }: WorkspaceGridProps) {
     if (workspaces.length === 0) {
         return (
@@ -40,7 +40,7 @@ export default function WorkspaceGrid({
                             type="button"
                             size="lg"
                             variant="primary"
-                            onClick={onCreateWorkspace}
+                            onClick={OpenCreateWorkspace}
                         >
                             <Plus size={16} />
                             New Workspace

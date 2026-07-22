@@ -1,28 +1,43 @@
 "use client";
 
-import { useWorkspaces } from "@/features/workspaces/hooks";
-import { WorkspacesSkeleton } from "@/features/workspaces/components/skeletons";
-
 import {
     WorkspaceGrid,
     WorkspaceSearch,
     WorkspaceHeader,
     WorkspaceFormModal,
+    WorkspacesSkeleton,
 } from "@/features/workspaces/components";
 
 import {
+    useWorkspaces,
     useWorkspaceSearch,
     useWorkspaceNavigation,
     useWorkspaceModal,
-} from "../hooks";
+    useCreateWorkspace,
+} from "@/features/workspaces/hooks";
 
 export function WorkspacesView() {
 
     const {
         workspaces,
         isLoading,
-        error,
+        refetch,
     } = useWorkspaces();
+
+    const {
+        handleCreateWorkspace,
+        isCreating,
+        createError,
+    } = useCreateWorkspace({
+        onSuccess: async () => {
+            await refetch();
+
+            setWorkspaceModal((prev) => ({
+                ...prev,
+                open: false,
+            }));
+        },
+    });
 
     const {
         search,
@@ -40,7 +55,7 @@ export function WorkspacesView() {
     const {
         workspaceModal,
         setWorkspaceModal,
-        handleCreateWorkspace,
+        OpenCreateWorkspace,
     } = useWorkspaceModal();
 
     if (isLoading) {
@@ -51,7 +66,7 @@ export function WorkspacesView() {
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
                 <WorkspaceHeader
-                    onCreateWorkspace={handleCreateWorkspace}
+                    OpenCreateWorkspace={OpenCreateWorkspace}
                 />
 
                 <WorkspaceSearch
@@ -65,7 +80,7 @@ export function WorkspacesView() {
                     onOpenProjects={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}
-                    onCreateWorkspace={handleCreateWorkspace}
+                    OpenCreateWorkspace={OpenCreateWorkspace}
                 />
             </div>
 
@@ -79,13 +94,7 @@ export function WorkspacesView() {
                         open: false,
                     }))
                 }
-                onSubmit={(data) => {
-                    if (workspaceModal.mode === "create") {
-                        console.log("Create Workspace", data);
-                    } else {
-                        console.log("Update Workspace", data);
-                    }
-                }}
+                onSubmit={handleCreateWorkspace}
             />
 
         </div>
