@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { toast } from "sonner";
 import { removeWorkspaceMember } from "../api/workspaceMemberApi";
 
 import type { WorkspaceMember } from "../types/workspaceMember";
@@ -28,34 +28,48 @@ export function useRemoveWorkspaceMember({
             return;
         }
 
-        console.log({
-            workspaceSlug,
-            membershipId: member.id,
-            userId: member.user.id,
-        });
-
         setIsRemoving(true);
         setRemoveError(null);
 
-        try {
-            await removeWorkspaceMember(
-                workspaceSlug,
-                member.id,
-            );
+        const promise = removeWorkspaceMember(workspaceSlug, member.id)
+            .then(async (response) => {
+                await onSuccess?.();
 
-            await onSuccess?.();
-        } catch (error) {
-            const apiError =
-                parseApiError(error);
+                return response;
+            })
+            .catch((error) => {
+                const apiError =
+                    parseApiError(error);
 
-            setRemoveError(
-                apiError.message,
-            );
+                setRemoveError(apiError.message);
 
-            throw error;
-        } finally {
-            setIsRemoving(false);
-        }
+                throw error;
+            })
+            .finally(() => {
+                setIsRemoving(false);
+            });
+
+        toast.promise(promise, {
+            loading: "Removing member...",
+
+            success: () => ({
+                message: "Member removed",
+                description:
+                    `${member.user.name} has been removed from the workspace.`,
+            }),
+
+            error: (error) => {
+                const apiError =
+                    parseApiError(error);
+
+                return {
+                    message: "Failed to remove member",
+                    description: apiError.message,
+                };
+            },
+        });
+
+        await promise;
     };
 
     return {

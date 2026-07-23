@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { parseApiError } from "@/lib/api/apiError";
 import { updateWorkspace } from "../api/workspaceApi";
 
@@ -37,18 +38,41 @@ export function useUpdateWorkspace({
         setUpdateError(null);
         setIsSaved(false);
 
+        const updatePromise = updateWorkspace(
+            workspaceSlug,
+            payload,
+        );
+
+        toast.promise(updatePromise, {
+            loading: "Updating workspace...",
+
+            success: (response) =>
+                `${response.data.name} updated successfully.`,
+
+            error: (error) => {
+                const apiError =
+                    parseApiError(error);
+
+                return apiError.message;
+            },
+        });
+
         try {
             const response =
-                await updateWorkspace(
-                    workspaceSlug,
-                    payload,
-                );
+                await updatePromise;
 
             setIsSaved(true);
 
-            await onSuccess?.(
-                response.data,
-            );
+            try {
+                await onSuccess?.(
+                    response.data,
+                );
+            } catch (error) {
+                console.error(
+                    "Workspace post-update action failed:",
+                    error,
+                );
+            }
         } catch (error) {
             const apiError =
                 parseApiError(error);

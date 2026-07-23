@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { toast } from "sonner";
 import {
     updateWorkspaceMemberRole,
 } from "../api/workspaceMemberApi";
@@ -42,26 +42,47 @@ export function useUpdateWorkspaceMemberRole({
         setIsUpdatingRole(true);
         setUpdateRoleError(null);
 
-        try {
-            await updateWorkspaceMemberRole(
-                workspaceSlug,
-                member.id,
-                payload,
-            );
+        const promise = updateWorkspaceMemberRole(workspaceSlug, member.id, payload)
+            .then(async (response) => {
+                await onSuccess?.();
 
-            await onSuccess?.();
-        } catch (error) {
-            const apiError =
-                parseApiError(error);
+                return response;
+            })
+            .catch((error) => {
+                const apiError =
+                    parseApiError(error);
 
-            setUpdateRoleError(
-                apiError.message,
-            );
+                setUpdateRoleError(apiError.message);
 
-            throw error;
-        } finally {
-            setIsUpdatingRole(false);
-        }
+                throw error;
+            })
+            .finally(() => {
+                setIsUpdatingRole(false);
+            });
+
+        toast.promise(promise, {
+            loading: "Updating member role...",
+
+            success: () => ({
+                message: "Member role updated",
+                description:
+                    `${member.user.name}'s role has been changed to ${role.charAt(0).toUpperCase() +
+                    role.slice(1)
+                    }.`,
+            }),
+
+            error: (error) => {
+                const apiError =
+                    parseApiError(error);
+
+                return {
+                    message: "Failed to update member role",
+                    description: apiError.message,
+                };
+            },
+        });
+
+        await promise;
     };
 
     return {

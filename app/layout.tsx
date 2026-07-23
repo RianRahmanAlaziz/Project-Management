@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/components/providers/appProvider";
+import { AppToaster } from "@/components/ui";
 
 
 
@@ -37,6 +37,8 @@ export default function RootLayout({
         <AppProvider>
           {children}
         </AppProvider>
+
+        <AppToaster />
       </body>
     </html>
   );

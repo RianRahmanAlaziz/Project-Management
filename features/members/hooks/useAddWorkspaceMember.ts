@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { toast } from "sonner";
 import {
     addWorkspaceMember,
 } from "../api/workspaceMemberApi";
@@ -44,23 +44,36 @@ export function useAddWorkspaceMember({
         setIsAdding(true);
         setAddError(null);
 
-        try {
-            await addWorkspaceMember(
-                workspaceSlug,
-                payload,
-            );
+        const promise = addWorkspaceMember(workspaceSlug, payload)
+            .then(async (response) => {
+                await onSuccess?.();
 
-            await onSuccess?.();
-        } catch (error) {
-            const apiError =
-                parseApiError(error);
+                return response;
+            })
+            .catch((error) => {
+                const apiError =
+                    parseApiError(error);
 
-            setAddError(apiError.message);
+                setAddError(apiError.message);
 
-            throw error;
-        } finally {
-            setIsAdding(false);
-        }
+                throw error;
+            })
+            .finally(() => {
+                setIsAdding(false);
+            });
+
+        toast.promise(promise, {
+            loading: "Adding member...",
+            success: "Member added successfully.",
+            error: (error) => {
+                const apiError =
+                    parseApiError(error);
+
+                return apiError.message;
+            },
+        });
+
+        await promise;
     };
 
     return {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-
+import { toast } from "sonner";
 import { createWorkspace as createWorkspaceRequest } from "../api/workspaceApi";
 
 import type {
@@ -18,11 +18,8 @@ interface UseCreateWorkspaceOptions {
 export function useCreateWorkspace({
     onSuccess,
 }: UseCreateWorkspaceOptions = {}) {
-    const [isCreating, setIsCreating] =
-        useState(false);
-
-    const [createError, setCreateError] =
-        useState<string | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
+    const [createError, setCreateError] = useState<string | null>(null);
 
     const handleCreateWorkspace = async (
         data: WorkspaceFormData,
@@ -41,20 +38,45 @@ export function useCreateWorkspace({
         setIsCreating(true);
         setCreateError(null);
 
-        try {
-            await createWorkspaceRequest(payload);
+        const promise = createWorkspaceRequest(payload)
+            .then(async (response) => {
+                await onSuccess?.();
 
-            await onSuccess?.();
-        } catch (error) {
-            const apiError =
-                parseApiError(error);
+                return response;
+            })
+            .catch((error) => {
+                const apiError =
+                    parseApiError(error);
 
-            setCreateError(apiError.message);
+                setCreateError(apiError.message);
 
-            throw error;
-        } finally {
-            setIsCreating(false);
-        }
+                throw error;
+            })
+            .finally(() => {
+                setIsCreating(false);
+            });
+
+        toast.promise(promise, {
+            loading: "Creating workspace...",
+
+            success: () => ({
+                message: "Workspace created",
+                description:
+                    `${payload.name} has been created successfully.`,
+            }),
+
+            error: (error) => {
+                const apiError =
+                    parseApiError(error);
+
+                return {
+                    message: "Failed to create workspace",
+                    description: apiError.message,
+                };
+            },
+        });
+
+        await promise;
     };
 
     return {

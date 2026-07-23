@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react";
-
+import { useRouter } from "next/navigation";
 import {
     DangerZoneSettings,
     NotificationSettings,
@@ -28,7 +28,7 @@ interface WorkspaceSettingsProps {
 export default function WorkspaceSettings({
     workspaceSlug
 }: WorkspaceSettingsProps) {
-
+    const router = useRouter();
     const [activeSection, setActiveSection] = useState("general");
     const [confirmDelete, setConfirmDelete] = useState("");
 
@@ -36,7 +36,6 @@ export default function WorkspaceSettings({
         workspace,
         isLoading,
         error,
-        refetch,
     } = useDetailWorkspace(workspaceSlug);
 
     const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
@@ -79,8 +78,22 @@ export default function WorkspaceSettings({
     } = useUpdateWorkspace({
         workspaceSlug,
 
-        onSuccess: async () => {
-            await refetch();
+        onSuccess: (updatedWorkspace) => {
+            setWorkspaceData({
+                name: updatedWorkspace.name,
+                description:
+                    updatedWorkspace.description ?? "",
+                color: updatedWorkspace.color,
+            });
+
+            if (
+                updatedWorkspace.slug !==
+                workspaceSlug
+            ) {
+                router.replace(
+                    `/workspaces/${updatedWorkspace.slug}/settings`,
+                );
+            }
         },
     });
 
