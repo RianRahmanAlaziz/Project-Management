@@ -74,3 +74,9 @@ export interface WorkspaceDetailResponse {
     message: string;
     data: Workspace;
 }
+
+export interface UpdateWorkspacePayload {
+    name: string;
+    description: string;
+    color: string;
+}

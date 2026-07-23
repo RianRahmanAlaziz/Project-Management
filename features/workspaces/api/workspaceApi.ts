@@ -2,6 +2,7 @@ import { apiClient } from "@/lib/api/apiClient";
 
 import type {
     CreateWorkspacePayload,
+    UpdateWorkspacePayload,
     WorkspaceListResponse,
     WorkspaceResponse,
     WorkspaceDetailResponse,
@@ -33,6 +34,19 @@ export async function createWorkspace(
     const response =
         await apiClient.post<WorkspaceResponse>(
             "/workspaces",
+            payload,
+        );
+
+    return response.data;
+}
+
+export async function updateWorkspace(
+    workspaceSlug: string,
+    payload: UpdateWorkspacePayload,
+): Promise<WorkspaceDetailResponse> {
+    const response =
+        await apiClient.patch<WorkspaceDetailResponse>(
+            `/workspaces/${workspaceSlug}`,
             payload,
         );
 

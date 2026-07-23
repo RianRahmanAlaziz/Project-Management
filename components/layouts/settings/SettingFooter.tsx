@@ -1,21 +1,53 @@
-import { Button } from '@/components/ui'
-import { Check } from 'lucide-react'
+import {
+    Check,
+    Loader2,
+} from "lucide-react";
+
+import {
+    Button,
+} from "@/components/ui";
 
 interface SettingFooterProps {
-    onSave: () => void,
-    saved: boolean
+    onSave: () => Promise<void> | void;
+    saved?: boolean;
+    isSubmitting?: boolean;
+    disabled?: boolean;
 }
-export default function SettingFooter({ onSave, saved }: SettingFooterProps) {
+
+export default function SettingFooter({
+    onSave,
+    saved = false,
+    isSubmitting = false,
+    disabled = false,
+}: SettingFooterProps) {
     return (
-        <div className="flex justify-end pt-2 border-t border-border mt-4">
+        <div className="mt-4 flex justify-end border-t border-border pt-4">
             <Button
                 size="sm"
                 variant="primary"
-                onClick={onSave}
+                disabled={disabled || isSubmitting}
+                onClick={() =>
+                    void onSave()
+                }
                 className="gap-1.5"
             >
-                {saved ? <><Check size={12} />Saved!</> : "Save changes"}
+                {isSubmitting ? (
+                    <>
+                        <Loader2
+                            size={12}
+                            className="animate-spin"
+                        />
+                        Saving...
+                    </>
+                ) : saved ? (
+                    <>
+                        <Check size={12} />
+                        Saved!
+                    </>
+                ) : (
+                    "Save changes"
+                )}
             </Button>
         </div>
-    )
+    );
 }

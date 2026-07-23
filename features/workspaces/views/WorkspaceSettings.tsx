@@ -1,38 +1,25 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     DangerZoneSettings,
     NotificationSettings,
     SecuritySettings,
     GeneralSettings,
+    WorkspaceSettingsSkeleton,
 } from "@/features/workspaces/components";
 
 import { SettingsSidebar } from "@/components/layouts/settings";
 
 import { WORKSPACE_SETTINGS } from "@/features/workspaces/constants/settings";
 
-const COLORS = [
-    { label: "Indigo", bg: "bg-indigo-500", ring: "ring-indigo-500" },
-    { label: "Violet", bg: "bg-violet-500", ring: "ring-violet-500" },
-    { label: "Blue", bg: "bg-blue-500", ring: "ring-blue-500" },
-    { label: "Emerald", bg: "bg-emerald-500", ring: "ring-emerald-500" },
-    { label: "Rose", bg: "bg-rose-500", ring: "ring-rose-500" },
-    { label: "Amber", bg: "bg-amber-500", ring: "ring-amber-500" },
-];
+import {
+    useUpdateWorkspace,
+    useDetailWorkspace,
+} from "@/features/workspaces/hooks";
 
-type Toggle = {
-    taskAssigned: boolean; taskUpdated: boolean; newComment: boolean;
-    weeklyDigest: boolean; memberJoined: boolean; projectCreated: boolean;
-};
-
-interface WorkspaceForm {
-    name: string;
-    desc: string;
-    url: string;
-    email: string;
-}
+import type { UpdateWorkspacePayload } from "@/features/workspaces/types/workspace";
 
 interface WorkspaceSettingsProps {
     workspaceSlug: string;
@@ -43,27 +30,92 @@ export default function WorkspaceSettings({
 }: WorkspaceSettingsProps) {
 
     const [activeSection, setActiveSection] = useState("general");
-    const [color, setColor] = useState(COLORS[0]);
-    const [saved, setSaved] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState("");
-    const [toggles, setToggles] = useState<Toggle>({
-        taskAssigned: true, taskUpdated: true, newComment: true,
-        weeklyDigest: false, memberJoined: true, projectCreated: false,
-    });
 
-    const [wsForm, setWsForm] = useState<WorkspaceForm>({
-        name: "Acme Corp",
-        desc: "Main product workspace...",
-        url: "acme-corp",
-        email: "admin@acme.com",
-    });
+    const {
+        workspace,
+        isLoading,
+        error,
+        refetch,
+    } = useDetailWorkspace(workspaceSlug);
 
-    const toggle = (k: keyof Toggle) => setToggles(t => ({ ...t, [k]: !t[k] }));
+    const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
 
-    const handleSave = () => {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
+    useEffect(() => {
+        if (!workspace) {
+            return;
+        }
+
+        setWorkspaceData({
+            name: workspace.name,
+            description: workspace.description ?? "",
+            color: workspace.color,
+        });
+    }, [workspace]);
+
+    const updateWorkspaceField = <
+        K extends keyof UpdateWorkspacePayload,
+    >(
+        field: K,
+        value: UpdateWorkspacePayload[K],
+    ) => {
+        setWorkspaceData((current) => {
+            if (!current) {
+                return current;
+            }
+
+            return {
+                ...current,
+                [field]: value,
+            };
+        });
     };
+
+    const {
+        handleUpdateWorkspace,
+        isUpdating,
+        updateError,
+        isSaved,
+    } = useUpdateWorkspace({
+        workspaceSlug,
+
+        onSuccess: async () => {
+            await refetch();
+        },
+    });
+
+    const handleSaveGeneral =
+        async (): Promise<void> => {
+            if (!workspaceData) {
+                return;
+            }
+
+            await handleUpdateWorkspace({
+                name: workspaceData.name.trim(),
+                description: workspaceData.description.trim(),
+                color: workspaceData.color,
+            });
+        };
+
+    if (isLoading || !workspaceData) {
+        return <WorkspaceSettingsSkeleton />;
+    }
+
+    if (error || !workspace) {
+        return (
+            <div className="p-6">
+                <p className="text-sm text-destructive">
+                    {error ??
+                        "Workspace not found."}
+                </p>
+            </div>
+        );
+    }
+
+
+    if (!workspaceData) {
+        return <WorkspaceSettingsSkeleton />;
+    }
 
     return (
         <div className="flex h-full flex-1 flex-col overflow-hidden">
@@ -81,27 +133,18 @@ export default function WorkspaceSettings({
                     <div className="max-w-2xl space-y-6">
                         {activeSection === "general" && (
                             <GeneralSettings
-                                wsForm={wsForm}
-                                color={color}
-                                setColor={setColor}
-                                saved={saved}
-                                onSave={handleSave}
-                                onNameChange={(value) =>
-                                    setWsForm((prev) => ({
-                                        ...prev,
-                                        name: value,
-                                    }))
-                                }
-                                onDescriptionChange={(value) =>
-                                    setWsForm((prev) => ({
-                                        ...prev,
-                                        desc: value,
-                                    }))
+                                workspace={workspaceData}
+                                isSubmitting={isUpdating}
+                                isSaved={isSaved}
+                                error={updateError}
+                                onChange={updateWorkspaceField}
+                                onSave={
+                                    handleSaveGeneral
                                 }
                             />
                         )}
 
-                        {activeSection === "security" && (
+                        {/* {activeSection === "security" && (
                             <SecuritySettings
                                 toggles={toggles}
                                 toggle={toggle}
@@ -117,7 +160,7 @@ export default function WorkspaceSettings({
                                 saved={saved}
                                 onSave={handleSave}
                             />
-                        )}
+                        )} */}
 
 
                         {activeSection === "danger" && (
