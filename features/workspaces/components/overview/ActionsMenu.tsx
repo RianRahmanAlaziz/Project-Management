@@ -19,14 +19,12 @@ import { Button } from "@/components/ui";
 interface ActionsMenuActionsMenuProps {
     workspace: Workspace;
     onOpenMembers: (workspace: Workspace) => void;
-    onEdit?: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
 }
 
 export default function ActionsMenu({
     workspace,
     onOpenMembers,
-    onEdit,
     onOpenSetting,
 }: ActionsMenuActionsMenuProps) {
     return (
@@ -42,15 +40,6 @@ export default function ActionsMenu({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                    onClick={(e) => {
-                        e.stopPropagation()
-                        onEdit?.(workspace)
-                    }}
-                >
-                    <Pencil size={16} />
-                    Edit Workspace
-                </DropdownMenuItem>
 
                 <DropdownMenuItem
                     onClick={(e) => {

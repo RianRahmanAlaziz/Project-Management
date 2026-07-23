@@ -1,14 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
-import { PROJECTS } from "@/features/projects/mocks/projects";
-import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
-
 import {
     WorkspaceDashboard,
+    WorkspaceOverviewSkeleton,
 } from "@/features/workspaces/components";
 
 import {
+    useDetailWorkspace,
     useWorkspaceNavigation,
 } from "../hooks";
 
@@ -20,17 +18,12 @@ export default function WorkspaceOverview({
     workspaceSlug,
 }: WorkspaceOverviewProps) {
 
-    const workspace = WORKSPACES.data.find(
-        item => item.slug === workspaceSlug
-    );
-
-    const projects = useMemo(() => {
-        if (!workspace) return [];
-        return PROJECTS.data.filter(
-            project =>
-                project.workspace_id === workspace.id
-        );
-    }, [workspace]);
+    const {
+        workspace,
+        isLoading,
+        error,
+        refetch,
+    } = useDetailWorkspace(workspaceSlug);
 
     const {
         handleOpenProject,
@@ -38,13 +31,19 @@ export default function WorkspaceOverview({
         handleOpenSetting,
     } = useWorkspaceNavigation();
 
+    if (isLoading) {
+        return <WorkspaceOverviewSkeleton />;
+    }
 
-    const handleonEdit = () => {
-        console.log("Open Edit");
-    };
-
-    if (!workspace) {
-        return null;
+    if (error || !workspace) {
+        return (
+            <div className="px-6 py-8 xl:px-8">
+                <p className="text-sm text-destructive">
+                    {error ??
+                        "Workspace not found."}
+                </p>
+            </div>
+        );
     }
 
     return (
@@ -52,10 +51,9 @@ export default function WorkspaceOverview({
             <div className="w-full space-y-6">
                 <WorkspaceDashboard
                     workspace={workspace}
-                    projects={projects}
+                    projects={[]}
                     onOpenProject={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
-                    onEdit={handleonEdit}
                     onOpenSetting={handleOpenSetting}
                 />
             </div>

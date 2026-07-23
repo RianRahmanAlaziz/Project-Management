@@ -22,7 +22,6 @@ type WorkspaceDashboardProps = {
     projects: Projects[];
     onOpenProject: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
-    onEdit?: () => void;
     onOpenSetting: (workspace: Workspace) => void;
 };
 
@@ -31,7 +30,6 @@ export default function WorkspaceDashboard({
     projects,
     onOpenProject,
     onOpenMembers,
-    onEdit,
     onOpenSetting,
 }: WorkspaceDashboardProps) {
     return (
@@ -40,7 +38,6 @@ export default function WorkspaceDashboard({
                 workspace={workspace}
                 onOpenProject={onOpenProject}
                 onOpenMembers={onOpenMembers}
-                onEdit={onEdit}
                 onOpenSetting={onOpenSetting}
             />
 
@@ -48,7 +45,7 @@ export default function WorkspaceDashboard({
                 <WorkspaceStats
                     icon={<FolderOpen size={18} />}
                     label="Total Projects"
-                    value={workspace.projects_count}
+                    value={workspace.project_count}
                     color="bg-indigo-500"
                 />
                 <WorkspaceStats
@@ -76,7 +73,7 @@ export default function WorkspaceDashboard({
                 projects={projects}
             />
 
-            <WorkspaceActivity workspace={workspace} />
+            {/* <WorkspaceActivity workspace={workspace} /> */}
         </section >
     );
 }

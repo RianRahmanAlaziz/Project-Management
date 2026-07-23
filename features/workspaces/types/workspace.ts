@@ -68,3 +68,9 @@ export interface WorkspaceFormData {
     color: string;
     invites: WorkspaceInviteFormData[];
 }
+
+export interface WorkspaceDetailResponse {
+    success: boolean;
+    message: string;
+    data: Workspace;
+}

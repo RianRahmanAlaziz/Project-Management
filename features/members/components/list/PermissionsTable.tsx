@@ -1,62 +1,172 @@
-import { Shield, Eye, UserCheck, Crown } from "lucide-react";
+import {
+    Crown,
+    Eye,
+    Shield,
+    UserCheck,
+} from "lucide-react";
 
+type WorkspaceRole =
+    | "admin"
+    | "owner"
+    | "member"
+    | "viewer";
 
-const ROLES = ["Owner", "Admin", "Member", "Viewer"];
+interface Permission {
+    name: string;
+    roles: WorkspaceRole[];
+}
 
-const PERMISSIONS = [
-    { name: "Create projects", owner: true, admin: true, member: true, viewer: false },
-    { name: "Delete projects", owner: true, admin: true, member: false, viewer: false },
-    { name: "Invite members", owner: true, admin: true, member: false, viewer: false },
-    { name: "Manage billing", owner: true, admin: false, member: false, viewer: false },
-    { name: "Create tasks", owner: true, admin: true, member: true, viewer: false },
-    { name: "Comment on tasks", owner: true, admin: true, member: true, viewer: true },
-    { name: "View all projects", owner: true, admin: true, member: true, viewer: true },
-    { name: "Export data", owner: true, admin: true, member: false, viewer: false },
+const ROLES = [
+    {
+        id: "admin",
+        label: "Admin",
+        icon: Shield,
+    },
+    {
+        id: "owner",
+        label: "Owner",
+        icon: Crown,
+    },
+    {
+        id: "member",
+        label: "Member",
+        icon: UserCheck,
+    },
+    {
+        id: "viewer",
+        label: "Viewer",
+        icon: Eye,
+    },
+] as const;
+
+const PERMISSIONS: Permission[] = [
+    {
+        name: "View workspace",
+        roles: [
+            "owner",
+            "admin",
+            "member",
+            "viewer",
+        ],
+    },
+    {
+        name: "Update workspace",
+        roles: [
+            "owner",
+            "admin",
+        ],
+    },
+    {
+        name: "Delete workspace",
+        roles: [
+            "owner",
+        ],
+    },
+    {
+        name: "View members",
+        roles: [
+            "owner",
+            "admin",
+            "member",
+            "viewer",
+        ],
+    },
+    {
+        name: "Add members",
+        roles: [
+            "owner",
+            "admin",
+        ],
+    },
+    {
+        name: "Change member roles",
+        roles: [
+            "owner",
+            "admin",
+        ],
+    },
+    {
+        name: "Remove members",
+        roles: [
+            "owner",
+            "admin",
+        ],
+    },
 ];
-
-const roleIcons: Record<string, React.ReactNode> = {
-    owner: <Crown size={18} />,
-    admin: <Shield size={18} />,
-    member: <UserCheck size={18} />,
-    viewer: <Eye size={18} />,
-};
-
 
 export default function PermissionsTable() {
     return (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="overflow-hidden rounded-xl border border-border bg-card">
             <div className="overflow-x-auto">
                 <table className="w-full min-w-125">
                     <thead>
                         <tr className="border-b border-border">
-                            <th className="text-left px-4 py-4 text-base font-medium text-muted-foreground">Permission</th>
-                            {ROLES.map(role => (
-                                <th key={role} className="px-4 py-4 text-center">
-                                    <div className="flex flex-col items-center gap-1">
-                                        <span className="text-muted-foreground">{roleIcons[role]}</span>
-                                        <span className="text-base font-medium text-foreground">{role}</span>
-                                    </div>
-                                </th>
-                            ))}
+                            <th className="px-4 py-4 text-left text-base font-medium text-muted-foreground">
+                                Permission
+                            </th>
+
+                            {ROLES.map((role) => {
+                                const Icon = role.icon;
+
+                                return (
+                                    <th
+                                        key={role.id}
+                                        className="px-4 py-4 text-center"
+                                    >
+                                        <div className="flex flex-col items-center gap-1">
+                                            <Icon
+                                                size={18}
+                                                className="text-muted-foreground"
+                                            />
+
+                                            <span className="text-base font-medium text-foreground">
+                                                {role.label}
+                                            </span>
+                                        </div>
+                                    </th>
+                                );
+                            })}
                         </tr>
                     </thead>
+
                     <tbody>
-                        {PERMISSIONS.map(perm => (
-                            <tr key={perm.name} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
-                                <td className="px-4 py-4 text-base text-foreground">{perm.name}</td>
-                                {[perm.owner, perm.admin, perm.member, perm.viewer].map((has, i) => (
-                                    <td key={i} className="px-4 py-4 text-center">
-                                        {has
-                                            ? <span className="inline-flex w-7 h-7 rounded-full bg-success/15 items-center justify-center text-success">✓</span>
-                                            : <span className="inline-flex w-7 h-7 rounded-full bg-muted items-center justify-center text-muted-foreground text-base">—</span>
-                                        }
-                                    </td>
-                                ))}
+                        {PERMISSIONS.map((permission) => (
+                            <tr
+                                key={permission.name}
+                                className="border-b border-border transition-colors last:border-0 hover:bg-muted/20"
+                            >
+                                <td className="px-4 py-4 text-base text-foreground">
+                                    {permission.name}
+                                </td>
+
+                                {ROLES.map((role) => {
+                                    const hasPermission =
+                                        permission.roles.includes(
+                                            role.id,
+                                        );
+
+                                    return (
+                                        <td
+                                            key={role.id}
+                                            className="px-4 py-4 text-center"
+                                        >
+                                            {hasPermission ? (
+                                                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-success/15 text-success">
+                                                    ✓
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-base text-muted-foreground">
+                                                    —
+                                                </span>
+                                            )}
+                                        </td>
+                                    );
+                                })}
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
         </div>
-    )
+    );
 }

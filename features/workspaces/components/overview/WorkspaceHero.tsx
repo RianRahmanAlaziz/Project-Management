@@ -6,12 +6,14 @@ import {
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import { Button } from "@/components/ui";
 import ActionsMenu from "./ActionsMenu";
+import {
+    getWorkspaceInitials,
+} from "../../utils/getWorkspaceInitials";
 
 type WorkspaceHeroProps = {
     workspace: Workspace;
     onOpenProject?: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
-    onEdit?: () => void;
     onOpenSetting: (workspace: Workspace) => void;
 };
 
@@ -19,7 +21,6 @@ export default function WorkspaceHero({
     workspace,
     onOpenProject,
     onOpenMembers,
-    onEdit,
     onOpenSetting,
 }: WorkspaceHeroProps) {
     return (
@@ -29,7 +30,7 @@ export default function WorkspaceHero({
                     <div
                         className={`flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl ${workspace.color} text-3xl font-bold text-white`}
                     >
-                        {workspace.initials}
+                        {getWorkspaceInitials(workspace.name)}
                     </div>
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-3">
@@ -60,7 +61,6 @@ export default function WorkspaceHero({
                     <ActionsMenu
                         workspace={workspace}
                         onOpenMembers={onOpenMembers}
-                        onEdit={onEdit}
                         onOpenSetting={onOpenSetting}
                     />
                 </div>

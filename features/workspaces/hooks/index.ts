@@ -3,3 +3,4 @@ export * from "./useWorkspaceNavigation";
 export * from "./useWorkspaceModal";
 export * from "./useWorkspaces";
 export * from "./useCreateWorkspace";
+export * from "./useDetailWorkspace";
