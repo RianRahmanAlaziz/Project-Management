@@ -1,95 +1,135 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Modal, Button } from "@/components/ui";
-import { Shield, Eye, UserCheck, Crown } from "lucide-react";
-import type { Members } from "@/features/members/types/members";
+import {
+    Eye,
+    UserCheck,
+} from "lucide-react";
+
+import {
+    Button,
+    Modal,
+} from "@/components/ui";
+
 import { Combobox } from "@/components/ui/combobox";
+
+import type {
+    WorkspaceMember,
+    WorkspaceMemberAssignableRole,
+} from "@/features/members/types/workspaceMember";
 
 interface MemberRoleModalProps {
     open: boolean;
-    member?: Members | null;
+    member: WorkspaceMember | null;
+    isSubmitting?: boolean;
+
     onClose: () => void;
+
     onConfirm: (
-        member: Members,
-        role: string
-    ) => void;
+        member: WorkspaceMember,
+        role: WorkspaceMemberAssignableRole,
+    ) => Promise<void> | void;
 }
+
+const ROLE_OPTIONS = [
+    {
+        value: "member",
+        label: "Member",
+        description:
+            "Can create and update tasks",
+        icon: (
+            <UserCheck
+                size={16}
+                className="text-emerald-500"
+            />
+        ),
+    },
+    {
+        value: "viewer",
+        label: "Viewer",
+        description:
+            "Read-only access",
+        icon: (
+            <Eye
+                size={16}
+                className="text-slate-500"
+            />
+        ),
+    },
+];
 
 export default function MemberRoleModal({
     open,
     member,
+    isSubmitting = false,
     onClose,
     onConfirm,
 }: MemberRoleModalProps) {
-
-    const [role, setRole] = useState("");
+    const [role, setRole] =
+        useState<WorkspaceMemberAssignableRole>(
+            "member",
+        );
 
     useEffect(() => {
-        if (!member) return;
+        if (!open || !member) {
+            return;
+        }
 
-        setRole(member.role);
-    }, [member]);
+        if (
+            member.role === "member" ||
+            member.role === "viewer"
+        ) {
+            setRole(member.role);
+        }
+    }, [open, member]);
 
-    const handleSubmit = () => {
-        if (!member) return;
+    if (!member) {
+        return null;
+    }
 
-        onConfirm(member, role);
+    const hasRoleChanged =
+        role !== member.role;
 
-        onClose();
+    const handleSubmit = async () => {
+        if (
+            !hasRoleChanged ||
+            isSubmitting
+        ) {
+            return;
+        }
+
+        await onConfirm(
+            member,
+            role,
+        );
     };
-
-    if (!member) return null;
 
     return (
         <Modal
             open={open}
             onClose={onClose}
-            title={`Change Role ${member?.name}`}
+            title={`Change Role ${member.user.name}`}
             size="md"
         >
             <div className="space-y-5">
-
-                <div className="space-y-2">
-                    <Combobox
-                        label="Role"
-                        value={role}
-                        onValueChange={setRole}
-                        placeholder="Select role"
-                        searchable={false}
-                        options={[
-                            {
-                                value: "Owner",
-                                label: "Owner",
-                                description: "Full access to workspace",
-                                icon: <Crown size={16} className="text-amber-500" />,
-                            },
-                            {
-                                value: "Admin",
-                                label: "Admin",
-                                description: "Manage projects and members",
-                                icon: <Shield size={16} className="text-indigo-500" />,
-                            },
-                            {
-                                value: "Member",
-                                label: "Member",
-                                description: "Can create and update tasks",
-                                icon: <UserCheck size={16} className="text-emerald-500" />,
-                            },
-                            {
-                                value: "Viewer",
-                                label: "Viewer",
-                                description: "Read-only access",
-                                icon: <Eye size={16} className="text-slate-500" />,
-                            },
-                        ]}
-                    />
-                </div>
+                <Combobox
+                    label="Role"
+                    value={role}
+                    onValueChange={(value) =>
+                        setRole(
+                            value as WorkspaceMemberAssignableRole,
+                        )
+                    }
+                    placeholder="Select role"
+                    searchable={false}
+                    options={ROLE_OPTIONS}
+                />
 
                 <div className="flex justify-end gap-2">
                     <Button
                         variant="outline"
                         size="lg"
+                        disabled={isSubmitting}
                         onClick={onClose}
                     >
                         Cancel
@@ -98,12 +138,20 @@ export default function MemberRoleModal({
                     <Button
                         variant="primary"
                         size="lg"
-                        onClick={handleSubmit}
+                        disabled={
+                            !hasRoleChanged ||
+                            isSubmitting
+                        }
+                        onClick={() =>
+                            void handleSubmit()
+                        }
                     >
-                        Save Changes
+                        {isSubmitting
+                            ? "Saving..."
+                            : "Save Changes"}
                     </Button>
                 </div>
             </div>
         </Modal>
-    )
+    );
 }

@@ -2,13 +2,13 @@ import MembersView from '@/features/members/views/MembersView'
 
 type MembersPageProps = {
     params: Promise<{
-        slug: string;
+        workspaceSlug: string;
     }>;
 };
 
 export default async function MembersPage({ params }: MembersPageProps) {
-    const { slug } = await params;
+    const { workspaceSlug } = await params;
     return (
-        <MembersView slug={slug} />
+        <MembersView workspaceSlug={workspaceSlug} />
     )
 }

@@ -1,9 +1,5 @@
 "use client";
 
-import {
-    USERS,
-} from "@/features/users/mocks/users";
-
 import { useState } from "react";
 
 import {
@@ -14,49 +10,106 @@ import {
     MembersSearch,
     MembersTable,
     PermissionsTable,
-    InviteTeamMember
-} from "@/features/members/components"
+    InviteTeamMember,
+} from "@/features/members/components";
+
+import {
+    useAddWorkspaceMember,
+    useAvailableWorkspaceMembers,
+    useMemberModal,
+    useMemberSearch,
+    useWorkspaceMembers,
+    useUpdateWorkspaceMemberRole,
+    useRemoveWorkspaceMember,
+} from "../hooks";
+
+import {
+    MembersSkeleton,
+} from "@/features/members/components";
 
 type MembersViewProps = {
-    slug: string;
+    workspaceSlug: string;
 };
 
 export default function MembersView({
-    slug,
+    workspaceSlug,
 }: MembersViewProps) {
-    const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<"members" | "permissions">("members");
 
-    const filtered = USERS.data.filter(u =>
-        u.name.toLowerCase().includes(search.toLowerCase()) ||
-        u.email.toLowerCase().includes(search.toLowerCase())
+    const {
+        members,
+        isLoading,
+        refetch,
+    } = useWorkspaceMembers(workspaceSlug);
+
+    const {
+        search,
+        setSearch,
+        filteredMembers,
+    } = useMemberSearch(members);
+
+    const {
+        addMemberModalOpen,
+        roleModal,
+        removeModal,
+        handleOpenAddMember,
+        handleCloseAddMember,
+        handleOpenRoleModal,
+        handleCloseRoleModal,
+        handleOpenRemoveModal,
+        handleCloseRemoveModal,
+    } = useMemberModal();
+
+    const {
+        users: availableUsers,
+        isLoading: isLoadingAvailableUsers,
+    } = useAvailableWorkspaceMembers(
+        workspaceSlug,
+        addMemberModalOpen,
     );
 
-    const [inviteModalOpen, setInviteModalOpen] = useState(false);
-
-    const [roleModal, setRoleModal] = useState<{
-        open: boolean;
-        member: any | null;
-    }>({
-        open: false,
-        member: null,
+    const {
+        handleAddMember,
+        isAdding,
+    } = useAddWorkspaceMember({
+        workspaceSlug,
+        onSuccess: async () => {
+            await refetch();
+            handleCloseAddMember();
+        },
     });
 
-    const [removeModal, setRemoveModal] = useState<{
-        open: boolean;
-        member: any | null;
-    }>({
-        open: false,
-        member: null,
+    const {
+        handleUpdateRole,
+        isUpdatingRole,
+    } = useUpdateWorkspaceMemberRole({
+        workspaceSlug,
+        onSuccess: async () => {
+            await refetch();
+            handleCloseRoleModal();
+        },
     });
+
+    const {
+        handleRemoveMember,
+        isRemoving,
+    } = useRemoveWorkspaceMember({
+        workspaceSlug,
+        onSuccess: async () => {
+            await refetch();
+            handleCloseRemoveModal();
+        },
+    });
+
+    if (isLoading) {
+        return <MembersSkeleton />;
+    }
 
     return (
         <div className="px-6 py-8 xl:px-8">
-            <div className="w-full space-y-6 mb-5">
+            <div className="mb-5 w-full space-y-6">
                 <MembersHeader
-                    onInviteMembers={() =>
-                        setInviteModalOpen(true)
-                    }
+                    onInviteMembers={handleOpenAddMember}
                 />
             </div>
 
@@ -73,19 +126,9 @@ export default function MembersView({
                     />
 
                     <MembersTable
-                        users={filtered}
-                        onChangeRole={(member) =>
-                            setRoleModal({
-                                open: true,
-                                member,
-                            })
-                        }
-                        onRemove={(member) =>
-                            setRemoveModal({
-                                open: true,
-                                member,
-                            })
-                        }
+                        members={filteredMembers}
+                        onChangeRole={handleOpenRoleModal}
+                        onRemove={handleOpenRemoveModal}
                     />
                 </>
             )}
@@ -95,41 +138,31 @@ export default function MembersView({
             )}
 
             <InviteTeamMember
-                open={inviteModalOpen}
-                onClose={() =>
-                    setInviteModalOpen(false)
+                open={addMemberModalOpen}
+                users={availableUsers}
+                isLoadingUsers={
+                    isLoadingAvailableUsers
                 }
-                onConfirm={(email, role) => {
-                    console.log(email, role);
-                }}
+                isSubmitting={isAdding}
+                onClose={handleCloseAddMember}
+                onConfirm={handleAddMember}
             />
 
             <MemberRoleModal
                 open={roleModal.open}
                 member={roleModal.member}
-                onClose={() =>
-                    setRoleModal({
-                        open: false,
-                        member: null,
-                    })
-                }
-                onConfirm={(member, role) => {
-                    console.log(member.id, role);
-                }}
+                isSubmitting={isUpdatingRole}
+                onClose={handleCloseRoleModal}
+                onConfirm={handleUpdateRole}
             />
 
             <RemoveMemberModal
                 open={removeModal.open}
                 member={removeModal.member}
-                onClose={() =>
-                    setRemoveModal({
-                        open: false,
-                        member: null,
-                    })
-                }
-                onConfirm={(member) => {
-                    console.log("remove", member.id);
-                }} />
+                isSubmitting={isRemoving}
+                onClose={handleCloseRemoveModal}
+                onConfirm={handleRemoveMember}
+            />
         </div>
-    )
+    );
 }

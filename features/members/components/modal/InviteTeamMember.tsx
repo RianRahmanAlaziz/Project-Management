@@ -1,42 +1,101 @@
 "use client";
 
-import { useState } from "react";
-import { Modal, Button, Input } from "@/components/ui";
+import { useEffect, useState } from "react";
+
 import {
-    Shield,
     Eye,
     UserCheck,
-    Crown,
 } from "lucide-react";
+
+import {
+    Modal,
+    Button
+} from "@/components/ui";
 import { Combobox } from "@/components/ui/combobox";
+
+import type {
+    AvailableUser,
+    WorkspaceMemberAssignableRole,
+} from "@/features/members/types/workspaceMember";
+
+
 
 interface InviteTeamMemberProps {
     open: boolean;
+    users: AvailableUser[];
+    isLoadingUsers?: boolean;
+    isSubmitting?: boolean;
     onClose: () => void;
     onConfirm: (
-        email: string,
-        role: string
-    ) => void;
+        userId: number,
+        role: WorkspaceMemberAssignableRole,
+    ) => Promise<void> | void;
 }
+
+const ROLE_OPTIONS = [
+    {
+        value: "member",
+        label: "Member",
+        description:
+            "Can create and update tasks",
+        icon: (
+            <UserCheck
+                size={16}
+                className="text-emerald-500"
+            />
+        ),
+    },
+    {
+        value: "viewer",
+        label: "Viewer",
+        description: "Read-only access",
+        icon: (
+            <Eye
+                size={16}
+                className="text-slate-500"
+            />
+        ),
+    },
+];
+
 
 export default function InviteTeamMember({
     open,
+    users,
+    isLoadingUsers = false,
+    isSubmitting = false,
     onClose,
     onConfirm,
 }: InviteTeamMemberProps) {
-    const [email, setEmail] = useState("");
-    const [role, setRole] = useState("");
 
-    const handleSubmit = () => {
-        if (!email.trim()) return;
+    const [selectedUserId, setSelectedUserId] = useState("");
 
-        onConfirm(email, role);
+    const [role, setRole] = useState<WorkspaceMemberAssignableRole>("member",);
 
-        setEmail("");
-        setRole("Member");
+    useEffect(() => {
+        if (!open) {
+            return;
+        }
+        setSelectedUserId("");
+        setRole("member");
+    }, [open]);
 
-        onClose();
+    const handleSubmit = async () => {
+        if (!selectedUserId) {
+            return;
+        }
+
+        await onConfirm(
+            Number(selectedUserId),
+            role,
+        );
     };
+
+    const userOptions = users.map((user) => ({
+        value: String(user.id),
+        label: user.email,
+        description: user.name,
+    }));
 
     return (
         <Modal
@@ -46,47 +105,29 @@ export default function InviteTeamMember({
             size="md"
         >
             <div className="space-y-5">
-                <Input
+                <Combobox
                     label="Email Address"
-                    type="email"
-                    placeholder="example@example.com"
-                    value={email}
-                    onChange={(e) =>
-                        setEmail(e.target.value)
+                    value={selectedUserId}
+                    onValueChange={
+                        setSelectedUserId
                     }
+                    placeholder="Select user"
+                    searchPlaceholder="Search name or email..."
+                    searchable
+                    options={userOptions}
                 />
+
                 <Combobox
                     label="Role"
                     value={role}
-                    onValueChange={setRole}
+                    onValueChange={(value) =>
+                        setRole(
+                            value as WorkspaceMemberAssignableRole,
+                        )
+                    }
                     placeholder="Select role"
                     searchable={false}
-                    options={[
-                        {
-                            value: "Owner",
-                            label: "Owner",
-                            description: "Full access to workspace",
-                            icon: <Crown size={16} className="text-amber-500" />,
-                        },
-                        {
-                            value: "Admin",
-                            label: "Admin",
-                            description: "Manage projects and members",
-                            icon: <Shield size={16} className="text-indigo-500" />,
-                        },
-                        {
-                            value: "Member",
-                            label: "Member",
-                            description: "Can create and update tasks",
-                            icon: <UserCheck size={16} className="text-emerald-500" />,
-                        },
-                        {
-                            value: "Viewer",
-                            label: "Viewer",
-                            description: "Read-only access",
-                            icon: <Eye size={16} className="text-slate-500" />,
-                        },
-                    ]}
+                    options={ROLE_OPTIONS}
                 />
                 <div className="flex justify-end gap-2">
                     <Button

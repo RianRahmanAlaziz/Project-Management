@@ -15,10 +15,10 @@ const PERMISSIONS = [
 ];
 
 const roleIcons: Record<string, React.ReactNode> = {
-    Owner: <Crown size={18} />,
-    Admin: <Shield size={18} />,
-    Member: <UserCheck size={18} />,
-    Viewer: <Eye size={18} />,
+    owner: <Crown size={18} />,
+    admin: <Shield size={18} />,
+    member: <UserCheck size={18} />,
+    viewer: <Eye size={18} />,
 };
 
 

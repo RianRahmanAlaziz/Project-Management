@@ -3,22 +3,32 @@
 import { AlertTriangle } from "lucide-react";
 import { Modal, Button } from "@/components/ui";
 
-import type { Members } from "@/features/members/types/members";
+import type { WorkspaceMember } from "@/features/members/types/workspaceMember";
 
 interface RemoveMemberModalProps {
     open: boolean;
-    member: Members | null;
+    member: WorkspaceMember | null;
+    isSubmitting?: boolean;
     onClose: () => void;
-    onConfirm: (member: Members) => void;
+    onConfirm: (member: WorkspaceMember) => Promise<void> | void;
 }
 
 export default function RemoveMemberModal({
     open,
     member,
+    isSubmitting = false,
     onClose,
     onConfirm,
 }: RemoveMemberModalProps) {
     if (!member) return null;
+
+    const handleSubmit = async () => {
+        if (isSubmitting) {
+            return;
+        }
+
+        await onConfirm(member);
+    };
 
     return (
         <Modal
@@ -29,13 +39,7 @@ export default function RemoveMemberModal({
             <div className="space-y-5">
                 <div className="flex items-start gap-4">
                     <div
-                        className="
-                            flex h-12 w-12 items-center justify-center
-                            rounded-full
-                            bg-destructive/10
-                            text-destructive
-                        "
-                    >
+                        className=" flex h-12 w-12 items-center justify-center  rounded-full bg-destructive/10  text-destructive  " >
                         <AlertTriangle size={25} />
                     </div>
 
@@ -48,7 +52,7 @@ export default function RemoveMemberModal({
                             Are you sure you want to Remove
                             <span className="font-medium text-foreground">
                                 {" "}
-                                {member.name}
+                                {member.user.name}
                             </span>
                             ?
                         </p>
@@ -59,6 +63,7 @@ export default function RemoveMemberModal({
                     <Button
                         variant="outline"
                         size="lg"
+                        disabled={isSubmitting}
                         onClick={onClose}
                     >
                         Cancel
@@ -67,12 +72,12 @@ export default function RemoveMemberModal({
                     <Button
                         variant="danger"
                         size="lg"
-                        onClick={() => {
-                            onConfirm(member);
-                            onClose();
-                        }}
+                        disabled={isSubmitting}
+                        onClick={() =>
+                            void handleSubmit()
+                        }
                     >
-                        Remove Member
+                        {isSubmitting ? "Removing..." : "Remove Member"}
                     </Button>
                 </div>
             </div>
