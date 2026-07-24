@@ -6,6 +6,7 @@ import type {
     WorkspaceListResponse,
     WorkspaceResponse,
     WorkspaceDetailResponse,
+    WorkspaceDeleteResponse,
 } from "../types/workspace";
 
 export async function getWorkspaces(): Promise<WorkspaceListResponse> {
@@ -48,6 +49,17 @@ export async function updateWorkspace(
         await apiClient.patch<WorkspaceDetailResponse>(
             `/workspaces/${workspaceSlug}`,
             payload,
+        );
+
+    return response.data;
+}
+
+export async function deleteWorkspace(
+    workspaceSlug: string,
+): Promise<WorkspaceDeleteResponse> {
+    const response =
+        await apiClient.delete<WorkspaceDeleteResponse>(
+            `/workspaces/${workspaceSlug}`,
         );
 
     return response.data;

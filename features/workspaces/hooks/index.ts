@@ -5,3 +5,4 @@ export * from "./useWorkspaces";
 export * from "./useCreateWorkspace";
 export * from "./useDetailWorkspace";
 export * from "./useUpdateWorkspace";
+export * from "./useDeleteWorkspace";

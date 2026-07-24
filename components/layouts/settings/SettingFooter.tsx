@@ -23,7 +23,7 @@ export default function SettingFooter({
     return (
         <div className="mt-4 flex justify-end border-t border-border pt-4">
             <Button
-                size="sm"
+                size="lg"
                 variant="primary"
                 disabled={disabled || isSubmitting}
                 onClick={() =>

@@ -80,3 +80,9 @@ export interface UpdateWorkspacePayload {
     description: string;
     color: string;
 }
+
+export interface WorkspaceDeleteResponse {
+    success: boolean;
+    message: string;
+    data: Workspace;
+}

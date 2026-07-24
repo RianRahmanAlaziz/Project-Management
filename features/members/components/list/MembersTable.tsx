@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
     Crown,
     Eye,
@@ -12,24 +12,15 @@ import {
     Badge,
 } from "@/components/ui";
 
-import {
-    MemberActionsMenu,
-} from "@/features/members/components";
+import { MemberActionsMenu } from "@/features/members/components";
 
-import type {
-    WorkspaceMember,
-} from "@/features/members/types/workspaceMember";
+import type { WorkspaceMember } from "@/features/members/types/workspaceMember";
+
 
 interface MembersTableProps {
     members: WorkspaceMember[];
-
-    onChangeRole: (
-        member: WorkspaceMember,
-    ) => void;
-
-    onRemove: (
-        member: WorkspaceMember,
-    ) => void;
+    onChangeRole: (member: WorkspaceMember) => void;
+    onRemove: (member: WorkspaceMember) => void;
 }
 
 const roleIcons: Record<string, ReactNode> = {
@@ -39,10 +30,7 @@ const roleIcons: Record<string, ReactNode> = {
     viewer: <Eye size={18} />,
 };
 
-const roleColors: Record<
-    string,
-    "indigo" | "blue" | "green" | "gray"
-> = {
+const roleColors: Record<string, "indigo" | "blue" | "green" | "gray"> = {
     owner: "indigo",
     admin: "blue",
     member: "green",
@@ -56,9 +44,7 @@ function formatRole(role: string) {
     );
 }
 
-function formatJoinedDate(
-    date: string | null,
-) {
+function formatJoinedDate(date: string | null) {
     if (!date) {
         return "-";
     }
@@ -77,6 +63,11 @@ export default function MembersTable({
     onChangeRole,
     onRemove,
 }: MembersTableProps) {
+    const { user } = useAuth();
+    const currentMember = members.find((member) => member.user.id === user?.id);
+    const currentUserRole = currentMember?.role;
+    const canManageMembers = currentUserRole === "owner" || currentUserRole === "admin";
+
     return (
         <div className="overflow-hidden rounded-xl border border-border bg-card">
             <table className="w-full">
@@ -109,27 +100,17 @@ export default function MembersTable({
                             <td className="px-4 py-5">
                                 <div className="flex items-center gap-3">
                                     <Avatar
-                                        name={
-                                            member.user.name
-                                        }
+                                        name={member.user.name}
                                         size="lg"
                                     />
 
                                     <div className="flex flex-col">
                                         <span className="text-base font-medium text-foreground">
-                                            {
-                                                member
-                                                    .user
-                                                    .name
-                                            }
+                                            {member.user.name}
                                         </span>
 
                                         <span className="text-sm text-muted-foreground">
-                                            {
-                                                member
-                                                    .user
-                                                    .email
-                                            }
+                                            {member.user.email}
                                         </span>
                                     </div>
                                 </div>
@@ -139,56 +120,37 @@ export default function MembersTable({
                                 <div className="flex justify-center">
                                     <Badge
                                         size="md"
-                                        label={formatRole(
-                                            member.role,
-                                        )}
-                                        icon={
-                                            roleIcons[
-                                            member
-                                                .role
-                                            ]
-                                        }
-                                        color={
-                                            roleColors[
-                                            member
-                                                .role
-                                            ]
-                                        }
+                                        label={formatRole(member.role)}
+                                        icon={roleIcons[member.role]}
+                                        color={roleColors[member.role]}
                                     />
                                 </div>
                             </td>
 
                             <td className="hidden px-4 py-5 lg:table-cell">
                                 <span className="text-base text-muted-foreground">
-                                    {formatJoinedDate(
-                                        member.joined_at,
-                                    )}
+                                    {formatJoinedDate(member.joined_at)}
                                 </span>
                             </td>
 
                             <td className="px-4 py-5">
                                 <div className="flex justify-center">
-                                    {member.role !== "owner" && (
-                                        <MemberActionsMenu
-                                            member={member}
-                                            onView={(
-                                                selectedMember,
-                                            ) => {
-                                                console.log(
-                                                    "View",
-                                                    selectedMember
-                                                        .id,
-                                                );
-                                            }}
-                                            onChangeRole={
-                                                onChangeRole
-                                            }
-                                            onRemove={
-                                                onRemove
-                                            }
-                                        />
-                                    )}
-
+                                    {canManageMembers &&
+                                        member.role !== "owner" &&
+                                        member.role !== "admin" &&
+                                        member.user.id !== user?.id && (
+                                            <MemberActionsMenu
+                                                member={member}
+                                                onView={(selectedMember) => {
+                                                    console.log(
+                                                        "View",
+                                                        selectedMember.id,
+                                                    );
+                                                }}
+                                                onChangeRole={onChangeRole}
+                                                onRemove={onRemove}
+                                            />
+                                        )}
                                 </div>
                             </td>
                         </tr>

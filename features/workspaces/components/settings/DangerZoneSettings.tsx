@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui'
-import { AlertTriangle, Download, Trash2 } from 'lucide-react'
+import { AlertTriangle, Download, Loader2, Trash2 } from 'lucide-react'
 import { Dispatch, SetStateAction } from "react";
 
 import {
@@ -11,13 +11,17 @@ interface DangerZoneSettingsProps {
     workspaceSlug: string;
     confirmDelete: string;
     setConfirmDelete: Dispatch<SetStateAction<string>>;
+    onOpenDeleteModal: () => void;
+
 }
 
 export default function DangerZoneSettings({
     workspaceSlug,
     confirmDelete,
-    setConfirmDelete
+    setConfirmDelete,
+    onOpenDeleteModal,
 }: DangerZoneSettingsProps) {
+    const canDelete = confirmDelete === workspaceSlug;
     return (
         <div className="space-y-4">
             <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl flex items-start gap-2.5">
@@ -30,17 +34,17 @@ export default function DangerZoneSettings({
             <DangerCard
                 title="Transfer ownership"
                 desc="Transfer this workspace to another member. You will lose owner privileges."
-                action={<Button size="sm" variant="outline" className="border-warning text-warning hover:bg-warning/5">Transfer</Button>}
+                action={<Button size="lg" variant="outline" className="border-warning text-warning hover:bg-warning/5">Transfer</Button>}
             />
             <DangerCard
                 title="Export workspace data"
                 desc="Download all workspace data including projects, tasks, and member activity."
-                action={<Button size="sm" variant="outline"><Download size={12} />Export</Button>}
+                action={<Button size="lg" variant="outline"><Download size={12} />Export</Button>}
             />
             <DangerCard
                 title="Archive workspace"
                 desc="Archiving will make the workspace read-only. You can restore it at any time."
-                action={<Button size="sm" variant="outline">Archive</Button>}
+                action={<Button size="lg" variant="outline">Archive</Button>}
             />
             <DangerCard
                 title="Delete workspace"
@@ -55,17 +59,21 @@ export default function DangerZoneSettings({
                             <input
                                 placeholder={workspaceSlug}
                                 value={confirmDelete}
-                                onChange={(e) =>
-                                    setConfirmDelete(e.target.value)
+                                onChange={(event) =>
+                                    setConfirmDelete(event.target.value)
                                 }
-                                className="h-8 flex-1 bg-input-background border border-destructive/40 rounded-lg px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-destructive"
+                                className="h-12 flex-1 bg-input-background border border-destructive/40 rounded-lg px-3 text-md text-foreground focus:outline-none focus:ring-2 focus:ring-destructive"
                             />
                             <Button
-                                size="sm"
+                                size="lg"
                                 variant="danger"
                                 disabled={confirmDelete !== workspaceSlug}
+                                onClick={
+                                    onOpenDeleteModal
+                                }
                             >
-                                <Trash2 size={12} />Delete
+                                <Trash2 size={14} />
+                                Delete
                             </Button>
                         </div>
                     </div>

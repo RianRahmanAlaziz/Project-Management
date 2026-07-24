@@ -26,7 +26,6 @@ interface MemberActionsMenuProps {
 
     onView?: (member: WorkspaceMember) => void;
     onChangeRole?: (member: WorkspaceMember) => void;
-    onResendInvite?: (member: WorkspaceMember) => void;
     onRemove?: (member: WorkspaceMember) => void;
 }
 
@@ -34,7 +33,6 @@ export default function MemberActionsMenu({
     member,
     onView,
     onChangeRole,
-    onResendInvite,
     onRemove,
 }: MemberActionsMenuProps) {
     return (
@@ -54,62 +52,33 @@ export default function MemberActionsMenu({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                     onClick={() => onView?.(member)}
                 >
                     <User size={16} />
                     View Profile
+                </DropdownMenuItem> */}
+
+                <DropdownMenuItem
+                    onClick={() =>
+                        onChangeRole?.(member)
+                    }
+                >
+                    <Shield size={16} />
+                    Change Role
                 </DropdownMenuItem>
 
-                {member.role !== "owner" && (
-                    <>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                onChangeRole?.(member)
-                            }
-                        >
-                            <Shield size={16} />
-                            Change Role
-                        </DropdownMenuItem>
+                <DropdownMenuSeparator />
 
-                        <DropdownMenuItem
-                            onClick={() => onResendInvite?.(member)}
-                        >
-                            <Mail size={16} />
-                            Resend Invite
-                        </DropdownMenuItem>
-                    </>
-                )}
-
-
-
-                {onResendInvite && (
-                    <DropdownMenuItem
-                        onClick={() =>
-                            onResendInvite(member)
-                        }
-                    >
-                        <Mail size={16} />
-                        Resend Invite
-                    </DropdownMenuItem>
-                )}
-
-
-                {member.role !== "owner" && (
-                    <>
-                        <DropdownMenuSeparator />
-
-                        <DropdownMenuItem
-                            onClick={() =>
-                                onRemove?.(member)
-                            }
-                            className=" text-destructive hover:bg-destructive/10 "
-                        >
-                            <Trash2 size={16} />
-                            Remove Member
-                        </DropdownMenuItem>
-                    </>
-                )}
+                <DropdownMenuItem
+                    onClick={() =>
+                        onRemove?.(member)
+                    }
+                    className=" text-destructive hover:bg-destructive/10 "
+                >
+                    <Trash2 size={16} />
+                    Remove Member
+                </DropdownMenuItem>
 
             </DropdownMenuContent>
         </DropdownMenu>

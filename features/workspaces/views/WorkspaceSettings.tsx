@@ -8,6 +8,7 @@ import {
     SecuritySettings,
     GeneralSettings,
     WorkspaceSettingsSkeleton,
+    DeleteWorkspaceModal,
 } from "@/features/workspaces/components";
 
 import { SettingsSidebar } from "@/components/layouts/settings";
@@ -17,6 +18,7 @@ import { WORKSPACE_SETTINGS } from "@/features/workspaces/constants/settings";
 import {
     useUpdateWorkspace,
     useDetailWorkspace,
+    useDeleteWorkspace,
 } from "@/features/workspaces/hooks";
 
 import type { UpdateWorkspacePayload } from "@/features/workspaces/types/workspace";
@@ -31,14 +33,14 @@ export default function WorkspaceSettings({
     const router = useRouter();
     const [activeSection, setActiveSection] = useState("general");
     const [confirmDelete, setConfirmDelete] = useState("");
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
 
     const {
         workspace,
         isLoading,
         error,
     } = useDetailWorkspace(workspaceSlug);
-
-    const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
 
     useEffect(() => {
         if (!workspace) {
@@ -77,7 +79,6 @@ export default function WorkspaceSettings({
         isSaved,
     } = useUpdateWorkspace({
         workspaceSlug,
-
         onSuccess: (updatedWorkspace) => {
             setWorkspaceData({
                 name: updatedWorkspace.name,
@@ -110,6 +111,31 @@ export default function WorkspaceSettings({
             });
         };
 
+    const {
+        handleDeleteWorkspace,
+        isDeleting,
+        deleteError,
+    } = useDeleteWorkspace({
+        workspaceSlug,
+
+        onSuccess: () => {
+            router.replace("/workspaces");
+            router.refresh();
+        },
+    });
+
+    const handleOpenDeleteModal = () => {
+        setDeleteModalOpen(true);
+    };
+
+    const handleCloseDeleteModal = () => {
+        if (isDeleting) {
+            return;
+        }
+
+        setDeleteModalOpen(false);
+    };
+
     if (isLoading || !workspaceData) {
         return <WorkspaceSettingsSkeleton />;
     }
@@ -125,39 +151,39 @@ export default function WorkspaceSettings({
         );
     }
 
-
     if (!workspaceData) {
         return <WorkspaceSettingsSkeleton />;
     }
 
     return (
-        <div className="flex h-full flex-1 flex-col overflow-hidden">
-            <div className="flex flex-1 overflow-hidden">
+        <>
+            <div className="flex h-full flex-1 flex-col overflow-hidden">
+                <div className="flex flex-1 overflow-hidden">
 
-                <SettingsSidebar
-                    title="Workspace"
-                    items={WORKSPACE_SETTINGS}
-                    activeItem={activeSection}
-                    onChange={setActiveSection}
-                />
+                    <SettingsSidebar
+                        title="Workspace"
+                        items={WORKSPACE_SETTINGS}
+                        activeItem={activeSection}
+                        onChange={setActiveSection}
+                    />
 
-                {/* Content */}
-                <div className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-2xl space-y-6">
-                        {activeSection === "general" && (
-                            <GeneralSettings
-                                workspace={workspaceData}
-                                isSubmitting={isUpdating}
-                                isSaved={isSaved}
-                                error={updateError}
-                                onChange={updateWorkspaceField}
-                                onSave={
-                                    handleSaveGeneral
-                                }
-                            />
-                        )}
+                    {/* Content */}
+                    <div className="flex-1 overflow-y-auto p-6">
+                        <div className="max-w space-y-6">
+                            {activeSection === "general" && (
+                                <GeneralSettings
+                                    workspace={workspaceData}
+                                    isSubmitting={isUpdating}
+                                    isSaved={isSaved}
+                                    error={updateError}
+                                    onChange={updateWorkspaceField}
+                                    onSave={
+                                        handleSaveGeneral
+                                    }
+                                />
+                            )}
 
-                        {/* {activeSection === "security" && (
+                            {/* {activeSection === "security" && (
                             <SecuritySettings
                                 toggles={toggles}
                                 toggle={toggle}
@@ -176,17 +202,28 @@ export default function WorkspaceSettings({
                         )} */}
 
 
-                        {activeSection === "danger" && (
-                            <DangerZoneSettings
-                                workspaceSlug={workspaceSlug}
-                                confirmDelete={confirmDelete}
-                                setConfirmDelete={setConfirmDelete}
-                            />
-                        )}
+                            {activeSection === "danger" && (
+                                <DangerZoneSettings
+                                    workspaceSlug={workspace.slug}
+                                    confirmDelete={confirmDelete}
+                                    setConfirmDelete={setConfirmDelete}
+                                    onOpenDeleteModal={handleOpenDeleteModal}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <DeleteWorkspaceModal
+                open={deleteModalOpen}
+                workspace={workspace}
+                isSubmitting={isDeleting}
+                error={deleteError}
+                onClose={handleCloseDeleteModal}
+                onConfirm={handleDeleteWorkspace}
+            />
+        </>
     )
 }
 

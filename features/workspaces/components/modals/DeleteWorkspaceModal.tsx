@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 import { Modal, Button } from "@/components/ui";
 
 import type { Workspace } from "@/features/workspaces/types/workspace";
@@ -8,22 +8,34 @@ import type { Workspace } from "@/features/workspaces/types/workspace";
 interface DeleteWorkspaceModalProps {
     open: boolean;
     workspace: Workspace | null;
+    isSubmitting?: boolean;
+    error?: string | null;
     onClose: () => void;
-    onConfirm: (workspace: Workspace) => void;
+    onConfirm: () => Promise<void> | void;
 }
 
 export default function DeleteWorkspaceModal({
     open,
     workspace,
+    isSubmitting = false,
+    error,
     onClose,
     onConfirm,
 }: DeleteWorkspaceModalProps) {
     if (!workspace) return null;
 
+    const handleConfirm = async (): Promise<void> => {
+        await onConfirm();
+    };
+
     return (
         <Modal
             open={open}
-            onClose={onClose}
+            onClose={
+                isSubmitting
+                    ? () => { }
+                    : onClose
+            }
             size="md"
         >
             <div className="space-y-5">
@@ -58,11 +70,16 @@ export default function DeleteWorkspaceModal({
                         </p>
                     </div>
                 </div>
-
+                {error && (
+                    <p className="text-sm text-destructive">
+                        {error}
+                    </p>
+                )}
                 <div className="flex justify-end gap-3">
                     <Button
                         variant="outline"
                         size="lg"
+                        disabled={isSubmitting}
                         onClick={onClose}
                     >
                         Cancel
@@ -71,12 +88,22 @@ export default function DeleteWorkspaceModal({
                     <Button
                         variant="danger"
                         size="lg"
-                        onClick={() => {
-                            onConfirm(workspace);
-                            onClose();
-                        }}
+                        disabled={isSubmitting}
+                        onClick={() =>
+                            void handleConfirm()
+                        }
                     >
-                        Delete Workspace
+                        {isSubmitting ? (
+                            <>
+                                <Loader2
+                                    size={16}
+                                    className="animate-spin"
+                                />
+                                Deleting...
+                            </>
+                        ) : (
+                            "Delete Workspace"
+                        )}
                     </Button>
                 </div>
             </div>
