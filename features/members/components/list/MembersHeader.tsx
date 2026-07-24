@@ -1,17 +1,18 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui";
-import {
-    USERS,
-} from "@/features/users/mocks/users";
+import { WorkspaceMember } from "../../types/workspaceMember";
 
 interface MembersHeaderProps {
+    members: WorkspaceMember[];
     onInviteMembers: () => void;
 }
 
 
 export default function MembersHeader({
+    members,
     onInviteMembers,
 }: MembersHeaderProps) {
+    const memberCount = members.length;
     return (
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -20,7 +21,11 @@ export default function MembersHeader({
                 </h1>
 
                 <p className="mt-1 text-sm text-muted-foreground">
-                    {USERS.data.length} members in this workspace
+                    {memberCount}{" "}
+                    {memberCount === 1
+                        ? "member"
+                        : "members"}{" "}
+                    in this workspace
                 </p>
             </div>
 

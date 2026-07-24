@@ -109,6 +109,7 @@ export default function MembersView({
         <div className="px-6 py-8 xl:px-8">
             <div className="mb-5 w-full space-y-6">
                 <MembersHeader
+                    members={members}
                     onInviteMembers={handleOpenAddMember}
                 />
             </div>
