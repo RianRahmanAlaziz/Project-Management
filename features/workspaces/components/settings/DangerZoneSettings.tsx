@@ -1,27 +1,24 @@
 import { Button } from '@/components/ui'
-import { AlertTriangle, Download, Loader2, Trash2 } from 'lucide-react'
-import { Dispatch, SetStateAction } from "react";
-
-import {
-    DangerCard
-} from "@/components/layouts/settings";
-
+import { AlertTriangle, Download, Trash2 } from 'lucide-react'
+import { DangerCard } from "@/components/layouts/settings";
 
 interface DangerZoneSettingsProps {
     workspaceSlug: string;
     confirmDelete: string;
-    setConfirmDelete: Dispatch<SetStateAction<string>>;
+    onConfirmDeleteChange: (value: string) => void;
     onOpenDeleteModal: () => void;
-
+    onOpenTransferModal: () => void;
 }
 
 export default function DangerZoneSettings({
     workspaceSlug,
     confirmDelete,
-    setConfirmDelete,
+    onConfirmDeleteChange,
     onOpenDeleteModal,
+    onOpenTransferModal,
 }: DangerZoneSettingsProps) {
     const canDelete = confirmDelete === workspaceSlug;
+
     return (
         <div className="space-y-4">
             <div className="p-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl flex items-start gap-2.5">
@@ -34,7 +31,15 @@ export default function DangerZoneSettings({
             <DangerCard
                 title="Transfer ownership"
                 desc="Transfer this workspace to another member. You will lose owner privileges."
-                action={<Button size="lg" variant="outline" className="border-warning text-warning hover:bg-warning/5">Transfer</Button>}
+                action={
+                    <Button
+                        size="lg"
+                        variant="outline"
+                        className="border-warning text-warning hover:bg-warning/5"
+                        onClick={onOpenTransferModal}
+                    >
+                        Transfer
+                    </Button>}
             />
             <DangerCard
                 title="Export workspace data"
@@ -60,17 +65,15 @@ export default function DangerZoneSettings({
                                 placeholder={workspaceSlug}
                                 value={confirmDelete}
                                 onChange={(event) =>
-                                    setConfirmDelete(event.target.value)
+                                    onConfirmDeleteChange(event.target.value)
                                 }
                                 className="h-12 flex-1 bg-input-background border border-destructive/40 rounded-lg px-3 text-md text-foreground focus:outline-none focus:ring-2 focus:ring-destructive"
                             />
                             <Button
                                 size="lg"
                                 variant="danger"
-                                disabled={confirmDelete !== workspaceSlug}
-                                onClick={
-                                    onOpenDeleteModal
-                                }
+                                disabled={!canDelete}
+                                onClick={onOpenDeleteModal}
                             >
                                 <Trash2 size={14} />
                                 Delete

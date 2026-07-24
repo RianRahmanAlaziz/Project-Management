@@ -1,12 +1,12 @@
+import type { ApiResponse } from "@/lib/api/apiResponse";
 import { apiClient } from "@/lib/api/apiClient";
+import type { Workspace } from "../types/workspace";
 
 import type {
     CreateWorkspacePayload,
     UpdateWorkspacePayload,
     WorkspaceListResponse,
-    WorkspaceResponse,
-    WorkspaceDetailResponse,
-    WorkspaceDeleteResponse,
+    TransferWorkspaceOwnershipPayload,
 } from "../types/workspace";
 
 export async function getWorkspaces(): Promise<WorkspaceListResponse> {
@@ -14,40 +14,49 @@ export async function getWorkspaces(): Promise<WorkspaceListResponse> {
         await apiClient.get<WorkspaceListResponse>(
             "/workspaces",
         );
-
     return response.data;
 }
 
 export async function getDetailWorkspace(
     workspaceSlug: string,
-): Promise<WorkspaceDetailResponse> {
+): Promise<ApiResponse<Workspace>> {
     const response =
-        await apiClient.get<WorkspaceDetailResponse>(
+        await apiClient.get<ApiResponse<Workspace>>(
             `/workspaces/${workspaceSlug}`,
         );
-
     return response.data;
 }
 
 export async function createWorkspace(
     payload: CreateWorkspacePayload,
-): Promise<WorkspaceResponse> {
+): Promise<ApiResponse<Workspace>> {
     const response =
-        await apiClient.post<WorkspaceResponse>(
+        await apiClient.post<ApiResponse<Workspace>>(
             "/workspaces",
             payload,
         );
-
     return response.data;
 }
 
 export async function updateWorkspace(
     workspaceSlug: string,
     payload: UpdateWorkspacePayload,
-): Promise<WorkspaceDetailResponse> {
+): Promise<ApiResponse<Workspace>> {
     const response =
-        await apiClient.patch<WorkspaceDetailResponse>(
+        await apiClient.patch<ApiResponse<Workspace>>(
             `/workspaces/${workspaceSlug}`,
+            payload,
+        );
+    return response.data;
+}
+
+export async function transferWorkspaceOwnership(
+    workspaceSlug: string,
+    payload: TransferWorkspaceOwnershipPayload,
+): Promise<ApiResponse<Workspace>> {
+    const response =
+        await apiClient.patch<ApiResponse<Workspace>>(
+            `/workspaces/${workspaceSlug}/transfer-ownership`,
             payload,
         );
 
@@ -56,11 +65,10 @@ export async function updateWorkspace(
 
 export async function deleteWorkspace(
     workspaceSlug: string,
-): Promise<WorkspaceDeleteResponse> {
+): Promise<ApiResponse<Workspace>> {
     const response =
-        await apiClient.delete<WorkspaceDeleteResponse>(
+        await apiClient.delete<ApiResponse<Workspace>>(
             `/workspaces/${workspaceSlug}`,
         );
-
     return response.data;
 }

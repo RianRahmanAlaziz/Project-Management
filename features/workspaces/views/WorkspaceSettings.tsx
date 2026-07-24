@@ -9,17 +9,20 @@ import {
     GeneralSettings,
     WorkspaceSettingsSkeleton,
     DeleteWorkspaceModal,
+    TransferOwnershipModal,
 } from "@/features/workspaces/components";
 
 import { SettingsSidebar } from "@/components/layouts/settings";
-
 import { WORKSPACE_SETTINGS } from "@/features/workspaces/constants/settings";
 
 import {
     useUpdateWorkspace,
     useDetailWorkspace,
     useDeleteWorkspace,
+    useTransferWorkspaceOwnership,
 } from "@/features/workspaces/hooks";
+
+import { useWorkspaceMembers } from "@/features/members/hooks";
 
 import type { UpdateWorkspacePayload } from "@/features/workspaces/types/workspace";
 
@@ -35,6 +38,11 @@ export default function WorkspaceSettings({
     const [confirmDelete, setConfirmDelete] = useState("");
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
+
+    const {
+        members,
+        isLoading: isLoadingMembers,
+    } = useWorkspaceMembers(workspaceSlug);
 
     const {
         workspace,
@@ -136,6 +144,41 @@ export default function WorkspaceSettings({
         setDeleteModalOpen(false);
     };
 
+    const [
+        transferModalOpen,
+        setTransferModalOpen,
+    ] = useState(false);
+
+    const handleOpenTransferModal = () => {
+        setTransferModalOpen(true);
+    };
+
+    const {
+        handleTransferOwnership,
+        isTransferring,
+        transferError,
+    } = useTransferWorkspaceOwnership({
+        workspaceSlug,
+
+        onSuccess: (updatedWorkspace) => {
+            setTransferModalOpen(false);
+
+            router.replace(
+                `/workspaces/${updatedWorkspace.slug}`,
+            );
+
+            router.refresh();
+        },
+    });
+
+    const handleCloseTransferModal = () => {
+        if (isTransferring) {
+            return;
+        }
+
+        setTransferModalOpen(false);
+    };
+
     if (isLoading || !workspaceData) {
         return <WorkspaceSettingsSkeleton />;
     }
@@ -206,14 +249,24 @@ export default function WorkspaceSettings({
                                 <DangerZoneSettings
                                     workspaceSlug={workspace.slug}
                                     confirmDelete={confirmDelete}
-                                    setConfirmDelete={setConfirmDelete}
+                                    onConfirmDeleteChange={setConfirmDelete}
                                     onOpenDeleteModal={handleOpenDeleteModal}
+                                    onOpenTransferModal={handleOpenTransferModal}
                                 />
                             )}
                         </div>
                     </div>
                 </div>
             </div>
+
+            <TransferOwnershipModal
+                open={transferModalOpen}
+                members={members}
+                isSubmitting={isTransferring}
+                error={transferError}
+                onClose={handleCloseTransferModal}
+                onConfirm={(userId) => handleTransferOwnership({ user_id: userId })}
+            />
 
             <DeleteWorkspaceModal
                 open={deleteModalOpen}

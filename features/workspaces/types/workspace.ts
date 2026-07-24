@@ -3,7 +3,6 @@ export type WorkspaceRole =
     | "admin"
     | "member"
     | "viewer";
-
 export interface WorkspaceOwner {
     id: number;
     name: string;
@@ -12,7 +11,6 @@ export interface WorkspaceOwner {
     created_at: string;
     updated_at: string;
 }
-
 export interface Workspace {
     id: number;
     name: string;
@@ -26,7 +24,6 @@ export interface Workspace {
     created_at: string;
     updated_at: string;
 }
-
 export interface WorkspacePagination {
     current_page: number;
     last_page: number;
@@ -35,7 +32,6 @@ export interface WorkspacePagination {
     from: number | null;
     to: number | null;
 }
-
 export interface WorkspaceListResponse {
     success: boolean;
     message: string;
@@ -44,45 +40,26 @@ export interface WorkspaceListResponse {
         pagination: WorkspacePagination;
     };
 }
-
 export interface CreateWorkspacePayload {
     name: string;
     description?: string;
     color: string;
 }
-
-export interface WorkspaceResponse {
-    success: boolean;
-    message: string;
-    data: Workspace;
-}
-
 export interface WorkspaceInviteFormData {
     email: string;
     role: string;
 }
-
 export interface WorkspaceFormData {
     name: string;
     description: string;
     color: string;
     invites: WorkspaceInviteFormData[];
 }
-
-export interface WorkspaceDetailResponse {
-    success: boolean;
-    message: string;
-    data: Workspace;
-}
-
 export interface UpdateWorkspacePayload {
     name: string;
     description: string;
     color: string;
 }
-
-export interface WorkspaceDeleteResponse {
-    success: boolean;
-    message: string;
-    data: Workspace;
+export interface TransferWorkspaceOwnershipPayload {
+    user_id: number;
 }
