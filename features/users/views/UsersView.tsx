@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
     UsersHeader,
@@ -24,6 +24,7 @@ import DeleteUserModal from "../components/modal/DeleteUserModal";
 
 import { USERS } from "../mocks/users";
 import type { Users } from "../types/users";
+import { UsersSkeleton } from "../components/skeleton";
 
 
 export function UsersView() {
@@ -120,6 +121,16 @@ export function UsersView() {
         setSelectedUser(null);
     };
 
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="mb-5 w-full space-y-6">
@@ -131,19 +142,25 @@ export function UsersView() {
 
             <div className="mb-4 border-b border-border" />
 
-            <UsersSearch
-                search={search}
-                role={role}
-                onSearchChange={setSearch}
-                onRoleChange={setRole}
-            />
+            {isLoading ? (
+                <UsersSkeleton />
+            ) : (
+                <>
+                    <UsersSearch
+                        search={search}
+                        role={role}
+                        onSearchChange={setSearch}
+                        onRoleChange={setRole}
+                    />
 
-            <UsersTable
-                users={filteredUsers}
-                onResetPassword={handleResetPassword}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-            />
+                    <UsersTable
+                        users={filteredUsers}
+                        onResetPassword={handleResetPassword}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                    />
+                </>
+            )}
 
             <CreateUserModal
                 open={openCreateModal}
