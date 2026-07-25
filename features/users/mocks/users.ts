@@ -1,41 +1,31 @@
-export const USERS = {
-    success: true,
-    message: "Users retrieved successfully.",
-    data: [
-        {
-            id: 1,
-            name: "Alex Rivera",
-            email: "alex@projectflow.io",
-            role: "Owner",
-            avatar: null,
-        },
-        {
-            id: 2,
-            name: "Sarah Chen",
-            email: "sarah@projectflow.io",
-            role: "Admin",
-            avatar: null,
-        },
-        {
-            id: 3,
-            name: "Marcus Johnson",
-            email: "marcus@projectflow.io",
-            role: "Member",
-            avatar: null,
-        },
-        {
-            id: 4,
-            name: "Priya Patel",
-            email: "priya@projectflow.io",
-            role: "Member",
-            avatar: null,
-        },
-        {
-            id: 5,
-            name: "Tom Williams",
-            email: "tom@projectflow.io",
-            role: "Viewer",
-            avatar: null,
-        },
-    ],
-};
+import type { User } from "../types/users";
+
+export const USERS: User[] = [
+    {
+        id: 1,
+        name: "Rian Rahman",
+        email: "rian@example.com",
+        role: "super_admin",
+        email_verified_at: "2026-07-20T08:00:00.000000Z",
+        created_at: "2026-07-01T08:00:00.000000Z",
+        updated_at: "2026-07-01T08:00:00.000000Z",
+    },
+    {
+        id: 2,
+        name: "John Doe",
+        email: "john@example.com",
+        role: "user",
+        email_verified_at: "2026-07-21T08:00:00.000000Z",
+        created_at: "2026-07-10T08:00:00.000000Z",
+        updated_at: "2026-07-01T08:00:00.000000Z",
+    },
+    {
+        id: 3,
+        name: "Sarah Smith",
+        email: "sarah@example.com",
+        role: "user",
+        email_verified_at: null,
+        created_at: "2026-07-15T08:00:00.000000Z",
+        updated_at: "2026-07-01T08:00:00.000000Z",
+    },
+];

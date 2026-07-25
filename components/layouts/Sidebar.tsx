@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 import { Avatar, Tooltip } from "@/components/ui";
-import { USERS } from "@/data/data";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface SidebarProps {
     collapsed: boolean;
@@ -48,16 +48,13 @@ const WORKSPACES: WorkspaceItem[] = [
     },
 ];
 
-const currentUser = USERS[0] ?? {
-    name: "Alex Rivera",
-    role: "Owner",
-};
 
 export function Sidebar({
     collapsed,
     onToggle,
 }: SidebarProps) {
     const pathname = usePathname();
+    const { user } = useAuth();
 
     return (
         <aside
@@ -201,18 +198,18 @@ export function Sidebar({
                         }`}
                 >
                     <Avatar
-                        name={currentUser.name}
+                        name={user?.name ?? "User"}
                         size="md"
                     />
 
                     {!collapsed && (
                         <div className="min-w-0">
                             <p className="truncate text-sm font-semibold">
-                                {currentUser.name}
+                                {user?.name}
                             </p>
 
                             <p className="truncate text-xs text-sidebar-foreground/50">
-                                {currentUser.role}
+                                {user?.role}
                             </p>
                         </div>
                     )}

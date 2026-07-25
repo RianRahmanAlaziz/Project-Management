@@ -6,6 +6,7 @@ import {
     Briefcase,
     LayoutDashboard,
     ListTodo,
+    Users,
 } from "lucide-react";
 
 export interface NavigationItem {
@@ -21,6 +22,12 @@ export const NAV_ITEMS: NavigationItem[] = [
         mobileLabel: "Home",
         href: "/dashboard",
         icon: LayoutDashboard,
+    },
+    {
+        label: "Users",
+        mobileLabel: "Users",
+        href: "/users",
+        icon: Users,
     },
     {
         label: "Workspaces",
