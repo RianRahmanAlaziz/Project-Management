@@ -22,34 +22,34 @@ import ResetPasswordModal, {
 
 import DeleteUserModal from "../components/modal/DeleteUserModal";
 
-import { USERS } from "../mocks/users";
 import type { Users } from "../types/users";
 import { UsersSkeleton } from "../components/skeleton";
+import { useUsers } from "../hooks";
+import useUsersSearch from "../hooks/useUsersSearch";
 
 
 export function UsersView() {
-    const [search, setSearch] = useState("");
-    const [role, setRole] = useState("");
     const [openCreateModal, setOpenCreateModal] = useState(false);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<Users | null>(null);
 
-    const filteredUsers = useMemo(() => {
-        const query = search.trim().toLowerCase();
+    const {
+        users,
+        isLoading,
+        error,
+        refetch,
+    } = useUsers();
 
-        return USERS.filter((user) => {
-            const matchesSearch =
-                !query ||
-                user.name.toLowerCase().includes(query) ||
-                user.email.toLowerCase().includes(query);
+    const {
+        search,
+        setSearch,
+        role,
+        setRole,
+        filteredUsers,
+    } = useUsersSearch(users);
 
-            const matchesRole =
-                !role || user.role === role;
 
-            return matchesSearch && matchesRole;
-        });
-    }, [search, role]);
 
     const handleCreate = () => {
         setOpenCreateModal(true);
@@ -121,21 +121,12 @@ export function UsersView() {
         setSelectedUser(null);
     };
 
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 2000);
-
-        return () => clearTimeout(timer);
-    }, []);
 
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="mb-5 w-full space-y-6">
                 <UsersHeader
-                    user={USERS}
+                    user={users}
                     onCreate={handleCreate}
                 />
             </div>

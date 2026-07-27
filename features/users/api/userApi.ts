@@ -9,15 +9,10 @@ import type {
     UsersResponse,
 } from "../types/users";
 
-export async function getUsers(params?: UserListParams): Promise<UsersResponse> {
-    const { data } = await apiClient.get<UsersResponse>(
-        "/users",
-        {
-            params,
-        }
-    );
+export async function getUsers(): Promise<UsersResponse> {
+    const response = await apiClient.get<UsersResponse>("/users");
 
-    return data;
+    return response.data;
 }
 
 export async function getUser(id: number): Promise<UserResponse> {

@@ -32,7 +32,7 @@ export interface UpdateUserPayload {
     role: SystemRole;
 }
 
-export interface UserPaginationMeta {
+export interface UserPagination {
     current_page: number;
     last_page: number;
     per_page: number;
@@ -45,7 +45,7 @@ export interface UsersResponse {
     success: boolean;
     message: string;
     data: Users[];
-    meta: UserPaginationMeta;
+    meta: UserPagination;
 }
 
 export interface UserResponse {

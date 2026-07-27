@@ -31,20 +31,6 @@ function formatRole(role: string) {
         .join(" ");
 }
 
-function formatJoinedDate(date: string | null) {
-    if (!date) {
-        return "-";
-    }
-
-    return new Intl.DateTimeFormat(
-        "en-US",
-        {
-            month: "short",
-            year: "numeric",
-        },
-    ).format(new Date(date));
-}
-
 interface UsersTableProps {
     users: Users[];
     onEdit: (user: Users) => void;
