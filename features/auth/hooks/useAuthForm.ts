@@ -1,5 +1,5 @@
 "use client";
-
+import { toast } from "sonner";
 import { useState } from "react";
 import { useAuth } from "./useAuth";
 import { register, login } from "../api/authApi";
@@ -25,7 +25,6 @@ export function useAuthForm() {
     const [mode, setMode] = useState<AuthMode>("login");
     const [form, setForm] = useState<AuthForm>(INITIAL_FORM);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
 
     const isLogin = mode === "login";
@@ -39,10 +38,6 @@ export function useAuthForm() {
             ...previousForm,
             [field]: value,
         }));
-
-        if (error) {
-            setError("");
-        }
 
         setFieldErrors((previousErrors) => {
             if (!previousErrors[field]) {
@@ -61,7 +56,6 @@ export function useAuthForm() {
 
     const resetForm = () => {
         setForm(INITIAL_FORM);
-        setError("");
     };
 
     const handleSwitchMode = () => {
@@ -87,7 +81,6 @@ export function useAuthForm() {
         }
 
         setLoading(true);
-        setError("");
         setFieldErrors({});
 
         try {
@@ -106,13 +99,16 @@ export function useAuthForm() {
             setAuthToken(response.data.access_token);
 
             await refreshUser();
+            toast.success(isLogin ? "Login berhasil." : "Registrasi berhasil.");
             onSuccess?.();
         } catch (submitError) {
             const apiError = parseApiError(submitError);
 
-            console.error("Auth error:", apiError,);
-
-            setError(apiError.message);
+            toast.error(
+                apiError.errors.email?.[0] ??
+                apiError.errors.password?.[0] ??
+                apiError.message
+            );
 
             setFieldErrors({
                 name: apiError.errors.name,
@@ -129,7 +125,6 @@ export function useAuthForm() {
     return {
         mode,
         form,
-        error,
         fieldErrors,
         loading,
         isLogin,

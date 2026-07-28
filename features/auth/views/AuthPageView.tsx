@@ -24,7 +24,6 @@ export function AuthPageView() {
 
     const {
         form,
-        error,
         fieldErrors,
         loading,
         isLogin,
@@ -95,7 +94,6 @@ export function AuthPageView() {
 
                         <AuthForm
                             form={form}
-                            error={error}
                             fieldErrors={fieldErrors}
                             loading={loading}
                             isLogin={isLogin}

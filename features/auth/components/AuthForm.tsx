@@ -8,7 +8,6 @@ import { AuthForm as AuthFormType, AuthFieldErrors } from "../types/auth";
 
 interface AuthFormProps {
     form: AuthFormType;
-    error: string;
     fieldErrors: AuthFieldErrors;
     loading: boolean;
     isLogin: boolean;
@@ -24,7 +23,6 @@ interface AuthFormProps {
 
 export default function AuthForm({
     form,
-    error,
     fieldErrors,
     loading,
     isLogin,
@@ -34,15 +32,6 @@ export default function AuthForm({
 }: AuthFormProps) {
     return (
         <>
-            {error && (
-                <div
-                    role="alert"
-                    className="mb-4 rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2.5 text-xs text-destructive"
-                >
-                    {error}
-                </div>
-            )}
-
             <form onSubmit={onSubmit} className="space-y-3.5">
                 {isRegister && (
                     <Input
