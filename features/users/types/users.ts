@@ -1,4 +1,5 @@
 export type SystemRole =
+    | ""
     | "super_admin"
     | "user";
 
@@ -52,4 +53,28 @@ export interface UserResponse {
     success: boolean;
     message: string;
     data: Users;
+}
+
+export interface CreateUserForm {
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    role: SystemRole;
+}
+
+export interface EditUserForm {
+    name: string;
+    email: string;
+    role: SystemRole;
+}
+
+export interface ResetPasswordForm {
+    password: string;
+    password_confirmation: string;
+}
+
+export interface ResetPasswordPayload {
+    password: string;
+    password_confirmation: string;
 }

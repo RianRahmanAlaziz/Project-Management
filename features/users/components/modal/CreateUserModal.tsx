@@ -11,6 +11,7 @@ import {
     Modal,
 } from "@/components/ui";
 import { FaUserShield } from "react-icons/fa";
+import { Users, CreateUserForm } from "../../types/users";
 
 const ROLE_OPTIONS = [
     {
@@ -37,21 +38,13 @@ const ROLE_OPTIONS = [
     },
 ];
 
-export interface CreateUserForm {
-    name: string;
-    email: string;
-    password: string;
-    password_confirmation: string;
-    role: "" | "super_admin" | "user";
-}
-
 interface CreateUserModalProps {
     open: boolean;
     isSubmitting?: boolean;
     onClose: () => void;
     onConfirm: (
         data: CreateUserForm,
-    ) => Promise<void> | void;
+    ) => Promise<void>;
 }
 
 const INITIAL_FORM: CreateUserForm = {
@@ -62,7 +55,7 @@ const INITIAL_FORM: CreateUserForm = {
     role: "",
 };
 
-export default function CreateUserModal({
+export function CreateUserModal({
     open,
     isSubmitting = false,
     onClose,
@@ -202,8 +195,6 @@ export default function CreateUserModal({
                         )
                     }
                 />
-
-
 
                 <div className="flex justify-end gap-2 pt-2">
                     <Button

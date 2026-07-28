@@ -5,32 +5,31 @@ import {
     Modal,
 } from "@/components/ui";
 import { AlertTriangle } from "lucide-react";
+import { Users } from "../../types/users";
 
-export interface DeleteUser {
-    id: number;
-    name: string;
-    email: string;
-}
 
 interface DeleteUserModalProps {
     open: boolean;
-    user: DeleteUser | null;
+    user: Users | null;
     isSubmitting?: boolean;
     onClose: () => void;
     onConfirm: (
-        user: DeleteUser,
-    ) => Promise<void> | void;
+        user: Users,
+    ) => Promise<void>;
 }
 
-export default function DeleteUserModal({
+export function DeleteUserModal({
     open,
     user,
     isSubmitting = false,
     onClose,
     onConfirm,
 }: DeleteUserModalProps) {
+
     const handleDelete = async () => {
-        if (!user) return;
+        if (!user) {
+            return;
+        }
 
         await onConfirm(user);
     };

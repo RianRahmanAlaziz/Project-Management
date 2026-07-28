@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { ShieldCheck, UserRound } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
+import { FaUserShield } from "react-icons/fa";
+import { EditUserForm, Users } from "../../types/users";
 
 import {
     Button,
@@ -10,7 +11,6 @@ import {
     Input,
     Modal,
 } from "@/components/ui";
-import { FaUserShield } from "react-icons/fa";
 
 const ROLE_OPTIONS = [
     {
@@ -37,42 +37,42 @@ const ROLE_OPTIONS = [
     },
 ];
 
-export interface EditUserForm {
-    name: string;
-    email: string;
-    role: "super_admin" | "user";
-}
-
-interface EditUserModalProps {
-    open: boolean;
-    user: EditUserForm | null;
-    isSubmitting?: boolean;
-    onClose: () => void;
-    onConfirm: (
-        data: EditUserForm,
-    ) => Promise<void> | void;
-}
-
 const INITIAL_FORM: EditUserForm = {
     name: "",
     email: "",
-    role: "user",
+    role: "",
 };
 
-export default function EditUserModal({
-    open,
+interface EditUserModalProps {
+    user: Users | null;
+    open: boolean;
+    isSubmitting?: boolean;
+    onClose: () => void;
+    onConfirm: (
+        user: Users,
+        data: EditUserForm,
+    ) => Promise<void>;
+}
+
+export function EditUserModal({
     user,
+    open,
     isSubmitting = false,
     onClose,
     onConfirm,
 }: EditUserModalProps) {
-    const [form, setForm] =
-        useState<EditUserForm>(INITIAL_FORM);
+    const [form, setForm] = useState<EditUserForm>(INITIAL_FORM);
 
     useEffect(() => {
-        if (open && user) {
-            setForm(user);
+        if (!open || !user) {
+            return;
         }
+
+        setForm({
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        });
     }, [open, user]);
 
     const updateField = <
@@ -88,7 +88,11 @@ export default function EditUserModal({
     };
 
     const handleSubmit = async () => {
-        await onConfirm(form);
+        if (!user) {
+            return;
+        }
+
+        await onConfirm(user, form);
     };
 
     const isDisabled =

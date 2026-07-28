@@ -1,39 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-
 import {
     UsersHeader,
     UsersSearch,
     UsersTable,
+    UsersSkeleton,
+    CreateUserModal,
+    EditUserModal,
+    ResetPasswordModal,
+    DeleteUserModal
 } from "../components";
 
-import CreateUserModal, {
-    CreateUserForm,
-} from "../components/modal/CreateUserModal";
-
-import EditUserModal, {
-    EditUserForm,
-} from "../components/modal/EditUserModal";
-
-import ResetPasswordModal, {
-    ResetPasswordForm
-} from "../components/modal/ResetPasswordModal";
-
-import DeleteUserModal from "../components/modal/DeleteUserModal";
-
-import type { Users } from "../types/users";
-import { UsersSkeleton } from "../components/skeleton";
-import { useUsers } from "../hooks";
-import useUsersSearch from "../hooks/useUsersSearch";
+import {
+    useUsers,
+    useUsersSearch,
+    useUserModal,
+    useCreateUser,
+    useUpdateUser,
+    useResetPassword,
+    useDeleteUser,
+} from "@/features/users/hooks";
 
 
 export function UsersView() {
-    const [openCreateModal, setOpenCreateModal] = useState(false);
-    const [openEditModal, setOpenEditModal] = useState(false);
-    const [openDeleteModal, setOpenDeleteModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<Users | null>(null);
-
     const {
         users,
         isLoading,
@@ -49,85 +38,59 @@ export function UsersView() {
         filteredUsers,
     } = useUsersSearch(users);
 
+    const {
+        create,
+        edit,
+        remove,
+        resetPassword,
+    } = useUserModal();
 
+    const {
+        handleCreateUser,
+        isCreating,
+    } = useCreateUser({
+        onSuccess: async () => {
+            await refetch();
+            create.closeModal();
+        },
+    });
 
-    const handleCreate = () => {
-        setOpenCreateModal(true);
-    };
+    const {
+        handleUpdateUser,
+        isUpdating,
+    } = useUpdateUser({
+        onSuccess: async () => {
+            await refetch();
+            edit.closeModal();
+        },
+    });
 
-    const handleCloseCreate = () => {
-        setOpenCreateModal(false);
-    };
+    const {
+        handleResetPassword,
+        isResetting,
+    } = useResetPassword({
+        onSuccess: async () => {
+            await refetch();
+            resetPassword.closeModal();
+        },
+    });
 
-    const handleSubmitCreate = async (
-        data: CreateUserForm,
-    ) => {
-        console.log("Create User:", data);
-
-        // TODO: API Create User
-
-        setOpenCreateModal(false);
-    };
-
-    // EDIT
-
-    const handleEdit = (user: Users) => {
-        setSelectedUser(user);
-        setOpenEditModal(true);
-    };
-
-    const handleSubmitEdit = async (
-        data: EditUserForm,
-    ) => {
-        console.log("Edit", data);
-
-        setOpenEditModal(false);
-        setSelectedUser(null);
-    };
-
-    // DELETE
-
-    const handleDelete = (user: Users) => {
-        setSelectedUser(user);
-        setOpenDeleteModal(true);
-    };
-
-    const handleSubmitDelete = async () => {
-        console.log("Delete", selectedUser);
-
-        setOpenDeleteModal(false);
-        setSelectedUser(null);
-    };
-
-    const [openResetPasswordModal, setOpenResetPasswordModal] = useState(false);
-
-    const handleResetPassword = (
-        user: Users,
-    ) => {
-        setSelectedUser(user);
-        setOpenResetPasswordModal(true);
-    };
-
-    const handleSubmitResetPassword = async (
-        data: ResetPasswordForm,
-    ) => {
-        console.log(
-            "Reset Password",
-            selectedUser,
-            data,
-        );
-
-        setOpenResetPasswordModal(false);
-        setSelectedUser(null);
-    };
-
+    const {
+        handleDeleteUser,
+        isDeleting,
+    } = useDeleteUser({
+        onSuccess: async () => {
+            await refetch();
+            remove.closeModal();
+        },
+    });
 
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="mb-5 w-full space-y-6">
                 <UsersHeader
                     user={users}
-                    onCreate={handleCreate}
+                    onCreate={create.openModal}
                 />
             </div>
 
@@ -146,59 +109,43 @@ export function UsersView() {
 
                     <UsersTable
                         users={filteredUsers}
-                        onResetPassword={handleResetPassword}
-                        onEdit={handleEdit}
-                        onDelete={handleDelete}
+                        onEdit={edit.openModal}
+                        onDelete={remove.openModal}
+                        onResetPassword={resetPassword.openModal}
                     />
                 </>
             )}
 
             <CreateUserModal
-                open={openCreateModal}
-                onClose={handleCloseCreate}
-                onConfirm={handleSubmitCreate}
+                open={create.open}
+                onClose={create.closeModal}
+                onConfirm={handleCreateUser}
+                isSubmitting={isCreating}
             />
 
             <EditUserModal
-                open={openEditModal}
-                user={
-                    selectedUser
-                        ? {
-                            name: selectedUser.name,
-                            email: selectedUser.email,
-                            role: selectedUser.role,
-                        }
-                        : null
-                }
-                onClose={() => {
-                    setOpenEditModal(false);
-                    setSelectedUser(null);
-                }}
-                onConfirm={handleSubmitEdit}
+                open={edit.open}
+                user={edit.user}
+                onClose={edit.closeModal}
+                onConfirm={handleUpdateUser}
+                isSubmitting={isUpdating}
             />
 
             <ResetPasswordModal
-                open={openResetPasswordModal}
-                user={selectedUser}
-                onClose={() => {
-                    setOpenResetPasswordModal(false);
-                    setSelectedUser(null);
-                }}
-                onConfirm={
-                    handleSubmitResetPassword
-                }
+                open={resetPassword.open}
+                user={resetPassword.user}
+                onClose={resetPassword.closeModal}
+                isSubmitting={isResetting}
+                onConfirm={handleResetPassword}
             />
 
             <DeleteUserModal
-                open={openDeleteModal}
-                user={selectedUser}
-                onClose={() => {
-                    setOpenDeleteModal(false);
-                    setSelectedUser(null);
-                }}
-                onConfirm={handleSubmitDelete}
+                open={remove.open}
+                user={remove.user}
+                onClose={remove.closeModal}
+                onConfirm={handleDeleteUser}
+                isSubmitting={isDeleting}
             />
-
         </div>
     );
 }

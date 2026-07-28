@@ -5,6 +5,7 @@ import type {
     CreateUserPayload,
     UpdateUserPayload,
     UserListParams,
+    ResetPasswordPayload,
     UserResponse,
     UsersResponse,
 } from "../types/users";
@@ -38,6 +39,18 @@ export async function updateUser(
 ): Promise<UserResponse> {
     const { data } = await apiClient.put<UserResponse>(
         `/users/${id}`,
+        payload
+    );
+
+    return data;
+}
+
+export async function resetPasswordUser(
+    id: number,
+    payload: ResetPasswordPayload
+): Promise<UserResponse> {
+    const { data } = await apiClient.patch<UserResponse>(
+        `/users/${id}/reset-password`,
         payload
     );
 

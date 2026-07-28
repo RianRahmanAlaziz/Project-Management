@@ -1,31 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
+import { Eye, EyeOff } from "lucide-react";
+import { ResetPasswordForm, Users } from "../../types/users";
 import {
     Button,
     Input,
     Modal,
 } from "@/components/ui";
-import { Eye, EyeOff } from "lucide-react";
-
-export interface ResetPasswordForm {
-    password: string;
-    password_confirmation: string;
-}
 
 interface ResetPasswordModalProps {
     open: boolean;
-    user: {
-        id: number;
-        name: string;
-        email: string;
-    } | null;
+    user: Users | null;
     isSubmitting?: boolean;
     onClose: () => void;
     onConfirm: (
+        user: Users,
         data: ResetPasswordForm,
-    ) => Promise<void> | void;
+    ) => Promise<void>;
 }
 
 const INITIAL_FORM: ResetPasswordForm = {
@@ -33,7 +25,7 @@ const INITIAL_FORM: ResetPasswordForm = {
     password_confirmation: "",
 };
 
-export default function ResetPasswordModal({
+export function ResetPasswordModal({
     open,
     user,
     isSubmitting = false,
@@ -67,7 +59,11 @@ export default function ResetPasswordModal({
     };
 
     const handleSubmit = async () => {
-        await onConfirm(form);
+        if (!user) {
+            return;
+        }
+
+        await onConfirm(user, form);
     };
 
     const isDisabled =

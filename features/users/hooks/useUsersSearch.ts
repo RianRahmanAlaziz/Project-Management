@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Users } from '../types/users';
 
-export default function useUsersSearch(
+export function useUsersSearch(
     users: Users[]
 ) {
     const [search, setSearch] = useState("");
