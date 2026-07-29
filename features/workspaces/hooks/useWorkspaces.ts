@@ -15,19 +15,13 @@ import type {
 import { parseApiError } from "@/lib/api/apiError";
 
 export function useWorkspaces() {
-    const [workspaces, setWorkspaces] = useState<
-        Workspace[]
-    >([]);
+    const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
 
-    const [pagination, setPagination] =
-        useState<WorkspacePagination | null>(null);
+    const [pagination, setPagination] = useState<WorkspacePagination | null>(null);
 
-    const [isLoading, setIsLoading] =
-        useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [error, setError] = useState<
-        string | null
-    >(null);
+    const [error, setError] = useState<string | null>(null);
 
     const fetchWorkspaces = useCallback(async () => {
         setIsLoading(true);

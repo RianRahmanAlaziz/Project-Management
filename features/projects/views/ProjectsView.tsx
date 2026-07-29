@@ -1,6 +1,5 @@
 "use client";
 
-import { PROJECTS } from "@/features/projects/mocks/projects";
 import { Plus, FolderOpen } from "lucide-react";
 import { Button, EmptyState } from "@/components/ui";
 
@@ -14,6 +13,8 @@ import {
     useProjectNavigation,
     useProjectSearch,
 } from "../hooks";
+import useProjects from "../hooks/useProjects";
+import { ProjectsSkeleton } from "../components/skeleton";
 
 type ProjectsViewProps = {
     workspaceSlug: string;
@@ -22,7 +23,6 @@ type ProjectsViewProps = {
 export default function ProjectsView({
     workspaceSlug,
 }: ProjectsViewProps) {
-
 
     const handleCreateProject = () => {
         console.log("Create Project")
@@ -37,16 +37,26 @@ export default function ProjectsView({
     };
 
     const {
+        projects,
+        isLoading,
+        refetch,
+    } = useProjects(workspaceSlug);
+
+    const {
         search,
         setSearch,
         filtered,
-    } = useProjectSearch(PROJECTS.data);
+    } = useProjectSearch(projects);
 
     const {
         handleOpenProjectBoard,
         handleOpenProject,
         handleSettingProject,
     } = useProjectNavigation(workspaceSlug);
+
+    if (isLoading) {
+        return <ProjectsSkeleton />;
+    }
 
     return (
         <div className="px-6 py-8 xl:px-8">
@@ -77,10 +87,13 @@ export default function ProjectsView({
                     </div>
                 ) : (
                     <EmptyState
-                        icon={<FolderOpen size={20} />}
+                        icon={<FolderOpen size={22} />}
                         title="No projects found"
                         description="Try a different search or create a new project to get started."
-                        action={<Button size="sm" variant="primary"><Plus size={13} />New Project</Button>}
+                        action={
+                            <Button size="lg" variant="primary">
+                                <Plus size={16} />New Project
+                            </Button>}
                     />
                 )}
 

@@ -1,16 +1,33 @@
 export interface Projects {
     id: number;
     workspace_id: number;
-    slug: string;
     name: string;
-    initials: string;
-    description: string;
-    color: string;
+    slug: string;
     status: string;
     priority: string;
     progress: number;
-    due_date: string;
+    color: string;
+    member_count: number;
+    tasks_count: number;
     start_date: string;
-    member_id: number[];
-    total_tasks: number;
+    due_date: string;
+}
+
+
+export interface ProjectsPagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    from: number | null;
+    to: number | null;
+}
+
+export interface ProjectsListResponse {
+    success: boolean;
+    message: string;
+    data: Projects[];
+    meta: {
+        pagination: ProjectsPagination;
+    };
 }

@@ -7,12 +7,17 @@ export function useProjectSearch(
 ) {
     const [search, setSearch] = useState("");
     const filtered = useMemo(() => {
-        return projects.filter(project =>
-            project.name
-                .toLowerCase()
-                .includes(search.toLowerCase())
+        const query = search.trim().toLowerCase();
+
+        if (!query) {
+            return projects;
+        }
+
+        return projects.filter(
+            (projects) =>
+                projects.name.toLowerCase().includes(query)
         );
-    }, [search]);
+    }, [projects, search]);
 
 
     return {

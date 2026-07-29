@@ -12,8 +12,7 @@ export function useMemberSearch(
     const [search, setSearch] = useState("");
 
     const filteredMembers = useMemo(() => {
-        const query =
-            search.trim().toLowerCase();
+        const query = search.trim().toLowerCase();
 
         if (!query) {
             return members;

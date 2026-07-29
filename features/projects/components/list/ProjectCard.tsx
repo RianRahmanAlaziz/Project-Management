@@ -41,10 +41,6 @@ export default function ProjectCard({
     onDeleteProject,
 }: ProjectCardProps) {
 
-    const members = USERS.data.filter(user =>
-        project.member_id.includes(user.id)
-    );
-
     return (
         <div
             onClick={() => onOpenProject?.(project)}
@@ -61,10 +57,6 @@ export default function ProjectCard({
                     <div>
                         <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
                             {project.name}
-                        </p>
-
-                        <p className="text-xs text-muted-foreground">
-                            {project.total_tasks} tasks
                         </p>
                     </div>
                 </div>
@@ -112,12 +104,12 @@ export default function ProjectCard({
                 <div className="flex items-center gap-4">
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <ListTodo size={15} />
-                        {project.total_tasks} Tasks
+                        {project.tasks_count} Tasks
                     </span>
 
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Users size={15} />
-                        {members.length} members
+                        {project.member_count} members
                     </span>
                 </div>
 
