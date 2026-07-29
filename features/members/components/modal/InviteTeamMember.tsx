@@ -17,7 +17,7 @@ import type {
     AvailableUser,
     WorkspaceMemberAssignableRole,
 } from "@/features/members/types/workspaceMember";
-
+import { ROLE_OPTIONS } from "@/features/workspaces/constants/RoleOptions";
 
 
 interface InviteTeamMemberProps {
@@ -31,33 +31,6 @@ interface InviteTeamMemberProps {
         role: WorkspaceMemberAssignableRole,
     ) => Promise<void> | void;
 }
-
-const ROLE_OPTIONS = [
-    {
-        value: "member",
-        label: "Member",
-        description:
-            "Can create and update tasks",
-        icon: (
-            <UserCheck
-                size={16}
-                className="text-emerald-500"
-            />
-        ),
-    },
-    {
-        value: "viewer",
-        label: "Viewer",
-        description: "Read-only access",
-        icon: (
-            <Eye
-                size={16}
-                className="text-slate-500"
-            />
-        ),
-    },
-];
-
 
 export default function InviteTeamMember({
     open,

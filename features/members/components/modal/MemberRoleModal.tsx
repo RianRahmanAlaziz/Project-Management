@@ -18,6 +18,7 @@ import type {
     WorkspaceMemberAssignableRole,
 } from "@/features/members/types/workspaceMember";
 
+import { ROLE_OPTIONS } from "@/features/workspaces/constants/RoleOptions";
 interface MemberRoleModalProps {
     open: boolean;
     member: WorkspaceMember | null;
@@ -30,33 +31,6 @@ interface MemberRoleModalProps {
         role: WorkspaceMemberAssignableRole,
     ) => Promise<void> | void;
 }
-
-const ROLE_OPTIONS = [
-    {
-        value: "member",
-        label: "Member",
-        description:
-            "Can create and update tasks",
-        icon: (
-            <UserCheck
-                size={16}
-                className="text-emerald-500"
-            />
-        ),
-    },
-    {
-        value: "viewer",
-        label: "Viewer",
-        description:
-            "Read-only access",
-        icon: (
-            <Eye
-                size={16}
-                className="text-slate-500"
-            />
-        ),
-    },
-];
 
 export default function MemberRoleModal({
     open,

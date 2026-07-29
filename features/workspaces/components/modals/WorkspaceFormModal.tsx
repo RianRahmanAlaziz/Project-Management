@@ -26,7 +26,7 @@ import type {
     WorkspaceFormData,
 } from "../../types/workspace";
 import { Users } from "@/features/users/types/users";
-
+import { ROLE_OPTIONS } from "@/features/workspaces/constants/RoleOptions";
 
 const STEPS = [
     "Details",
@@ -130,10 +130,7 @@ export default function WorkspaceFormModal({
         setColor(WORKSPACE_COLORS[0]);
     }, [open]);
 
-
-    const stepIndex =
-        STEPS.indexOf(step);
-
+    const stepIndex = STEPS.indexOf(step);
 
     const next = async () => {
         if (step === "Invite") {
@@ -157,14 +154,12 @@ export default function WorkspaceFormModal({
         );
     };
 
-
-    const initials =
-        form.name
-            .split(" ")
-            .map(x => x[0])
-            .join("")
-            .slice(0, 2)
-            .toUpperCase() || "W";
+    const initials = form.name
+        .split(" ")
+        .map(x => x[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase() || "W";
 
     const canNext = form.name.trim().length >= 2;
 
@@ -193,7 +188,6 @@ export default function WorkspaceFormModal({
                     </div>
                 </div>
                 {/* Progress */}
-
                 <div className="flex gap-2">
                     {STEPS.map((item, index) => (
                         <div
@@ -211,7 +205,6 @@ export default function WorkspaceFormModal({
                             </div>
                             <p className="text-xs text-muted-foreground">Workspace icon preview</p>
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">
                                 Workspace name <span className="text-destructive">*</span>
@@ -225,7 +218,6 @@ export default function WorkspaceFormModal({
                             />
                             <p className="text-xs text-muted-foreground mt-1">This will be visible to all members.</p>
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-1.5">Description</label>
                             <textarea
@@ -236,16 +228,13 @@ export default function WorkspaceFormModal({
                                 className="w-full bg-input-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none transition-colors"
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-foreground mb-2">
                                 <Palette size={11} className="inline mr-1" />Color
                             </label>
                             <div className="flex flex-wrap gap-2">
                                 {WORKSPACE_COLORS.map((colorOption) => {
-                                    const isSelected =
-                                        colorOption.bg === color.bg;
-
+                                    const isSelected = colorOption.bg === color.bg;
                                     return (
                                         <button
                                             key={colorOption.bg}
@@ -313,26 +302,7 @@ export default function WorkspaceFormModal({
 
                                             placeholder="Role"
                                             searchable={false}
-                                            options={[
-                                                {
-                                                    value: "member",
-                                                    label: "Member",
-                                                    icon:
-                                                        <UserCheck
-                                                            size={15}
-                                                            className="text-emerald-500"
-                                                        />,
-                                                },
-                                                {
-                                                    value: "viewer",
-                                                    label: "Viewer",
-                                                    icon:
-                                                        <Eye
-                                                            size={15}
-                                                            className="text-slate-500"
-                                                        />,
-                                                },
-                                            ]}
+                                            options={ROLE_OPTIONS}
                                         />
 
                                     </div>
