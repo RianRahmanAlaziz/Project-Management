@@ -6,7 +6,6 @@ import {
     Check,
     Palette,
     X,
-    Crown,
     Shield,
     UserCheck,
     Eye,
@@ -24,8 +23,9 @@ import {
 } from "../../constants/workspaceStyles";
 
 import type {
-    Workspace,
+    WorkspaceFormData,
 } from "../../types/workspace";
+import { Users } from "@/features/users/types/users";
 
 
 const STEPS = [
@@ -35,76 +35,68 @@ const STEPS = [
 
 type Step = typeof STEPS[number];
 
-interface WorkspaceFormData {
-    name: string;
-    description: string;
-    color: string;
-    invites: {
-        email: string;
-        role: string;
-    }[];
-}
 
 interface WorkspaceFormModalProps {
     open: boolean;
-    mode: "create" | "edit";
-    workspace?: Workspace | null;
+    users: Users[];
+    isSubmitting?: boolean;
     onClose: () => void;
     onSubmit: (
         data: WorkspaceFormData,
     ) => Promise<void> | void;
 }
 
-
 export default function WorkspaceFormModal({
     open,
-    mode,
-    workspace,
+    users,
+    isSubmitting = false,
     onClose,
     onSubmit,
 }: WorkspaceFormModalProps) {
     const [step, setStep] = useState<Step>("Details");
-
     const [color, setColor] = useState<WorkspaceColor>(WORKSPACE_COLORS[0],);
-
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<
+        Omit<WorkspaceFormData, "color">
+    >({
         name: "",
         description: "",
         invites: [
             {
-                email: "",
-                role: "Member",
-            }
+                userId: "",
+                role: "",
+            },
         ],
     });
 
     const addInvite = () => {
-        setForm(prev => ({
-            ...prev,
+        setForm((current) => ({
+            ...current,
+
             invites: [
-                ...prev.invites,
+                ...current.invites,
                 {
-                    email: "",
-                    role: "Member",
-                }
-            ]
+                    userId: "",
+                    role: "",
+                },
+            ],
         }));
     };
 
     const updateInvite = (
         index: number,
-        field: "email" | "role",
-        value: string
+        field: "userId" | "role",
+        value: string,
     ) => {
-        setForm(prev => {
-            const invites =
-                [...prev.invites];
+        setForm((current) => {
+            const invites = [...current.invites];
+
             invites[index] = {
                 ...invites[index],
                 [field]: value,
             };
+
             return {
-                ...prev,
+                ...current,
                 invites,
             };
         });
@@ -123,49 +115,20 @@ export default function WorkspaceFormModal({
     };
 
     useEffect(() => {
-        setStep("Details");
-
-        if (mode === "edit" && workspace) {
-            setForm({
-                name: workspace.name,
-                description:
-                    workspace.description ?? "",
-                invites: [
-                    {
-                        email: "",
-                        role: "Member",
-                    },
-                ],
-            });
-
-            const workspaceColor =
-                WORKSPACE_COLORS.find(
-                    (item) =>
-                        item.bg === workspace.color,
-                ) ?? WORKSPACE_COLORS[0];
-
-            setColor(workspaceColor);
-
+        if (!open) {
             return;
         }
+
+        setStep("Details");
 
         setForm({
             name: "",
             description: "",
-            invites: [
-                {
-                    email: "",
-                    role: "Member",
-                },
-            ],
+            invites: [],
         });
 
         setColor(WORKSPACE_COLORS[0]);
-    }, [
-        workspace,
-        mode,
-        open,
-    ]);
+    }, [open]);
 
 
     const stepIndex =
@@ -174,15 +137,13 @@ export default function WorkspaceFormModal({
 
     const next = async () => {
         if (step === "Invite") {
-            onSubmit({
+            await onSubmit({
                 ...form,
                 color: color.bg,
             });
             return;
         }
-        setStep(
-            STEPS[stepIndex + 1]
-        );
+        setStep(STEPS[stepIndex + 1]);
 
     };
 
@@ -207,6 +168,12 @@ export default function WorkspaceFormModal({
 
     const canNext = form.name.trim().length >= 2;
 
+    const userOptions = users.map((user) => ({
+        value: String(user.id),
+        label: user.name,
+        description: user.email,
+    }));
+
     return (
         <Modal
             open={open}
@@ -218,9 +185,7 @@ export default function WorkspaceFormModal({
                 <div className="flex items-center gap-3 border-b border-border shrink-0 pb-5">
                     <div>
                         <h2 className="font-semibold">
-                            {mode === "create"
-                                ? "Create Workspace"
-                                : "Edit Workspace"}
+                            Create Workspace
                         </h2>
                         <p className="text-xs text-muted-foreground">
                             Step {stepIndex + 1} of {STEPS.length}
@@ -321,32 +286,17 @@ export default function WorkspaceFormModal({
                                 <div key={i} className="flex items-center gap-2">
                                     <div className="flex-1">
                                         <Combobox
-                                            value={invite.email}
+                                            value={invite.userId}
                                             onValueChange={(value) =>
                                                 updateInvite(
                                                     i,
-                                                    "email",
+                                                    "userId",
                                                     value
                                                 )
                                             }
-                                            placeholder={`teammate${i + 1}@company.com`}
-                                            options={[
-                                                {
-                                                    value: "alex@projectflow.io",
-                                                    label: "Alex Rivera",
-                                                    description: "alex@projectflow.io",
-                                                },
-                                                {
-                                                    value: "sarah@projectflow.io",
-                                                    label: "Sarah Chen",
-                                                    description: "sarah@projectflow.io",
-                                                },
-                                                {
-                                                    value: "michael@projectflow.io",
-                                                    label: "Michael Brown",
-                                                    description: "michael@projectflow.io",
-                                                },
-                                            ]}
+                                            placeholder="Select teammate"
+                                            searchPlaceholder="Search user..."
+                                            options={userOptions}
                                         />
                                     </div>
                                     <div className="w-32">
@@ -365,25 +315,7 @@ export default function WorkspaceFormModal({
                                             searchable={false}
                                             options={[
                                                 {
-                                                    value: "Owner",
-                                                    label: "Owner",
-                                                    icon:
-                                                        <Crown
-                                                            size={15}
-                                                            className="text-amber-500"
-                                                        />,
-                                                },
-                                                {
-                                                    value: "Admin",
-                                                    label: "Admin",
-                                                    icon:
-                                                        <Shield
-                                                            size={15}
-                                                            className="text-indigo-500"
-                                                        />,
-                                                },
-                                                {
-                                                    value: "Member",
+                                                    value: "member",
                                                     label: "Member",
                                                     icon:
                                                         <UserCheck
@@ -392,7 +324,7 @@ export default function WorkspaceFormModal({
                                                         />,
                                                 },
                                                 {
-                                                    value: "Viewer",
+                                                    value: "viewer",
                                                     label: "Viewer",
                                                     icon:
                                                         <Eye
@@ -430,7 +362,7 @@ export default function WorkspaceFormModal({
                                 <div>
                                     <p className="text-sm font-semibold text-foreground">{form.name}</p>
                                     <p className="text-xs text-muted-foreground">
-                                        {form.invites.filter(i => i.email).length} invited members
+                                        {form.invites.filter(i => i.userId).length} invited members
                                     </p>
                                 </div>
                             </div>
@@ -443,6 +375,7 @@ export default function WorkspaceFormModal({
                     <Button
                         variant="outline"
                         onClick={back}
+                        disabled={isSubmitting}
                     >
                         {stepIndex === 0
                             ? "Cancel"
@@ -451,11 +384,13 @@ export default function WorkspaceFormModal({
                     <Button
                         variant="primary"
                         onClick={next}
-                        disabled={!canNext}
+                        disabled={!canNext || isSubmitting}
                     >
                         {step === "Invite"
-                            ? "Create Workspace"
-                            : "Continue"}
+                            ? isSubmitting
+                                ? "Creating..."
+                                : "Create Workspace"
+                            : "Next"}
                     </Button>
                 </div>
             </div>

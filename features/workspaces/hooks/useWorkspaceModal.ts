@@ -2,31 +2,18 @@ import { useState } from "react";
 import type { Workspace } from "../types/workspace";
 
 export function useWorkspaceModal() {
-    const [
-        workspaceModal,
-        setWorkspaceModal,
+    const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] =
+        useState(false);
 
-    ] = useState<{
-        open: boolean;
-        mode: "create" | "edit";
-        workspace: Workspace | null;
-    }>({
-        open: false,
-        mode: "create",
-        workspace: null,
-    });
+    const openCreateWorkspace = () =>
+        setIsCreateWorkspaceOpen(true);
 
-    const OpenCreateWorkspace = () => {
-        setWorkspaceModal({
-            open: true,
-            mode: "create",
-            workspace: null,
-        });
-    };
+    const closeCreateWorkspace = () =>
+        setIsCreateWorkspaceOpen(false);
 
     return {
-        workspaceModal,
-        setWorkspaceModal,
-        OpenCreateWorkspace,
+        isCreateWorkspaceOpen,
+        openCreateWorkspace,
+        closeCreateWorkspace,
     };
 }

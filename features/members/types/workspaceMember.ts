@@ -41,6 +41,7 @@ export interface WorkspaceMemberListResponse {
 }
 
 export type WorkspaceMemberAssignableRole =
+    | ""
     | "member"
     | "viewer";
 

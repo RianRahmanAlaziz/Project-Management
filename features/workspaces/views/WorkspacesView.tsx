@@ -1,5 +1,6 @@
 "use client";
 
+import { useUsers } from "@/features/users/hooks";
 import {
     WorkspaceGrid,
     WorkspaceSearch,
@@ -14,6 +15,7 @@ import {
     useWorkspaceNavigation,
     useWorkspaceModal,
     useCreateWorkspace,
+    useCreateWorkspaceWithMembers,
 } from "@/features/workspaces/hooks";
 
 export function WorkspacesView() {
@@ -23,21 +25,6 @@ export function WorkspacesView() {
         isLoading,
         refetch,
     } = useWorkspaces();
-
-    const {
-        handleCreateWorkspace,
-        isCreating,
-        createError,
-    } = useCreateWorkspace({
-        onSuccess: async () => {
-            await refetch();
-
-            setWorkspaceModal((prev) => ({
-                ...prev,
-                open: false,
-            }));
-        },
-    });
 
     const {
         search,
@@ -53,10 +40,24 @@ export function WorkspacesView() {
     } = useWorkspaceNavigation();
 
     const {
-        workspaceModal,
-        setWorkspaceModal,
-        OpenCreateWorkspace,
+        isCreateWorkspaceOpen,
+        openCreateWorkspace,
+        closeCreateWorkspace,
     } = useWorkspaceModal();
+
+    const {
+        users,
+    } = useUsers();
+
+    const {
+        handleCreateWorkspaceWithMembers,
+        isSubmitting,
+    } = useCreateWorkspaceWithMembers({
+        onSuccess: async () => {
+            await refetch();
+            closeCreateWorkspace();
+        },
+    });
 
     if (isLoading) {
         return <WorkspacesSkeleton />;
@@ -66,7 +67,7 @@ export function WorkspacesView() {
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
                 <WorkspaceHeader
-                    OpenCreateWorkspace={OpenCreateWorkspace}
+                    OpenCreateWorkspace={openCreateWorkspace}
                 />
 
                 <WorkspaceSearch
@@ -80,21 +81,16 @@ export function WorkspacesView() {
                     onOpenProjects={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}
-                    OpenCreateWorkspace={OpenCreateWorkspace}
+                    OpenCreateWorkspace={openCreateWorkspace}
                 />
             </div>
 
             <WorkspaceFormModal
-                open={workspaceModal.open}
-                mode={workspaceModal.mode}
-                workspace={workspaceModal.workspace}
-                onClose={() =>
-                    setWorkspaceModal((prev) => ({
-                        ...prev,
-                        open: false,
-                    }))
-                }
-                onSubmit={handleCreateWorkspace}
+                open={isCreateWorkspaceOpen}
+                users={users}
+                isSubmitting={isSubmitting}
+                onClose={closeCreateWorkspace}
+                onSubmit={handleCreateWorkspaceWithMembers}
             />
 
         </div>

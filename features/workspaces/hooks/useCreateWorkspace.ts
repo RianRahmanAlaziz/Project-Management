@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { createWorkspace as createWorkspaceRequest } from "../api/workspaceApi";
 
 import type {
+    Workspace,
     CreateWorkspacePayload,
     WorkspaceFormData,
 } from "../types/workspace";
@@ -23,7 +24,8 @@ export function useCreateWorkspace({
 
     const handleCreateWorkspace = async (
         data: WorkspaceFormData,
-    ): Promise<void> => {
+    ): Promise<Workspace> => {
+
         if (isCreating) {
             return;
         }
@@ -42,7 +44,7 @@ export function useCreateWorkspace({
             .then(async (response) => {
                 await onSuccess?.();
 
-                return response;
+                return response.data;
             })
             .catch((error) => {
                 const apiError =
@@ -76,7 +78,7 @@ export function useCreateWorkspace({
             },
         });
 
-        await promise;
+        return await promise;
     };
 
     return {

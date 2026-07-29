@@ -45,9 +45,15 @@ export interface CreateWorkspacePayload {
     description?: string;
     color: string;
 }
+
+export type WorkspaceMemberAssignableRole =
+    | ""
+    | "member"
+    | "viewer";
+
 export interface WorkspaceInviteFormData {
-    email: string;
-    role: string;
+    userId: string;
+    role: WorkspaceMemberAssignableRole;
 }
 export interface WorkspaceFormData {
     name: string;
