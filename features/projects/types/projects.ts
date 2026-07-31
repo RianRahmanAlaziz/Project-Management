@@ -31,3 +31,24 @@ export interface ProjectsListResponse {
         pagination: ProjectsPagination;
     };
 }
+
+export interface CreateProjectForm {
+    name: string;
+    description: string;
+    color: string;
+    priority: string;
+    status: string;
+    start_date: string;
+    due_date: string;
+    members: string[];
+}
+
+export interface CreateProjectPayload {
+    name: string;
+    description: string;
+    color: string;
+    priority: string;
+    status: string;
+    start_date: string;
+    due_date: string;
+}

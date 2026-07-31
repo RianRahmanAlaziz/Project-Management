@@ -12,11 +12,15 @@ import {
 } from "@/features/projects/components";
 
 import {
+    useCreateProjectWithMembers,
     useProjectModal,
     useProjectNavigation,
     useProjectSearch,
     useProjects,
 } from "../hooks";
+import { useWorkspaceMembers } from "@/features/members/hooks";
+import { useDetailWorkspace } from "@/features/workspaces/hooks";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 type ProjectsViewProps = {
     workspaceSlug: string;
@@ -25,10 +29,7 @@ type ProjectsViewProps = {
 export default function ProjectsView({
     workspaceSlug,
 }: ProjectsViewProps) {
-
-    const handleCreateProject = () => {
-        console.log("Create Project")
-    };
+    const { user } = useAuth();
 
     const handleEditProject = () => {
         console.log("Edit Project")
@@ -37,7 +38,12 @@ export default function ProjectsView({
     const handleDeleteProject = () => {
         console.log("Delete Project")
     };
+    const { workspace } = useDetailWorkspace(workspaceSlug);
+    const { members } = useWorkspaceMembers(workspaceSlug);
 
+    const userOptions = members.filter(
+        (member) => member.user.id !== user?.id,
+    );
     const {
         projects,
         isLoading,
@@ -57,10 +63,19 @@ export default function ProjectsView({
     } = useProjectNavigation(workspaceSlug);
 
     const {
-        isCreateProjectOpen,
-        openCreateProject,
-        closeCreateProject,
+        create
     } = useProjectModal();
+
+    const {
+        handleCreateProjectWithMembers,
+        isSubmitting,
+    } = useCreateProjectWithMembers({
+        workspaceSlug,
+        onSuccess: async () => {
+            await refetch();
+            create.closeModal();
+        },
+    });
 
     if (isLoading) {
         return <ProjectsSkeleton />;
@@ -71,7 +86,7 @@ export default function ProjectsView({
             <div className="w-full space-y-6">
                 <ProjectHeader
                     totalProjects={filtered.length}
-                    onCreateProject={openCreateProject}
+                    onCreateProject={create.openModal}
                 />
 
                 <ProjectSearch
@@ -107,8 +122,12 @@ export default function ProjectsView({
             </div>
 
             <CreateProjectModal
-                open={isCreateProjectOpen}
-                onClose={closeCreateProject}
+                open={create.open}
+                users={userOptions}
+                workspaceName={workspace?.name ?? ""}
+                onClose={create.closeModal}
+                onConfirm={handleCreateProjectWithMembers}
+                isSubmitting={isSubmitting}
             />
         </div>
     )

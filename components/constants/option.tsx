@@ -112,7 +112,7 @@ export type Color = (typeof COLORS)[number];
 
 export const priorityOptions = [
     {
-        value: "low",
+        value: "Low",
         label: "Low",
         description: "Low priority",
         icon: (
@@ -120,7 +120,7 @@ export const priorityOptions = [
         ),
     },
     {
-        value: "medium",
+        value: "Medium",
         label: "Medium",
         description: "Normal priority",
         icon: (
@@ -128,7 +128,7 @@ export const priorityOptions = [
         ),
     },
     {
-        value: "high",
+        value: "High",
         label: "High",
         description: "High priority",
         icon: (
@@ -139,23 +139,15 @@ export const priorityOptions = [
 
 export const statusOptions = [
     {
-        value: "backlog",
-        label: "Backlog",
-        description: "Not started yet",
-        icon: (
-            <span className="h-2 w-2 rounded-full bg-slate-400" />
-        ),
-    },
-    {
-        value: "todo",
-        label: "Todo",
+        value: "planning",
+        label: "Planning",
         description: "Ready to start",
         icon: (
             <span className="h-2 w-2 rounded-full bg-blue-500" />
         ),
     },
     {
-        value: "in-progress",
+        value: "in_progress",
         label: "In Progress",
         description: "Currently working",
         icon: (

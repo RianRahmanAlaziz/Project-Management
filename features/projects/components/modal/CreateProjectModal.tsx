@@ -10,43 +10,60 @@ import {
     MultiSelect
 } from '@/components/ui';
 import {
-    Color,
     COLORS,
     priorityOptions,
     statusOptions,
 } from '@/components/constants';
+import { WorkspaceMember } from '@/features/members/types/workspaceMember';
+import { CreateProjectForm } from '../../types/projects';
+import { useDetailWorkspace } from '@/features/workspaces/hooks';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 
 interface CreateProjectModalProps {
     open: boolean;
+    users: WorkspaceMember[];
+    workspaceName: string;
     isSubmitting?: boolean;
     onClose: () => void;
     onSubmit?: () => void;
+    onConfirm: (data: CreateProjectForm) => Promise<void> | void;
 }
 
 
 export function CreateProjectModal({
     open,
+    users,
+    workspaceName,
     isSubmitting,
     onClose,
     onSubmit,
+    onConfirm,
 }: CreateProjectModalProps) {
-    const [color, setColor] = useState<Color>(COLORS[0],);
-    const [startDate, setStartDate] = useState("");
-    const [columnId, setColumnId] = useState("");
-    const [dueDate, setDueDate] = useState("");
-    const [priority, setPriority] = useState("");
-    const [members, setMembers] = useState<string[]>([]);
-    const [form, setForm] = useState({
+
+    const [form, setForm] = useState<CreateProjectForm>({
         name: "",
         description: "",
-        workspace: "ws1",
-        priority: "Medium",
-        status: "Todo",
-        dueDate: "",
-        startDate: "",
+        color: COLORS[0].bg,
+        priority: "",
+        status: "",
+        start_date: "",
+        due_date: "",
+        members: [],
     });
+
+    const userOptions = users.map((member) => ({
+        value: String(member.id),
+        label: member.user.email,
+        description: member.role,
+    }));
+
+    const selectedColor = COLORS.find(c => c.bg === form.color) ?? COLORS[0];
     const initials = form.name.split(" ").filter(Boolean).map(w => w[0]).join("").slice(0, 2).toUpperCase() || "P";
+
+    const handleSubmit = async () => {
+        await onConfirm(form);
+    };
     return (
         <Modal
             open={open}
@@ -71,7 +88,12 @@ export function CreateProjectModal({
                                 <div>
                                     <Input
                                         value={form.name}
-                                        onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                        onChange={(e) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                name: e.target.value,
+                                            }))
+                                        }
                                         label=" Project Name *"
                                         placeholder='App Redesign'
 
@@ -84,6 +106,13 @@ export function CreateProjectModal({
                                         Description
                                     </label>
                                     <textarea
+                                        value={form.description}
+                                        onChange={(e) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                description: e.target.value,
+                                            }))
+                                        }
                                         placeholder="What is this project about? Goals, scope, deliverables…"
                                         rows={4}
                                         className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
@@ -96,76 +125,14 @@ export function CreateProjectModal({
                                         label="Members"
                                         placeholder="Select members"
                                         searchable
-                                        values={members}
-                                        onValueChange={setMembers}
-                                        options={[
-                                            {
-                                                value: "1",
-                                                label: "Rian",
-                                                description: "Admin",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="Rian"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                            {
-                                                value: "2",
-                                                label: "John",
-                                                description: "Member",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="John"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                            {
-                                                value: "3",
-                                                label: "Rahman",
-                                                description: "Member",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="Rahman"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                            {
-                                                value: "4",
-                                                label: "Al",
-                                                description: "Member",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="Al"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                            {
-                                                value: "5",
-                                                label: "Aziz",
-                                                description: "Member",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="Aziz"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                            {
-                                                value: "6",
-                                                label: "ASD",
-                                                description: "Member",
-                                                avatar: (
-                                                    <Avatar
-                                                        name="ASD"
-                                                        size="xs"
-                                                    />
-                                                ),
-                                            },
-                                        ]}
+                                        values={form.members}
+                                        onValueChange={(members) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                members,
+                                            }))
+                                        }
+                                        options={userOptions}
                                     />
                                 </div>
 
@@ -178,8 +145,13 @@ export function CreateProjectModal({
                                                     Start date
                                                 </>
                                             }
-                                            value={startDate}
-                                            onChange={setStartDate}
+                                            value={form.start_date}
+                                            onChange={(value) =>
+                                                setForm(prev => ({
+                                                    ...prev,
+                                                    start_date: value,
+                                                }))
+                                            }
                                         />
                                     </div>
                                     <div>
@@ -189,8 +161,13 @@ export function CreateProjectModal({
                                                     Due date
                                                 </>
                                             }
-                                            value={dueDate}
-                                            onChange={setDueDate}
+                                            value={form.due_date}
+                                            onChange={(value) =>
+                                                setForm(prev => ({
+                                                    ...prev,
+                                                    due_date: value,
+                                                }))
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -200,21 +177,39 @@ export function CreateProjectModal({
                             <div className="lg:col-span-2 space-y-4">
                                 {/* Project icon preview */}
                                 <div className="flex flex-col items-center gap-2 p-4 bg-background rounded-xl border border-border">
-                                    <div className={`w-14 h-14 rounded-2xl ${color.bg} flex items-center justify-center text-white font-bold text-xl shadow-md`}>
+                                    <div className={`w-14 h-14 rounded-2xl ${selectedColor.bg} flex items-center justify-center text-white font-bold text-xl shadow-md`}>
                                         {initials}
                                     </div>
                                     <p className="text-xs text-muted-foreground">Project icon</p>
                                     <div className="flex flex-wrap justify-center gap-1.5">
-                                        {COLORS.map(c => (
-                                            <button
-                                                key={c.label}
-                                                onClick={() => setColor(c)}
-                                                title={c.label}
-                                                className={`w-5 h-5 cursor-pointer rounded-md ${c.bg} flex items-center justify-center transition-all ${color.label === c.label ? `ring-2 ring-offset-1 ring-offset-card ${c.ring}` : "opacity-60 hover:opacity-100"}`}
-                                            >
-                                                {color.label === c.label && <Check size={9} className="text-white" strokeWidth={3} />}
-                                            </button>
-                                        ))}
+                                        {COLORS.map((c) => {
+                                            const isSelected = form.color === c.bg;
+                                            return (
+                                                <button
+                                                    key={c.label}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setForm((prev) => ({
+                                                            ...prev,
+                                                            color: c.bg,
+                                                        }))
+                                                    }
+                                                    title={c.label}
+                                                    className={`w-5 h-5 cursor-pointer rounded-md ${c.bg} flex items-center justify-center transition-all ${isSelected
+                                                        ? `ring-2 ring-offset-1 ring-offset-card ${c.ring}`
+                                                        : "opacity-60 hover:opacity-100"
+                                                        }`}
+                                                >
+                                                    {isSelected && (
+                                                        <Check
+                                                            size={9}
+                                                            className="text-white"
+                                                            strokeWidth={3}
+                                                        />
+                                                    )}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
                                 </div>
 
@@ -222,6 +217,7 @@ export function CreateProjectModal({
                                 <div>
                                     <Input
                                         label="Workspace"
+                                        value={workspaceName}
                                         readOnly
                                     />
                                 </div>
@@ -235,8 +231,13 @@ export function CreateProjectModal({
                                                 Priority
                                             </>
                                         }
-                                        value={priority}
-                                        onValueChange={setPriority}
+                                        value={form.priority}
+                                        onValueChange={(value) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                priority: value,
+                                            }))
+                                        }
                                         searchable={false}
                                         options={priorityOptions}
                                     />
@@ -251,8 +252,13 @@ export function CreateProjectModal({
                                                 Status
                                             </>
                                         }
-                                        value={columnId}
-                                        onValueChange={setColumnId}
+                                        value={form.status}
+                                        onValueChange={(value) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                status: value,
+                                            }))
+                                        }
                                         searchable={false}
                                         options={statusOptions}
                                     />
@@ -267,6 +273,7 @@ export function CreateProjectModal({
                         variant="outline"
                         size="lg"
                         onClick={onClose}
+                        disabled={isSubmitting}
                     >
                         Cancel
                     </Button>
@@ -274,6 +281,8 @@ export function CreateProjectModal({
                     <Button
                         variant="primary"
                         size="lg"
+                        onClick={handleSubmit}
+                        loading={isSubmitting}
                     >
                         Create
                     </Button>

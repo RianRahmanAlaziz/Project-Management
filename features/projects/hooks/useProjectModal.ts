@@ -1,17 +1,17 @@
 import { useState } from "react";
 
 export function useProjectModal() {
-    const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
+    const [createOpen, setCreateOpen] = useState(false);
 
-    const openCreateProject = () =>
-        setIsCreateProjectOpen(true);
+    const create = {
+        open: createOpen,
 
-    const closeCreateProject = () =>
-        setIsCreateProjectOpen(false);
+        openModal: () => setCreateOpen(true),
+
+        closeModal: () => setCreateOpen(false),
+    };
 
     return {
-        isCreateProjectOpen,
-        openCreateProject,
-        closeCreateProject,
-    }
+        create,
+    };
 }
