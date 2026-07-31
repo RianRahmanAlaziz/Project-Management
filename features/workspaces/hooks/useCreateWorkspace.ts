@@ -27,7 +27,7 @@ export function useCreateWorkspace({
     ): Promise<Workspace> => {
 
         if (isCreating) {
-            return;
+            throw new Error("Workspace creation is already in progress.");
         }
 
         const payload: CreateWorkspacePayload = {

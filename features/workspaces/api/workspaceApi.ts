@@ -30,11 +30,10 @@ export async function getDetailWorkspace(
 export async function createWorkspace(
     payload: CreateWorkspacePayload,
 ): Promise<ApiResponse<Workspace>> {
-    const response =
-        await apiClient.post<ApiResponse<Workspace>>(
-            "/workspaces",
-            payload,
-        );
+    const response = await apiClient.post<ApiResponse<Workspace>>(
+        "/workspaces",
+        payload,
+    );
     return response.data;
 }
 

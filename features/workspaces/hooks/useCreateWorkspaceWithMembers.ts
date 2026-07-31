@@ -3,17 +3,9 @@
 import { useState } from "react";
 import { useCreateWorkspace } from "./useCreateWorkspace";
 
-import {
-    addWorkspaceMember,
-} from "@/features/members/api/workspaceMemberApi";
-
-import type {
-    WorkspaceFormData,
-} from "../types/workspace";
-
-import type {
-    AddWorkspaceMemberPayload,
-} from "@/features/members/types/workspaceMember";
+import { addWorkspaceMember } from "@/features/members/api/workspaceMemberApi";
+import type { WorkspaceFormData } from "../types/workspace";
+import type { AddWorkspaceMemberPayload } from "@/features/members/types/workspaceMember";
 
 interface UseCreateWorkspaceWithMembersOptions {
     onSuccess?: () => void | Promise<void>;
@@ -33,6 +25,11 @@ export function useCreateWorkspaceWithMembers({
 
     const handleCreateWorkspaceWithMembers = async (data: WorkspaceFormData) => {
         const workspace = await handleCreateWorkspace(data);
+
+        if (!workspace) {
+            return;
+        }
+
         const invites = data.invites.filter(({ userId, role }) => userId && role);
 
         if (invites.length === 0) {
@@ -49,9 +46,6 @@ export function useCreateWorkspaceWithMembers({
                         user_id: Number(invite.userId),
                         role: invite.role,
                     };
-                    console.log("Workspace:", workspace.slug);
-
-                    console.log("Payload:", payload);
                     return addWorkspaceMember(
                         workspace.slug,
                         payload,

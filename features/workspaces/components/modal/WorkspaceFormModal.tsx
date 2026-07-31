@@ -73,7 +73,7 @@ export default function WorkspaceFormModal({
                 ...current.invites,
                 {
                     userId: "",
-                    role: "",
+                    role: "member",
                 },
             ],
         }));
