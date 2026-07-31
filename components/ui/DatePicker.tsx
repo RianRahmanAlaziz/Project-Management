@@ -41,62 +41,36 @@ export function DatePicker({
     });
 
     useEffect(() => {
-
         if (!open || !buttonRef.current) return;
-
-
-        const rect =
-            buttonRef.current.getBoundingClientRect();
-
-
+        const rect = buttonRef.current.getBoundingClientRect();
         const popupHeight = 280;
-
-
-        const spaceBottom =
-            window.innerHeight - rect.bottom;
-
-
-        const openTop =
-            spaceBottom < popupHeight;
-
-
+        const spaceBottom = window.innerHeight - rect.bottom;
+        const openTop = spaceBottom < popupHeight;
         setPosition({
-
             left: rect.left,
-
             top: openTop
                 ? rect.top - popupHeight + 35
                 : rect.bottom + 6,
-
         });
-
-
     }, [open]);
 
-    const [month, setMonth] =
-        useState(new Date());
+    const [month, setMonth] = useState(new Date());
 
-    const days =
-        getDaysInMonth(month);
+    const days = getDaysInMonth(month);
 
-    const firstDay =
-        getDay(startOfMonth(month));
+    const firstDay = getDay(startOfMonth(month));
 
-    const selected =
-        value ? new Date(value) : null;
+    const selected = value ? new Date(value) : null;
 
 
     const selectDate = (day: number) => {
-        const date =
-            new Date(
-                month.getFullYear(),
-                month.getMonth(),
-                day
-            );
-
-        onChange(
-            format(date, "yyyy-MM-dd")
+        const date = new Date(
+            month.getFullYear(),
+            month.getMonth(),
+            day
         );
+
+        onChange(format(date, "yyyy-MM-dd"));
 
         setOpen(false);
     };
@@ -117,7 +91,7 @@ export function DatePicker({
                     type="button"
                     onClick={() => setOpen(!open)}
                     className="flex h-12 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm hover:bg-muted/40 cursor-pointer">
-                    <span>
+                    <span className="text-muted-foreground">
                         {
                             selected
                                 ? format(selected, "dd MMM yyyy")
