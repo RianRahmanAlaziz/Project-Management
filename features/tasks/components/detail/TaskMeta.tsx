@@ -5,7 +5,11 @@ import { Avatar, Badge } from "@/components/ui";
 
 import type { Tasks } from "@/features/tasks/types/tasks";
 import { Combobox } from "@/components/ui/combobox";
-
+import {
+    Color,
+    COLORS,
+    priorityOptions
+} from '@/components/constants';
 interface Users {
     id: number | string;
     name: string;
@@ -23,7 +27,6 @@ interface TaskMetaProps {
 }
 
 const statusOptions = ["Backlog", "Todo", "In Progress", "Review", "Done"];
-const priorityOptions = ["Low", "Medium", "High"];
 
 const statusColors: Record<string, string> = {
     Backlog: "bg-slate-400",
@@ -39,18 +42,6 @@ const statusDescriptions: Record<string, string> = {
     "In Progress": "Currently working",
     Review: "Waiting for review",
     Done: "Completed",
-};
-
-const priorityColors: Record<string, string> = {
-    Low: "bg-emerald-500",
-    Medium: "bg-amber-500",
-    High: "bg-red-500",
-};
-
-const priorityDescriptions: Record<string, string> = {
-    Low: "Low priority",
-    Medium: "Normal priority",
-    High: "High priority",
 };
 
 
@@ -90,16 +81,7 @@ export default function TaskMeta({
                 onValueChange={setPriority}
                 placeholder="Select priority"
                 searchable={false}
-                options={priorityOptions.map((item) => ({
-                    value: item,
-                    label: item,
-                    description: priorityDescriptions[item],
-                    icon: (
-                        <span
-                            className={`h-2.5 w-2.5 rounded-full ${priorityColors[item]}`}
-                        />
-                    ),
-                }))}
+                options={priorityOptions}
             />
 
             {/* Assignee */}

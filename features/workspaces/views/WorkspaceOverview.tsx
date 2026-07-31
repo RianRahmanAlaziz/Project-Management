@@ -9,6 +9,7 @@ import {
     useDetailWorkspace,
     useWorkspaceNavigation,
 } from "../hooks";
+import { useProjects } from "@/features/projects/hooks";
 
 interface WorkspaceOverviewProps {
     workspaceSlug: string;
@@ -24,6 +25,10 @@ export default function WorkspaceOverview({
         error,
         refetch,
     } = useDetailWorkspace(workspaceSlug);
+
+    const {
+        projects,
+    } = useProjects(workspaceSlug);
 
     const {
         handleOpenProject,
@@ -51,7 +56,7 @@ export default function WorkspaceOverview({
             <div className="w-full space-y-6">
                 <WorkspaceDashboard
                     workspace={workspace}
-                    projects={[]}
+                    projects={projects}
                     onOpenProject={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}

@@ -6,9 +6,6 @@ import {
     Check,
     Palette,
     X,
-    Shield,
-    UserCheck,
-    Eye,
 } from "lucide-react";
 
 import {
@@ -18,9 +15,9 @@ import {
 } from "@/components/ui";
 
 import {
-    WORKSPACE_COLORS,
-    type WorkspaceColor,
-} from "../../constants/workspaceStyles";
+    Color,
+    COLORS
+} from '@/components/constants';
 
 import type {
     WorkspaceFormData,
@@ -54,7 +51,7 @@ export default function WorkspaceFormModal({
     onSubmit,
 }: WorkspaceFormModalProps) {
     const [step, setStep] = useState<Step>("Details");
-    const [color, setColor] = useState<WorkspaceColor>(WORKSPACE_COLORS[0],);
+    const [color, setColor] = useState<Color>(COLORS[0],);
     const [form, setForm] = useState<
         Omit<WorkspaceFormData, "color">
     >({
@@ -127,7 +124,7 @@ export default function WorkspaceFormModal({
             invites: [],
         });
 
-        setColor(WORKSPACE_COLORS[0]);
+        setColor(COLORS[0]);
     }, [open]);
 
     const stepIndex = STEPS.indexOf(step);
@@ -233,7 +230,7 @@ export default function WorkspaceFormModal({
                                 <Palette size={11} className="inline mr-1" />Color
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {WORKSPACE_COLORS.map((colorOption) => {
+                                {COLORS.map((colorOption) => {
                                     const isSelected = colorOption.bg === color.bg;
                                     return (
                                         <button

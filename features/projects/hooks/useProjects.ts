@@ -13,7 +13,7 @@ import {
 import { Projects, ProjectsPagination } from "../types/projects";
 import { getProjects } from "../api/projectsApi";
 
-export default function useProjects(workspaceSlug: string) {
+export function useProjects(workspaceSlug: string) {
     const [projects, setProjects] = useState<Projects[]>([])
     const [pagination, setPagination] = useState<ProjectsPagination | null>(null);
     const [isLoading, setIsLoading] = useState(true);

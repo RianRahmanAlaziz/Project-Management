@@ -6,15 +6,17 @@ import { Button, EmptyState } from "@/components/ui";
 import {
     ProjectSearch,
     ProjectCard,
-    ProjectHeader
+    ProjectHeader,
+    ProjectsSkeleton,
+    CreateProjectModal,
 } from "@/features/projects/components";
 
 import {
+    useProjectModal,
     useProjectNavigation,
     useProjectSearch,
+    useProjects,
 } from "../hooks";
-import useProjects from "../hooks/useProjects";
-import { ProjectsSkeleton } from "../components/skeleton";
 
 type ProjectsViewProps = {
     workspaceSlug: string;
@@ -54,6 +56,12 @@ export default function ProjectsView({
         handleSettingProject,
     } = useProjectNavigation(workspaceSlug);
 
+    const {
+        isCreateProjectOpen,
+        openCreateProject,
+        closeCreateProject,
+    } = useProjectModal();
+
     if (isLoading) {
         return <ProjectsSkeleton />;
     }
@@ -63,7 +71,7 @@ export default function ProjectsView({
             <div className="w-full space-y-6">
                 <ProjectHeader
                     totalProjects={filtered.length}
-                    onCreateProject={handleCreateProject}
+                    onCreateProject={openCreateProject}
                 />
 
                 <ProjectSearch
@@ -96,8 +104,12 @@ export default function ProjectsView({
                             </Button>}
                     />
                 )}
-
             </div>
+
+            <CreateProjectModal
+                open={isCreateProjectOpen}
+                onClose={closeCreateProject}
+            />
         </div>
     )
 }
