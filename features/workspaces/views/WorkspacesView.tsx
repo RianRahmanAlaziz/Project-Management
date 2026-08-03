@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useUsers } from "@/features/users/hooks";
 import {
     WorkspaceGrid,
@@ -19,7 +20,7 @@ import {
 } from "@/features/workspaces/hooks";
 
 export function WorkspacesView() {
-
+    const { user } = useAuth();
     const {
         workspaces,
         isLoading,
@@ -48,6 +49,10 @@ export function WorkspacesView() {
     const {
         users,
     } = useUsers();
+
+    const userOptions = users.filter(
+        (users) => users.id !== user?.id,
+    );
 
     const {
         handleCreateWorkspaceWithMembers,
@@ -87,7 +92,7 @@ export function WorkspacesView() {
 
             <WorkspaceFormModal
                 open={isCreateWorkspaceOpen}
-                users={users}
+                users={userOptions}
                 isSubmitting={isSubmitting}
                 onClose={closeCreateWorkspace}
                 onSubmit={handleCreateWorkspaceWithMembers}
