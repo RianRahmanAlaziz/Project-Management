@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { transferWorkspaceOwnership } from "../api/workspaceApi";
+import { transferWorkspaceOwnership } from "../../api/workspaceApi";
 import { parseApiError } from "@/lib/api/apiError";
 
 import type {
     TransferWorkspaceOwnershipPayload,
     Workspace,
-} from "../types/workspace";
+} from "../../types/workspace";
 
 interface UseTransferWorkspaceOwnershipOptions {
     workspaceSlug: string;
@@ -38,15 +38,10 @@ export function useTransferWorkspaceOwnership({
         );
 
         toast.promise(transferPromise, {
-            loading:
-                "Transferring workspace ownership...",
-
-            success: (response) =>
-                response.message,
-
+            loading: "Transferring workspace ownership...",
+            success: (response) => response.message,
             error: (error) => {
                 const apiError = parseApiError(error);
-
                 return apiError.message;
             },
         },

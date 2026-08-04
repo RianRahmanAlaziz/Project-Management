@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { CreateProjectForm } from "../types/projects";
-import { AddProjectMemberPayload } from "../types/projectMembers";
+import { CreateProjectForm } from "../../types/projects";
+import { AddProjectMemberPayload } from "../../types/projectMembers";
 import { useCreateProject } from "./useCreateProject";
-import { useAddProjectMember } from "./member";
+import { useAddProjectMember } from "./useAddProjectMember";
 
 interface UseCreateProjectWithMembersOptions {
     workspaceSlug: string;

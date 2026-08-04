@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { toast } from "sonner";
 import { parseApiError } from "@/lib/api/apiError";
-import { CreateProjectForm, Projects, CreateProjectPayload } from '../types/projects';
-import { createProject as createProjectRequest } from '../api/projectsApi';
+import { CreateProjectForm, Projects, CreateProjectPayload } from '../../types/projects';
+import { createProject as createProjectRequest } from '../../api/projectsApi';
 
 interface UseCreateProjectOptions {
     workspaceSlug: string;

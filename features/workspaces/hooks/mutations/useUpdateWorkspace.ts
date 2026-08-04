@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { parseApiError } from "@/lib/api/apiError";
-import { updateWorkspace } from "../api/workspaceApi";
+import { updateWorkspace } from "../../api/workspaceApi";
 
 import type {
     UpdateWorkspacePayload,
     Workspace,
-} from "../types/workspace";
+} from "../../types/workspace";
 
 
 interface UseUpdateWorkspaceOptions {
@@ -50,28 +50,20 @@ export function useUpdateWorkspace({
                 `${response.data.name} updated successfully.`,
 
             error: (error) => {
-                const apiError =
-                    parseApiError(error);
+                const apiError = parseApiError(error);
 
                 return apiError.message;
             },
         });
 
         try {
-            const response =
-                await updatePromise;
-
+            const response = await updatePromise;
             setIsSaved(true);
 
             try {
-                await onSuccess?.(
-                    response.data,
-                );
+                await onSuccess?.(response.data);
             } catch (error) {
-                console.error(
-                    "Workspace post-update action failed:",
-                    error,
-                );
+                console.error("Workspace post-update action failed:", error);
             }
         } catch (error) {
             const apiError =

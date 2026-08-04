@@ -3,7 +3,7 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { parseApiError } from "@/lib/api/apiError";
-import { deleteWorkspace } from "../api/workspaceApi";
+import { deleteWorkspace } from "../../api/workspaceApi";
 
 interface UseDeleteWorkspaceOptions {
     workspaceSlug: string;
@@ -27,9 +27,7 @@ export function useDeleteWorkspace({
 
         const deletePromise = async () => {
             try {
-                const response = await deleteWorkspace(
-                    workspaceSlug,
-                );
+                const response = await deleteWorkspace(workspaceSlug);
                 await onSuccess?.();
                 return response;
             } catch (error) {

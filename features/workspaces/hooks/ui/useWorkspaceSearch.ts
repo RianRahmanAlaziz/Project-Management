@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import type { Workspace } from "../types/workspace";
+import { Workspace } from "../../types/workspace";
+
 
 export function useWorkspaceSearch(
     workspaces: Workspace[]

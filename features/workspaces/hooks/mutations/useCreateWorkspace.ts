@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import { createWorkspace as createWorkspaceRequest } from "../api/workspaceApi";
+import { createWorkspace as createWorkspaceRequest } from "../../api/workspaceApi";
 
 import type {
     Workspace,
     CreateWorkspacePayload,
     WorkspaceFormData,
-} from "../types/workspace";
+} from "../../types/workspace";
 
 import { parseApiError } from "@/lib/api/apiError";
 
@@ -47,11 +47,8 @@ export function useCreateWorkspace({
                 return response.data;
             })
             .catch((error) => {
-                const apiError =
-                    parseApiError(error);
-
+                const apiError = parseApiError(error);
                 setCreateError(apiError.message);
-
                 throw error;
             })
             .finally(() => {
@@ -68,8 +65,7 @@ export function useCreateWorkspace({
             }),
 
             error: (error) => {
-                const apiError =
-                    parseApiError(error);
+                const apiError = parseApiError(error);
 
                 return {
                     message: "Failed to create workspace",

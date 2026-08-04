@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useCreateWorkspace } from "./useCreateWorkspace";
 
 import { addWorkspaceMember } from "@/features/members/api/workspaceMemberApi";
-import type { WorkspaceFormData } from "../types/workspace";
+import type { WorkspaceFormData } from "../../types/workspace";
 import type { AddWorkspaceMemberPayload } from "@/features/members/types/workspaceMember";
 
 interface UseCreateWorkspaceWithMembersOptions {

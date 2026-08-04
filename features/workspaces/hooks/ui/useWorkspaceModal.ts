@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { Workspace } from "../types/workspace";
 
 export function useWorkspaceModal() {
     const [isCreateWorkspaceOpen, setIsCreateWorkspaceOpen] =

@@ -6,13 +6,9 @@ import {
     useState,
 } from "react";
 
-import { getWorkspaces } from "../api/workspaceApi";
-import type {
-    Workspace,
-    WorkspacePagination,
-} from "../types/workspace";
-
 import { parseApiError } from "@/lib/api/apiError";
+import { Workspace, WorkspacePagination } from "../../types/workspace";
+import { getWorkspaces } from "../../api/workspaceApi";
 
 export function useWorkspaces() {
     const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -28,16 +24,13 @@ export function useWorkspaces() {
         setError(null);
 
         try {
-            const response =
-                await getWorkspaces();
+            const response = await getWorkspaces();
 
             setWorkspaces(response.data);
-            setPagination(
-                response.meta.pagination,
-            );
+            setPagination(response.meta.pagination);
+
         } catch (fetchError) {
-            const apiError =
-                parseApiError(fetchError);
+            const apiError = parseApiError(fetchError);
 
             setError(apiError.message);
         } finally {

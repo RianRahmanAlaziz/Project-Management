@@ -6,12 +6,10 @@ import {
     useState,
 } from "react";
 
-import {
-    parseApiError,
-} from "@/lib/api/apiError";
+import { parseApiError } from "@/lib/api/apiError";
+import { Projects, ProjectsPagination } from "../../types/projects";
+import { getProjects } from "../../api/projectsApi";
 
-import { Projects, ProjectsPagination } from "../types/projects";
-import { getProjects } from "../api/projectsApi";
 
 export function useProjects(workspaceSlug: string) {
     const [projects, setProjects] = useState<Projects[]>([])
