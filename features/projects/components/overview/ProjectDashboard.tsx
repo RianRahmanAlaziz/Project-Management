@@ -1,4 +1,4 @@
-
+"use client";
 import { useState } from 'react';
 
 import {
@@ -14,35 +14,30 @@ import {
     ProjectTasksTimeline,
     ProjectHero,
     ProjectContent,
-    ProjectActivity
-}
-    from "@/features/projects/components";
+    ProjectActivity,
+} from "@/features/projects/components";
 
-import { TASKS } from '@/features/tasks/mocks/tasks';
-import { USERS } from '@/features/users/mocks/users';
-import type { Projects } from "@/features/projects/types/projects";
+import type { DetailProject } from "@/features/projects/types/projects";
+import { Tasks } from '@/features/tasks/types/tasks';
 
 
 type ProjectsDashboardProps = {
-    project: Projects;
+    project: DetailProject;
+    tasks: Tasks[];
     onCreateTasks?: () => void;
-    onOpenBoard?: (project: Projects) => void;
+    onOpenBoard?: (project: DetailProject) => void;
 };
 
 export default function ProjectDashboard({
     project,
+    tasks,
     onCreateTasks,
     onOpenBoard,
 }: ProjectsDashboardProps) {
 
     const [activeTab, setActiveTab] = useState<ProjectTab>("overview");
-    const projectTasks = TASKS.data.filter(
-        task => task.project_id === project.id
-    );
 
-    const projectMembers = USERS.data.filter((user) =>
-        project.member_id.includes(user.id)
-    );
+    const projectMembers = project.members;
 
     return (
         <section className="space-y-6">
@@ -62,17 +57,17 @@ export default function ProjectDashboard({
             )}
 
             {activeTab === "tasks" && (
-                <ProjectTasks tasks={projectTasks} />
+                <ProjectTasks tasks={tasks} />
             )}
 
             {activeTab === "timeline" && (
-                <ProjectTasksTimeline tasks={projectTasks} />
+                <ProjectTasksTimeline tasks={tasks} />
             )}
 
             {activeTab === "members" && (
                 <ProjectMembers
                     members={projectMembers}
-                    tasks={projectTasks}
+                    tasks={tasks}
                 />
             )}
 

@@ -1,13 +1,15 @@
 "use client";
-import { PROJECTS } from "../mocks/projects";
 
 import {
     ProjectDashboard,
+    SkeletonProjectsOverview,
 } from "@/features/projects/components";
 
 import {
     useProjectNavigation,
 } from "../hooks";
+import { useOverviewProject } from "../hooks/overview/useOverviewProject";
+import { useTasks } from "@/features/tasks/hooks/useTasks";
 
 interface ProjectsOverviewProps {
     workspaceSlug: string;
@@ -19,32 +21,37 @@ export default function ProjectsOverview({
     workspaceSlug,
     projectSlug,
 }: ProjectsOverviewProps) {
-    const project = PROJECTS.data.find(
-        (item) => item.slug === projectSlug
-    );
 
-    if (!project) {
-        return (
-            <div className="p-6 text-center">
-                Project not found.
-            </div>
-        );
-    }
+    const {
+        project,
+        isLoading,
+        error,
+        refetch,
+    } = useOverviewProject(workspaceSlug, projectSlug);
+
+    const {
+        tasks,
+    } = useTasks(workspaceSlug, projectSlug);
 
     const onCreateTasks = () => {
         console.log("Create Tasks")
     };
 
-
     const {
         handleOpenProjectBoard,
     } = useProjectNavigation(workspaceSlug);
 
+    if (!project) {
+        return (
+            <SkeletonProjectsOverview />
+        );
+    }
     return (
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
                 <ProjectDashboard
                     project={project}
+                    tasks={tasks}
                     onCreateTasks={onCreateTasks}
                     onOpenBoard={handleOpenProjectBoard}
                 />

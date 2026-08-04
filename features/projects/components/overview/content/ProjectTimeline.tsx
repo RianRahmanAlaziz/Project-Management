@@ -2,11 +2,12 @@
 
 
 import { ProgressBar } from "@/components/ui/ProgressBar";
-import { Projects } from "@/features/projects/types/projects";
+import { formatDate } from "@/lib/utils/formatDate";
+import { DetailProject } from "@/features/projects/types/projects";
 import { CalendarDays, Flag } from "lucide-react";
 
 interface ProjectTimelineProps {
-    project: Projects;
+    project: DetailProject;
 }
 
 export default function ProjectTimeline({
@@ -73,7 +74,7 @@ export default function ProjectTimeline({
                                 Start Date
                             </p>
                             <p className="font-medium">
-                                {project.start_date}
+                                {formatDate(project.start_date)}
                             </p>
                         </div>
                     </div>
@@ -91,7 +92,7 @@ export default function ProjectTimeline({
                                 Due Date
                             </p>
                             <p className="font-medium">
-                                {project.due_date}
+                                {formatDate(project.due_date)}
                             </p>
                         </div>
                     </div>

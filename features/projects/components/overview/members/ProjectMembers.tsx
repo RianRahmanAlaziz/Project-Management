@@ -1,19 +1,15 @@
 
 import { Plus } from "lucide-react";
 import { Avatar, Button, ProgressBar } from "@/components/ui";
-
-import {
-    ProjectMemberActionsMenu,
-}
-    from "@/features/projects/components";
+import { ProjectMemberActionsMenu } from "@/features/projects/components";
 import type { Tasks } from "@/features/tasks/types/tasks";
-import type { Users } from "@/features/users/types/users";
+import { ProjectMember } from "@/features/projects/types/projectMembers";
 
 interface ProjectMembersProps {
-    members: Users[];
+    members: ProjectMember[];
     tasks: Tasks[];
-    onRole?: (member: Users) => void;
-    onRemove?: (member: Users) => void;
+    onRole?: (member: ProjectMember) => void;
+    onRemove?: (member: ProjectMember) => void;
 }
 
 export default function ProjectMembers({
@@ -26,7 +22,7 @@ export default function ProjectMembers({
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">
-                    {members.length} Members
+                    {members.length} Members collaborating on this project.
                 </p>
                 <Button
                     size="md"
@@ -39,20 +35,22 @@ export default function ProjectMembers({
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {members.map((member) => {
                     const memberTasks = tasks.filter(
-                        (task) =>
-                            task.assignee_id === member.id
+                        (task) => task.assignee.id === member.id,
                     );
-                    const completed =
-                        memberTasks.filter(
-                            (task) =>
-                                task.status === "Done"
-                        ).length;
-                    const completionRate =
-                        memberTasks.length === 0
-                            ? 0
-                            : Math.round(
-                                (completed / memberTasks.length) * 100
-                            );
+
+                    const active = memberTasks.filter(
+                        (task) => task.status === "in_progress",
+                    ).length;
+
+                    const completed = memberTasks.filter(
+                        (task) => task.status === "done"
+                    ).length;
+
+                    const completionRate = memberTasks.length === 0
+                        ? 0
+                        : Math.round(
+                            (completed / memberTasks.length) * 100
+                        );
                     return (
                         <div
                             key={member.id}
@@ -62,13 +60,13 @@ export default function ProjectMembers({
                                 <div className="flex items-center gap-3">
                                     <Avatar
                                         name={member.name}
-                                        size="md"
+                                        size="lg"
                                     />
                                     <div>
                                         <h4 className="font-semibold text-foreground">
                                             {member.name}
                                         </h4>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-sm text-muted-foreground capitalize">
                                             {member.role}
                                         </p>
                                     </div>
@@ -85,7 +83,15 @@ export default function ProjectMembers({
                                         Assigned
                                     </span>
                                     <span className="font-medium">
-                                        {memberTasks.length}
+                                        {memberTasks.length} Tasks
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        Active
+                                    </span>
+                                    <span className="font-medium text-warning">
+                                        {active} Tasks
                                     </span>
                                 </div>
                                 <div className="flex justify-between text-sm">
@@ -93,7 +99,7 @@ export default function ProjectMembers({
                                         Completed
                                     </span>
                                     <span className="font-medium text-success">
-                                        {completed}
+                                        {completed} Tasks
                                     </span>
                                 </div>
                                 <ProgressBar

@@ -8,12 +8,12 @@ import {
     Users,
 } from "lucide-react";
 
-import type { Projects } from "@/features/projects/types/projects";
+import type { DetailProject } from "@/features/projects/types/projects";
 import { TASKS } from "@/features/tasks/mocks/tasks";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 
 type ProjectHealthProps = {
-    project: Projects;
+    project: DetailProject;
 };
 
 export default function ProjectHealth({
@@ -169,7 +169,7 @@ export default function ProjectHealth({
                     </div>
 
                     <span className="font-semibold">
-                        {project.member_id.length}
+                        {project.member_count}
                     </span>
 
                 </div>

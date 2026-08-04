@@ -1,6 +1,7 @@
 import { apiClient } from "@/lib/api/apiClient";
 import type {
     Projects,
+    DetailProject,
     ProjectsListResponse,
     CreateProjectPayload,
 } from "../types/projects";
@@ -14,6 +15,17 @@ export async function getProjects(
     );
     return response.data;
 }
+
+export async function getDetailProject(
+    workspaceSlug: string,
+    projectSlug: string,
+): Promise<ApiResponse<DetailProject>> {
+    const response = await apiClient.get<ApiResponse<DetailProject>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}`,
+    );
+    return response.data;
+}
+
 
 export async function createProject(
     workspaceSlug: string,

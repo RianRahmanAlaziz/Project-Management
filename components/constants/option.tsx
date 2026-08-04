@@ -112,23 +112,23 @@ export type Color = (typeof COLORS)[number];
 
 export const priorityOptions = [
     {
-        value: "Low",
+        value: "low",
         label: "Low",
         description: "Low priority",
         icon: (
-            <span className="h-2 w-2 rounded-full bg-green-500" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
         ),
     },
     {
-        value: "Medium",
+        value: "medium",
         label: "Medium",
         description: "Normal priority",
         icon: (
-            <span className="h-2 w-2 rounded-full bg-yellow-500" />
+            <span className="h-2 w-2 rounded-full bg-amber-500" />
         ),
     },
     {
-        value: "High",
+        value: "high",
         label: "High",
         description: "High priority",
         icon: (

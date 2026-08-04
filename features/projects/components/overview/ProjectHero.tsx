@@ -5,21 +5,27 @@ import {
     SquareDashedKanban,
 } from "lucide-react";
 import { Button } from "@/components/ui";
-import type { Projects } from "@/features/projects/types/projects";
-import { WORKSPACES } from "@/features/workspaces/mocks/workspaces";
+import type { DetailProject } from "@/features/projects/types/projects";
+import { Badge } from "@/components/ui";
+import { statusOptions } from "@/components/constants";
 
-const statusColor: Record<string, string> = {
-    Done: "text-success bg-green-50 dark:bg-green-950/30",
-    "In Progress": "text-primary bg-indigo-50 dark:bg-indigo-950/30",
-    Review: "text-warning bg-amber-50 dark:bg-amber-950/30",
-    Todo: "text-muted-foreground bg-muted",
-    Backlog: "text-muted-foreground bg-muted",
-};
+const statusColorMap = {
+    planning: "blue",
+    in_progress: "indigo",
+    review: "purple",
+    done: "green",
+} as const;
+
+const priorityColorMap = {
+    Low: "green",
+    Medium: "yellow",
+    High: "red",
+} as const;
 
 type ProjectHeroProps = {
-    project: Projects;
+    project: DetailProject;
     onCreateTasks?: () => void;
-    onOpenBoard?: (project: Projects) => void;
+    onOpenBoard?: (project: DetailProject) => void;
 };
 
 export default function ProjectHero({
@@ -27,9 +33,10 @@ export default function ProjectHero({
     onCreateTasks,
     onOpenBoard,
 }: ProjectHeroProps) {
-    const workspace = WORKSPACES.data.find(
-        (item) => item.id === project.workspace_id
-    );
+    const status = statusOptions.find(
+        (option) => option.value === project.status,
+    ) ?? null;
+
     return (
         <div className="rounded-2xl border border-border bg-card p-7 shadow-sm">
             <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
@@ -44,14 +51,19 @@ export default function ProjectHero({
                             <h2 className="text-3xl font-bold">
                                 {project.name}
                             </h2>
-                            <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${statusColor[project.status]}`}>{project.status}</span>
-                            <span className={`text-sm font-semibold ${project.priority === "High" ? "text-destructive" : project.priority === "Medium" ? "text-warning" : "text-muted-foreground"}`}>
-                                ● {project.priority} priority
-                            </span>
+                            <Badge
+                                label={status?.label ?? project.status}
+                                color={statusColorMap[project.status] ?? "gray"}
+                            />
+
+                            <Badge
+                                label={`${project.priority} Priority`}
+                                color={priorityColorMap[project.priority] ?? "gray"}
+                            />
                         </div>
                         <p className="text-sm text-muted-foreground mt-0.5 max-w-lg">{project.description}</p>
                         <p className="text-sm text-muted-foreground mt-1">
-                            {workspace?.name} · Started {project.start_date} · Due {project.due_date}
+                            Started: {project.start_date} - Due: {project.due_date}
                         </p>
                     </div>
                 </div>

@@ -15,12 +15,12 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui";
 
-import type { Users } from "@/features/users/types/users";
+import { ProjectMember } from "@/features/projects/types/projectMembers";
 
 interface ProjectMemberActionsMenuProps {
-    member: Users;
-    onRole?: (member: Users) => void;
-    onRemove?: (member: Users) => void;
+    member: ProjectMember;
+    onRole?: (member: ProjectMember) => void;
+    onRemove?: (member: ProjectMember) => void;
 }
 
 export default function ProjectMemberActionsMenu({

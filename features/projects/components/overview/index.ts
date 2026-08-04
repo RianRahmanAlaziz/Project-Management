@@ -1,7 +1,6 @@
 export * from "./activity";
 export * from "./content";
 export * from "./members";
-export * from "./tasks";
 export * from "./timeline";
 
 export { default as ProjectContent } from "./ProjectContent"

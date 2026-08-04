@@ -5,11 +5,11 @@ import {
     ProjectTimeline,
 }
     from "@/features/projects/components";
-import type { Projects } from "@/features/projects/types/projects";
+import type { DetailProject } from "@/features/projects/types/projects";
 
 
 interface ProjectContentProps {
-    project: Projects;
+    project: DetailProject;
 };
 
 export default function ProjectContent({

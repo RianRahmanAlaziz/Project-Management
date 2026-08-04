@@ -3,12 +3,13 @@
 import {
     RadialBar,
     RadialBarChart,
-} from 'recharts'
-import type { Projects } from "@/features/projects/types/projects";
+    PolarAngleAxis,
+} from "recharts";
+import type { DetailProject } from "@/features/projects/types/projects";
 import { TASKS } from '@/features/tasks/mocks/tasks';
 
 type ProjectProgresProps = {
-    project: Projects;
+    project: DetailProject;
 };
 
 export default function ProjectProgres({
@@ -17,18 +18,43 @@ export default function ProjectProgres({
 
     const radialData = [{ name: "Progress", value: project.progress, fill: "#4F46E5" }];
     const colCounts = (status: string) =>
-        TASKS.data.filter(
-            (task) =>
-                task.status === status &&
-                task.project_id === project.id
+        TASKS.data.filter((task) =>
+            task.status === status &&
+            task.project_id === project.id
         ).length;
 
     return (
         <div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center justify-center shadow-sm">
             <p className="font-semibold text-foreground text-base mb-2">Overall Progress</p>
             <div className="relative">
-                <RadialBarChart width={130} height={130} cx={65} cy={65} innerRadius={45} outerRadius={58} barSize={10} data={radialData} startAngle={90} endAngle={-270}>
-                    <RadialBar background dataKey="value" fill="#4F46E5" cornerRadius={5} />
+                <RadialBarChart
+                    width={130}
+                    height={130}
+                    innerRadius={45}
+                    outerRadius={58}
+                    data={[
+                        {
+                            value: 100,
+                            fill: "#31384A",
+                        },
+                        {
+                            value: project.progress,
+                            fill: "#4F46E5",
+                        },
+                    ]}
+                    startAngle={90}
+                    endAngle={-270}
+                >
+                    <PolarAngleAxis
+                        type="number"
+                        domain={[0, 100]}
+                        tick={false}
+                    />
+
+                    <RadialBar
+                        dataKey="value"
+                        cornerRadius={8}
+                    />
                 </RadialBarChart>
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                     <p className="text-2xl font-bold text-foreground">{project.progress}%</p>
