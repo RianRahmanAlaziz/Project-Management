@@ -32,6 +32,15 @@ export default function WorkspaceDashboard({
     onOpenMembers,
     onOpenSetting,
 }: WorkspaceDashboardProps) {
+
+    const completion = workspace.total_tasks === 0
+        ? 0
+        : Math.round(
+            (workspace.completed_tasks /
+                workspace.total_tasks) *
+            100,
+        );
+
     return (
         <section className="space-y-6">
             <WorkspaceHero
@@ -57,13 +66,13 @@ export default function WorkspaceDashboard({
                 <WorkspaceStats
                     icon={<ListTodo size={18} />}
                     label="Tasks This Week"
-                    value={0}
+                    value={workspace.tasks_this_week}
                     color="bg-violet-500"
                 />
                 <WorkspaceStats
                     icon={<BarChart2 size={18} />}
                     label="Completion"
-                    value="0%"
+                    value={`${completion}%`}
                     color="bg-success"
                 />
             </div>

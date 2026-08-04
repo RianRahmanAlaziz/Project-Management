@@ -21,6 +21,9 @@ export interface Workspace {
     current_user_role: WorkspaceRole;
     project_count: number;
     members_count: number;
+    tasks_this_week: number;
+    total_tasks: number;
+    completed_tasks: number;
     created_at: string;
     updated_at: string;
 }

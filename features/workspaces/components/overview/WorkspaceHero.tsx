@@ -6,9 +6,8 @@ import {
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import { Button } from "@/components/ui";
 import ActionsMenu from "./ActionsMenu";
-import {
-    getWorkspaceInitials,
-} from "../../utils/getWorkspaceInitials";
+import { getInitials } from "@/lib/utils/getInitials";
+import { formatDate } from "@/lib/utils/formatDate";
 
 type WorkspaceHeroProps = {
     workspace: Workspace;
@@ -30,7 +29,7 @@ export default function WorkspaceHero({
                     <div
                         className={`flex h-18 w-18 shrink-0 items-center justify-center rounded-2xl ${workspace.color} text-3xl font-bold text-white`}
                     >
-                        {getWorkspaceInitials(workspace.name)}
+                        {getInitials(workspace.name)}
                     </div>
                     <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-3">
@@ -43,7 +42,7 @@ export default function WorkspaceHero({
                         </p>
                         <div className="flex flex-wrap gap-5 text-sm text-muted-foreground">
                             <span>
-                                Created: {workspace.created_at}
+                                Created: {formatDate(workspace.created_at)}
                             </span>
                         </div>
                     </div>

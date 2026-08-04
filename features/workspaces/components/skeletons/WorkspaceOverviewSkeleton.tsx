@@ -89,7 +89,7 @@ export default function WorkspaceOverviewSkeleton() {
                 </SkCard>
 
                 {/* Workspace Activity */}
-                <SkCard>
+                {/* <SkCard>
                     <div className="mb-5 space-y-2">
                         <Sk className="h-5 w-32 rounded-md" />
                         <Sk className="h-3 w-48 rounded-md" />
@@ -112,7 +112,7 @@ export default function WorkspaceOverviewSkeleton() {
                             </div>
                         ))}
                     </div>
-                </SkCard>
+                </SkCard> */}
             </div>
         </div>
     );

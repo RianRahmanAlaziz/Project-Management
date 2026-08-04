@@ -6,19 +6,9 @@ import {
     SettingSection,
     SettingFooter,
 } from "@/components/layouts/settings";
-
-import {
-    WORKSPACE_COLORS,
-} from "@/features/workspaces/constants/workspaceStyles";
-
-
-import {
-    getWorkspaceInitials,
-} from "../../utils/getWorkspaceInitials";
-
-import type {
-    UpdateWorkspacePayload,
-} from "@/features/workspaces/types/workspace";
+import { WORKSPACE_COLORS } from "@/features/workspaces/constants/workspaceStyles";
+import { getInitials } from "@/lib/utils/getInitials";
+import type { UpdateWorkspacePayload } from "@/features/workspaces/types/workspace";
 
 
 interface GeneralSettingsProps {
@@ -49,7 +39,7 @@ export default function GeneralSettings({
             <div className="space-y-4">
                 <div className="flex items-center gap-4">
                     <div className={`w-14 h-14 rounded-2xl ${workspace.color} flex items-center justify-center text-white font-bold text-xl select-none shrink-0`}>
-                        {getWorkspaceInitials(workspace.name)}
+                        {getInitials(workspace.name)}
                     </div>
                     <div className="flex-1">
                         <p className="text-xs font-medium text-foreground mb-1.5">Workspace color</p>

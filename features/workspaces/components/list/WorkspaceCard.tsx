@@ -2,7 +2,7 @@
 import { Users, FolderOpen, } from "lucide-react";
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import WorkspaceActionsMenu from "./WorkspaceActionsMenu";
-import { getWorkspaceInitials } from "../../utils/getWorkspaceInitials";
+import { getInitials } from "@/lib/utils/getInitials";
 
 interface WorkspaceCardProps {
     workspace: Workspace;
@@ -19,7 +19,7 @@ export default function WorkspaceCard({
     onOpenMembers,
     onOpenSetting,
 }: WorkspaceCardProps) {
-    const initials = getWorkspaceInitials(workspace.name);
+    const initials = getInitials(workspace.name);
     return (
         <article
             onClick={() => onOpenWorkspace?.(workspace)}
