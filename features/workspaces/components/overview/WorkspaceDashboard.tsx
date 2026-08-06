@@ -20,6 +20,7 @@ import type { Workspace } from "@/features/workspaces/types/workspace";
 type WorkspaceDashboardProps = {
     workspace: Workspace;
     projects: Projects[];
+    onCreateProject: () => void;
     onOpenProject: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
@@ -28,6 +29,7 @@ type WorkspaceDashboardProps = {
 export default function WorkspaceDashboard({
     workspace,
     projects,
+    onCreateProject,
     onOpenProject,
     onOpenMembers,
     onOpenSetting,
@@ -45,6 +47,7 @@ export default function WorkspaceDashboard({
         <section className="space-y-6">
             <WorkspaceHero
                 workspace={workspace}
+                onCreateProject={onCreateProject}
                 onOpenProject={onOpenProject}
                 onOpenMembers={onOpenMembers}
                 onOpenSetting={onOpenSetting}

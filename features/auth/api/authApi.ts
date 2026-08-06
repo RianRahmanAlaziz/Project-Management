@@ -8,6 +8,10 @@ import type {
     LogoutResponse,
 } from "../types/auth";
 
+export async function initializeCsrf(): Promise<void> {
+    await apiClient.get("/sanctum/csrf-cookie");
+}
+
 export async function login(
     payload: LoginPayload,
 ): Promise<AuthResponse> {

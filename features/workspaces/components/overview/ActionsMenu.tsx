@@ -5,6 +5,7 @@ import {
     Users,
     MoreHorizontal,
     Settings,
+    FolderOpen,
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -18,12 +19,14 @@ import { Button } from "@/components/ui";
 
 interface ActionsMenuActionsMenuProps {
     workspace: Workspace;
+    onOpenProject: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
 }
 
 export default function ActionsMenu({
     workspace,
+    onOpenProject,
     onOpenMembers,
     onOpenSetting,
 }: ActionsMenuActionsMenuProps) {
@@ -40,6 +43,16 @@ export default function ActionsMenu({
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
+
+                <DropdownMenuItem
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        onOpenProject?.(workspace)
+                    }}
+                >
+                    <FolderOpen size={16} />
+                    Open Projects
+                </DropdownMenuItem>
 
                 <DropdownMenuItem
                     onClick={(e) => {

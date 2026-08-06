@@ -2,13 +2,16 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { useAuth } from "./useAuth";
-import { register, login } from "../api/authApi";
+import {
+    register,
+    login,
+    initializeCsrf,
+} from "../api/authApi";
 import type {
     AuthForm,
     AuthMode,
     AuthFieldErrors,
 } from "../types/auth";
-import { setAuthToken } from "@/lib/api/authToken";
 import { validateAuthForm } from "../utils/validateAuthForm";
 
 import { parseApiError } from "@/lib/api/apiError";
@@ -84,19 +87,21 @@ export function useAuthForm() {
         setFieldErrors({});
 
         try {
-            const response = isLogin
-                ? await login({
+            await initializeCsrf();
+
+            if (isLogin) {
+                await login({
                     email: form.email,
                     password: form.password,
-                })
-                : await register({
+                });
+            } else {
+                await register({
                     name: form.name,
                     email: form.email,
                     password: form.password,
                     password_confirmation: form.confirmPassword,
                 });
-
-            setAuthToken(response.data.access_token);
+            }
 
             await refreshUser();
             toast.success(isLogin ? "Login berhasil." : "Registrasi berhasil.");
@@ -118,6 +123,7 @@ export function useAuthForm() {
                     apiError.errors.password_confirmation,
             });
 
+        } finally {
             setLoading(false);
         }
     };

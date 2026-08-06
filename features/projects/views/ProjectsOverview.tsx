@@ -8,7 +8,7 @@ import {
 import {
     useProjectNavigation,
 } from "../hooks";
-import { useOverviewProject } from "../hooks/overview/useOverviewProject";
+import { useOverviewProject } from "../hooks/queries/useOverviewProject";
 import { useTasks } from "@/features/tasks/hooks/useTasks";
 
 interface ProjectsOverviewProps {

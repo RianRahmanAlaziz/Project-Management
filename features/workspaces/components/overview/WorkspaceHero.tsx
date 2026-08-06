@@ -1,7 +1,7 @@
 "use client";
 
 import {
-    FolderOpen,
+    Plus,
 } from "lucide-react";
 import type { Workspace } from "@/features/workspaces/types/workspace";
 import { Button } from "@/components/ui";
@@ -11,13 +11,15 @@ import { formatDate } from "@/lib/utils/formatDate";
 
 type WorkspaceHeroProps = {
     workspace: Workspace;
-    onOpenProject?: (workspace: Workspace) => void;
+    onCreateProject: () => void;
+    onOpenProject: (workspace: Workspace) => void;
     onOpenMembers: (workspace: Workspace) => void;
     onOpenSetting: (workspace: Workspace) => void;
 };
 
 export default function WorkspaceHero({
     workspace,
+    onCreateProject,
     onOpenProject,
     onOpenMembers,
     onOpenSetting,
@@ -51,14 +53,15 @@ export default function WorkspaceHero({
                     <Button
                         variant="primary"
                         size="md"
-                        onClick={() => onOpenProject?.(workspace)}
+                        onClick={onCreateProject}
                     >
-                        <FolderOpen size={16} />
-                        Open Project
+                        <Plus size={16} />
+                        Create Project
                     </Button>
 
                     <ActionsMenu
                         workspace={workspace}
+                        onOpenProject={onOpenProject}
                         onOpenMembers={onOpenMembers}
                         onOpenSetting={onOpenSetting}
                     />

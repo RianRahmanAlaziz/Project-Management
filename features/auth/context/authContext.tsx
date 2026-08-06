@@ -16,11 +16,6 @@ import {
 
 import type { User } from "../types/auth";
 
-import {
-    getAuthToken,
-    removeAuthToken,
-} from "@/lib/api/authToken";
-
 interface AuthContextValue {
     user: User | null;
     isAuthenticated: boolean;
@@ -46,20 +41,12 @@ export function AuthProvider({
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchUser = useCallback(async () => {
-        const token = getAuthToken();
-
-        if (!token) {
-            setUser(null);
-            setIsLoading(false);
-            return;
-        }
 
         try {
             const response = await getMe();
 
             setUser(response.data);
         } catch {
-            removeAuthToken();
             setUser(null);
         } finally {
             setIsLoading(false);
@@ -74,7 +61,6 @@ export function AuthProvider({
         try {
             await logoutRequest();
         } finally {
-            removeAuthToken();
             setUser(null);
 
             router.replace("/");
