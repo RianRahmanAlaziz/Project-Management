@@ -1,5 +1,5 @@
 "use client";
-
+import { useState } from "react";
 import {
     ProjectDashboard,
     SkeletonProjectsOverview,
@@ -10,6 +10,7 @@ import {
 } from "../hooks";
 import { useOverviewProject } from "../hooks/queries/useOverviewProject";
 import { useTasks } from "@/features/tasks/hooks/useTasks";
+import { TaskFormModal } from "@/features/tasks/components";
 
 interface ProjectsOverviewProps {
     workspaceSlug: string;
@@ -21,7 +22,7 @@ export default function ProjectsOverview({
     workspaceSlug,
     projectSlug,
 }: ProjectsOverviewProps) {
-
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const {
         project,
         isLoading,
@@ -33,8 +34,8 @@ export default function ProjectsOverview({
         tasks,
     } = useTasks(workspaceSlug, projectSlug);
 
-    const onCreateTasks = () => {
-        console.log("Create Tasks")
+    const handleCreateTask = () => {
+        setIsTaskModalOpen(true);
     };
 
     const {
@@ -52,10 +53,14 @@ export default function ProjectsOverview({
                 <ProjectDashboard
                     project={project}
                     tasks={tasks}
-                    onCreateTasks={onCreateTasks}
+                    onCreateTasks={handleCreateTask}
                     onOpenBoard={handleOpenProjectBoard}
                 />
             </div>
+
+            <TaskFormModal
+                open={isTaskModalOpen}
+            />
         </div>
     )
 }

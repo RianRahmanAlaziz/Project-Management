@@ -202,22 +202,15 @@ export default function TaskFormModal({
 
                 <div className="grid grid-cols-2 gap-4">
 
-                    <Combobox
+                    <Input
                         label={
                             <>
                                 <Hash size={12} />
                                 Project
                             </>
                         }
-                        value={projectId}
-                        onValueChange={setProjectId}
-                        placeholder="Select project"
-                        options={
-                            projects.map(item => ({
-                                value: String(item.id),
-                                label: item.name,
-                            }))
-                        }
+                        value={'test'}
+                        readOnly
                     />
 
                     <Combobox
@@ -273,6 +266,18 @@ export default function TaskFormModal({
                         label={
                             <>
                                 <Calendar size={11} />
+                                Start date
+                            </>
+                        }
+                        value={dueDate}
+                        onChange={setDueDate}
+
+                    />
+
+                    <DatePicker
+                        label={
+                            <>
+                                <Calendar size={11} />
                                 Due date
                             </>
                         }
@@ -281,19 +286,6 @@ export default function TaskFormModal({
 
                     />
 
-                    <Combobox
-                        label={
-                            <>
-                                <Clock size={12} />
-                                Estimate
-                            </>
-                        }
-                        value={estimateHours}
-                        onValueChange={setEstimateHours}
-                        placeholder="Estimate"
-                        searchable={false}
-                        options={ESTIMATE_OPTIONS}
-                    />
 
                 </div>
 
