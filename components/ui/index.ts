@@ -14,3 +14,4 @@ export * from "./DatePicker";
 export * from "./Skeleton";
 export * from "./AppToaster";
 export * from "./multiselect";
+export * from "./DateRangePicker";

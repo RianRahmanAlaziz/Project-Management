@@ -16,10 +16,12 @@ import {
     getDay,
     subMonths,
 } from "date-fns";
+import { FieldWrapper } from "./FieldWrapper";
 
 interface DatePickerProps {
     label?: React.ReactNode;
     value?: string;
+    error?: string;
     onChange: (value: string) => void;
     placeholder?: string;
 }
@@ -27,6 +29,7 @@ interface DatePickerProps {
 export function DatePicker({
     label,
     value,
+    error,
     onChange,
     placeholder = "Select date",
 }: DatePickerProps) {
@@ -77,14 +80,7 @@ export function DatePicker({
 
 
     return (
-        <div className="flex flex-col gap-1">
-            {label && (
-                <label
-                    className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-2.5"
-                >
-                    {label}
-                </label>
-            )}
+        <FieldWrapper label={label}>
             <div className="relative">
                 <button
                     ref={buttonRef}
@@ -193,6 +189,7 @@ export function DatePicker({
                     )
                 }
             </div>
-        </div>
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+        </FieldWrapper>
     );
 }

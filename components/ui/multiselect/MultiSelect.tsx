@@ -10,9 +10,11 @@ import { Command } from "cmdk";
 import MultiSelectBase from "./MultiSelectBase";
 import MultiSelectFooter from "./MultiSelectFooter";
 import { MultiSelectHeader } from "./MultiSelectHeader";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface MultiSelectProps {
     label?: React.ReactNode;
+    error?: string;
     placeholder?: string;
     searchPlaceholder?: string;
     emptyMessage?: string;
@@ -29,6 +31,7 @@ interface MultiSelectProps {
 export function MultiSelect({
     label,
     values,
+    error,
     options,
     placeholder = "Select...",
     searchPlaceholder = "Search...",
@@ -87,13 +90,7 @@ export function MultiSelect({
     }, [onValueChange]);
 
     return (
-        <div className="flex flex-col gap-2">
-            {label && (
-                <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    {label}
-                </label>
-            )}
-
+        <FieldWrapper label={label}>
             <MultiSelectBase
                 portalled={portalled}
                 searchable={searchable}
@@ -218,6 +215,7 @@ export function MultiSelect({
                     ))
                 )}
             </MultiSelectBase>
-        </div>
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+        </FieldWrapper>
     );
 }

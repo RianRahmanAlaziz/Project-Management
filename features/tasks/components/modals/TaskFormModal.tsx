@@ -7,6 +7,7 @@ import {
     Modal,
     Combobox,
     DatePicker,
+    DateRangePicker,
 } from "@/components/ui";
 
 import {
@@ -262,28 +263,19 @@ export default function TaskFormModal({
                         }
                     />
 
-                    <DatePicker
+                    <DateRangePicker
                         label={
                             <>
-                                <Calendar size={11} />
-                                Start date
+                                <Calendar size={12} />
+                                Schedule
                             </>
                         }
-                        value={dueDate}
-                        onChange={setDueDate}
-
-                    />
-
-                    <DatePicker
-                        label={
-                            <>
-                                <Calendar size={11} />
-                                Due date
-                            </>
-                        }
-                        value={dueDate}
-                        onChange={setDueDate}
-
+                        startDate={startDate}
+                        endDate={dueDate}
+                        onChange={(start, end) => {
+                            setStartDate(start);
+                            setDueDate(end);
+                        }}
                     />
 
 

@@ -8,10 +8,12 @@ import { ComboboxBase } from "./ComboboxBase";
 import ComboboxItem from "./ComboboxItem";
 import type { ComboboxOption } from "./types";
 import { useMemo } from "react";
+import { FieldWrapper } from "../FieldWrapper";
 
 interface ComboboxProps {
     label?: React.ReactNode;
     placeholder?: string;
+    error?: string;
     searchPlaceholder?: string;
     emptyMessage?: string;
     value?: string;
@@ -24,6 +26,7 @@ interface ComboboxProps {
 export function Combobox({
     label,
     value,
+    error,
     options,
     placeholder = "Select...",
     searchPlaceholder = "Search...",
@@ -41,13 +44,7 @@ export function Combobox({
     );
 
     return (
-        <div className="flex flex-col gap-2">
-            {label && (
-                <label className="mb-1.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    {label}
-                </label>
-            )}
-
+        <FieldWrapper label={label}>
             <ComboboxBase
                 searchable={searchable}
                 searchPlaceholder={searchPlaceholder}
@@ -111,6 +108,8 @@ export function Combobox({
                     ))
                 }
             </ComboboxBase>
-        </div>
+            {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
+        </FieldWrapper>
+
     );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { FieldWrapper } from "./FieldWrapper";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: React.ReactNode;
@@ -10,13 +11,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function Input({ label, error, leftIcon, rightIcon, onRightIconClick, className = "", ...props }: InputProps) {
     return (
-        <div className="flex flex-col gap-2">
-            {label &&
-                <label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground mb-1.5">
-                    {label}
-                </label>
-            }
-
+        <FieldWrapper label={label}>
             <div className="relative">
                 {leftIcon && (
                     <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground">
@@ -43,8 +38,7 @@ export function Input({ label, error, leftIcon, rightIcon, onRightIconClick, cla
                     </button>
                 )}
             </div>
-
             {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
-        </div>
+        </FieldWrapper>
     );
 }
