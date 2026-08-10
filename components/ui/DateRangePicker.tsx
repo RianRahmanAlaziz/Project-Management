@@ -172,14 +172,12 @@ export function DateRangePicker({
                     type="button"
                     onClick={() => setOpen(!open)}
                     className="flex h-12 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm hover:bg-muted/40 cursor-pointer">
-                    <span className="text-muted-foreground">
-                        {
-                            start && end
-                                ? `${format(start, "dd MMM yyyy")} → ${format(end, "dd MMM yyyy")}`
-                                : start
-                                    ? `${format(start, "dd MMM yyyy")} →`
-                                    : placeholder
-                        }
+                    <span className={start ? "text-foreground" : "text-muted-foreground"}  >
+                        {start && end
+                            ? `${format(start, "dd MMM yyyy")} → ${format(end, "dd MMM yyyy")}`
+                            : start
+                                ? `${format(start, "dd MMM yyyy")} →`
+                                : placeholder}
                     </span>
                     <Calendar
                         size={15}

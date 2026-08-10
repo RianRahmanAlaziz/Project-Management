@@ -87,12 +87,8 @@ export function DatePicker({
                     type="button"
                     onClick={() => setOpen(!open)}
                     className="flex h-12 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm hover:bg-muted/40 cursor-pointer">
-                    <span className="text-muted-foreground">
-                        {
-                            selected
-                                ? format(selected, "dd MMM yyyy")
-                                : placeholder
-                        }
+                    <span className={selected ? "text-foreground" : "text-muted-foreground"}>
+                        {selected ? format(selected, "dd MMM yyyy") : placeholder}
                     </span>
                     <Calendar
                         size={15}
