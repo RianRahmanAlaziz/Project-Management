@@ -194,10 +194,6 @@ export default function WorkspaceSettings({
         );
     }
 
-    if (!workspaceData) {
-        return <WorkspaceSettingsSkeleton />;
-    }
-
     return (
         <>
             <div className="flex h-full flex-1 flex-col overflow-hidden">
