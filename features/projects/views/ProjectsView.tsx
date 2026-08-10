@@ -1,7 +1,7 @@
 "use client";
 
-import { Plus, FolderOpen } from "lucide-react";
-import { Button, EmptyState } from "@/components/ui";
+import { FolderOpen } from "lucide-react";
+import { EmptyState } from "@/components/ui";
 
 import {
     ProjectSearch,
@@ -18,6 +18,7 @@ import {
     useProjectSearch,
     useProjects,
 } from "../hooks";
+
 import { useWorkspaceMembers } from "@/features/members/hooks";
 import { useDetailWorkspace } from "@/features/workspaces/hooks";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -30,11 +31,10 @@ export default function ProjectsView({
     workspaceSlug,
 }: ProjectsViewProps) {
     const { user } = useAuth();
-
     const { workspace } = useDetailWorkspace(workspaceSlug);
     const { members } = useWorkspaceMembers(workspaceSlug);
 
-    const userOptions = members.filter(
+    const availableMembers = members.filter(
         (member) => member.user.id !== user?.id,
     );
     const {
@@ -104,17 +104,13 @@ export default function ProjectsView({
                         icon={<FolderOpen size={22} />}
                         title="No projects found"
                         description="Try a different search or create a new project to get started."
-                        action={
-                            <Button size="lg" variant="primary">
-                                <Plus size={16} />New Project
-                            </Button>}
                     />
                 )}
             </div>
 
             <CreateProjectModal
                 open={create.open}
-                users={userOptions}
+                users={availableMembers}
                 workspaceName={workspace?.name ?? ""}
                 onClose={create.closeModal}
                 onConfirm={handleCreateProjectWithMembers}

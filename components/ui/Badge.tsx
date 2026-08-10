@@ -1,7 +1,7 @@
 interface BadgeProps {
     label: string;
     icon?: React.ReactNode;
-    color?: "indigo" | "green" | "yellow" | "red" | "gray" | "blue" | "purple";
+    color?: "indigo" | "green" | "yellow" | "red" | "gray" | "blue" | "purple" | "amber" | "emerald";
     size?: "sm" | "md";
 }
 
@@ -46,6 +46,17 @@ export function Badge({
             bg: "bg-purple-500/15",
             text: "text-purple-400",
             dot: "bg-purple-400",
+        },
+        amber: {
+            bg: "bg-amber-500/15",
+            text: "text-amber-400",
+            dot: "bg-amber-400",
+        },
+
+        emerald: {
+            bg: "bg-emerald-500/15",
+            text: "text-emerald-400",
+            dot: "bg-emerald-400",
         },
     };
 

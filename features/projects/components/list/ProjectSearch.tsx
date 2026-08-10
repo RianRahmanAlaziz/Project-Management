@@ -15,7 +15,7 @@ export default function ProjectSearch({
             <input
                 value={value}
                 onChange={(event) => onChange(event.target.value)}
-                placeholder=" Search workspaces..."
+                placeholder="Search projects..."
                 className="w-full h-12 bg-card border border-border rounded-lg pl-8 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
             />
         </div>

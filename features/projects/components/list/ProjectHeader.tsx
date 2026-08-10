@@ -19,7 +19,11 @@ export default function ProjectHeader({
                 </h1>
 
                 <p className="mt-1 text-sm text-muted-foreground">
-                    {totalProjects} Projects across all workspaces
+                    {totalProjects}{" "}
+                    {totalProjects === 1
+                        ? "project"
+                        : "projects"}{" "}
+                    in this workspace
                 </p>
             </div>
 

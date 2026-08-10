@@ -31,8 +31,7 @@ export function useProjects(workspaceSlug: string) {
         } finally {
             setIsLoading(false);
         }
-
-    }, []);
+    }, [workspaceSlug]);
 
     useEffect(() => {
         void fetchProjects();

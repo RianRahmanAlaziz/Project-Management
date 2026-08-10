@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { CreateProjectForm } from "../../types/projects";
-import { AddProjectMemberPayload } from "../../types/projectMembers";
 import { useCreateProject } from "./useCreateProject";
 import { useAddProjectMember } from "./useAddProjectMember";
 

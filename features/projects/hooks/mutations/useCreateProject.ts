@@ -44,8 +44,7 @@ export function useCreateProject({
 
             return response.data;
         }).catch((error) => {
-            const apiError =
-                parseApiError(error);
+            const apiError = parseApiError(error);
 
             setCreateError(apiError.message);
 

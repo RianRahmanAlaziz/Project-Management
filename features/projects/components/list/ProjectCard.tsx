@@ -1,25 +1,48 @@
 "use client";
 
-import { Calendar, ListTodo, Users } from "lucide-react";
+import {
+    Calendar,
+    ListTodo,
+    Users,
+} from "lucide-react";
+
 import {
     ProjectActionsMenu,
 } from "@/features/projects/components";
-import { Badge, ProgressBar } from "@/components/ui";
-import { USERS } from "@/features/users/mocks/users";
-import type { Projects } from "@/features/projects/types/projects";
 
+import {
+    Badge,
+    ProgressBar,
+} from "@/components/ui";
 
-const statusColors: Record<string, "indigo" | "yellow" | "green" | "gray"> = {
-    "In Progress": "indigo",
-    Review: "yellow",
-    Done: "green",
-    Todo: "gray",
+import type {
+    Projects,
+} from "@/features/projects/types/projects";
+
+const statusColorMap: Record<
+    string,
+    "blue" | "amber" | "purple" | "emerald"
+> = {
+    planning: "blue",
+    in_progress: "amber",
+    review: "purple",
+    done: "emerald",
 };
 
-const priorityColors: Record<string, string> = {
-    High: "text-destructive",
-    Medium: "text-warning",
-    Low: "text-muted-foreground",
+const statusLabelMap: Record<string, string> = {
+    planning: "Planning",
+    in_progress: "In Progress",
+    review: "Review",
+    done: "Done",
+};
+
+const priorityColorMap: Record<
+    string,
+    "emerald" | "amber" | "red"
+> = {
+    low: "emerald",
+    medium: "amber",
+    high: "red",
 };
 
 
@@ -36,22 +59,45 @@ export default function ProjectCard({
     onOpenBoard,
     onSettingProject,
 }: ProjectCardProps) {
+    const statusLabel = statusLabelMap[project.status] ?? project.status;
+    const statusColor = statusColorMap[project.status] ?? "blue";
+    const priorityColor = priorityColorMap[project.priority.toLowerCase()] ?? "gray";
 
     return (
         <div
-            onClick={() => onOpenProject?.(project)}
-            className="bg-card border border-border rounded-xl p-4 hover:border-primary/40 hover:shadow-sm transition-all cursor-pointer group">
+            onClick={() => onOpenProject(project)}
+            className="
+                group cursor-pointer
+                rounded-xl border border-border
+                bg-card p-4
+                transition-all
+                hover:border-primary/40
+                hover:shadow-sm
+            "
+        >
             {/* Header */}
-            <div className="flex items-start justify-between mb-3">
+            <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center gap-2.5">
                     <div
-                        className={`w-8 h-8 rounded-lg ${project.color} flex items-center justify-center text-white text-sm font-bold shrink-0`}
+                        className={`
+                            flex h-8 w-8 shrink-0
+                            items-center justify-center
+                            rounded-lg
+                            ${project.color}
+                            text-sm font-bold text-white
+                        `}
                     >
                         {project.name[0]}
                     </div>
 
-                    <div>
-                        <p className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
+                    <div className="min-w-0">
+                        <p className="
+                            truncate
+                            text-base font-semibold
+                            text-foreground
+                            transition-colors
+                            group-hover:text-primary
+                        ">
                             {project.name}
                         </p>
                     </div>
@@ -64,23 +110,22 @@ export default function ProjectCard({
                 />
             </div>
 
-            {/* Status */}
-            <div className="flex items-center gap-2 mb-3">
+            {/* Status & Priority */}
+            <div className="mb-3 flex items-center gap-2">
                 <Badge
-                    label={project.status}
-                    color={statusColors[project.status] ?? "gray"}
+                    label={statusLabel}
+                    color={statusColor}
                 />
 
-                <span
-                    className={`text-xs font-medium ${priorityColors[project.priority]}`}
-                >
-                    {project.priority}
-                </span>
+                <Badge
+                    label={project.priority}
+                    color={priorityColor}
+                />
             </div>
 
             {/* Progress */}
             <div className="mb-3">
-                <div className="flex justify-between mb-1">
+                <div className="mb-1 flex justify-between">
                     <span className="text-sm text-muted-foreground">
                         Progress
                     </span>
@@ -90,26 +135,42 @@ export default function ProjectCard({
                     </span>
                 </div>
 
-                <ProgressBar value={project.progress} />
+                <ProgressBar
+                    value={project.progress}
+                />
             </div>
 
             {/* Footer */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="
+                        flex items-center gap-1
+                        text-xs text-muted-foreground
+                    ">
                         <ListTodo size={15} />
-                        {project.tasks_count} Tasks
+                        {project.tasks_count ?? 0} Tasks
                     </span>
 
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <span className="
+                        flex items-center gap-1
+                        text-xs text-muted-foreground
+                    ">
                         <Users size={15} />
-                        {project.member_count} members
+                        {project.member_count ?? 0} members
                     </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
+                <div className="
+                    flex shrink-0 items-center gap-1.5
+                    text-xs text-muted-foreground
+                ">
                     <Calendar size={12} />
-                    <span>{project.due_date.slice(5)}</span>
+
+                    <span>
+                        {project.due_date
+                            ? project.due_date.slice(5)
+                            : "-"}
+                    </span>
                 </div>
             </div>
         </div>
