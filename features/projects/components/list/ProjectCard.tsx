@@ -27,18 +27,14 @@ type ProjectCardProps = {
     project: Projects;
     onOpenProject: (project: Projects) => void;
     onOpenBoard: (project: Projects) => void;
-    onEditProject: (project: Projects) => void;
     onSettingProject: (project: Projects) => void;
-    onDeleteProject: (project: Projects) => void;
 };
 
 export default function ProjectCard({
     project,
     onOpenProject,
     onOpenBoard,
-    onEditProject,
     onSettingProject,
-    onDeleteProject,
 }: ProjectCardProps) {
 
     return (
@@ -64,9 +60,7 @@ export default function ProjectCard({
                 <ProjectActionsMenu
                     project={project}
                     onOpenBoard={onOpenBoard}
-                    onEditProject={onEditProject}
                     onSettingProject={onSettingProject}
-                    onDeleteProject={onDeleteProject}
                 />
             </div>
 

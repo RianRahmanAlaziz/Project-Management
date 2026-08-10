@@ -10,8 +10,10 @@ import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 
 import {
     KanbanBoard,
+    ProjectTaskModal,
 }
     from "@/features/projects/components";
+import { useProjectTaskModal } from "../hooks";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;
@@ -25,26 +27,16 @@ export default function ProjectsBoardView({
     const [tasks, setTasks] = useState(TASKS.data);
     const [openTaskId, setOpenTaskId] = useState<number | null>(null);
 
+    const {
+        taskModal,
+        openCreateTask,
+        closeTaskModal,
+    } = useProjectTaskModal();
 
-    const [taskModal, setTaskModal] = useState<{
-        open: boolean;
-        mode: "create" | "edit";
-        task: null,
-        column: "",
-    }>({
-        open: false,
-        mode: "create",
-        task: null,
-        column: "",
-    });
-
-    const handleCreateTask = (column: string) => {
-        setTaskModal({
-            open: true,
-            mode: "create",
-            task: null,
-            column: "",
-        });
+    const handleCreateTask = (
+        column: string,
+    ) => {
+        openCreateTask(column);
     };
 
     return (
@@ -69,16 +61,12 @@ export default function ProjectsBoardView({
                 )}
             </AnimatePresence>
 
-            <TaskFormModal
+            <ProjectTaskModal
                 open={taskModal.open}
                 mode={taskModal.mode}
                 task={taskModal.task}
-                onClose={() =>
-                    setTaskModal((prev) => ({
-                        ...prev,
-                        open: false,
-                    }))
-                }
+                column={taskModal.column}
+                onClose={closeTaskModal}
                 onSubmit={(data) => {
                     if (taskModal.mode === "create") {
                         console.log("Create Tasks", data);

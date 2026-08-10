@@ -5,9 +5,12 @@ import {
     SquareDashedKanban,
 } from "lucide-react";
 import { Button } from "@/components/ui";
-import type { DetailProject } from "@/features/projects/types/projects";
+import type { DetailProject, Projects } from "@/features/projects/types/projects";
 import { Badge } from "@/components/ui";
 import { statusOptions } from "@/components/constants";
+import { formatDate } from "@/lib/utils/formatDate";
+import { ProjectActionsMenu } from "../list";
+import ActionsMenu from "./ActionsMenu";
 
 const statusColorMap = {
     planning: "blue",
@@ -25,13 +28,15 @@ const priorityColorMap = {
 type ProjectHeroProps = {
     project: DetailProject;
     onCreateTasks?: () => void;
-    onOpenBoard?: (project: DetailProject) => void;
+    onOpenBoard: (project: DetailProject) => void;
+    onSettingProject: (project: DetailProject) => void;
 };
 
 export default function ProjectHero({
     project,
     onCreateTasks,
     onOpenBoard,
+    onSettingProject,
 }: ProjectHeroProps) {
     const status = statusOptions.find(
         (option) => option.value === project.status,
@@ -63,19 +68,11 @@ export default function ProjectHero({
                         </div>
                         <p className="text-sm text-muted-foreground mt-0.5 max-w-lg">{project.description}</p>
                         <p className="text-sm text-muted-foreground mt-1">
-                            Started: {project.start_date} - Due: {project.due_date}
+                            Started: {formatDate(project.start_date)} - Due: {formatDate(project.due_date)}
                         </p>
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <Button
-                        variant="outline"
-                        size="md"
-                        onClick={() => onOpenBoard?.(project)}
-                    >
-                        <SquareDashedKanban size={16} />
-                        Open Board
-                    </Button>
                     <Button
                         variant="primary"
                         size="md"
@@ -84,6 +81,11 @@ export default function ProjectHero({
                         <Plus size={16} />
                         Add Tasks
                     </Button>
+                    <ActionsMenu
+                        project={project}
+                        onOpenBoard={onOpenBoard}
+                        onSettingProject={onSettingProject}
+                    />
                 </div>
             </div>
         </div>

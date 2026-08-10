@@ -13,6 +13,20 @@ export interface Tasks {
     };
 }
 
+export interface Task {
+    id?: number;
+    title: string;
+    description?: string;
+    projectId?: string;
+    columnId?: string;
+    priority?: string;
+    assigneeId?: string;
+    labels?: string[];
+    startDate?: string;
+    dueDate?: string;
+    estimateHours?: number;
+}
+
 export interface TasksPagination {
     current_page: number;
     last_page: number;

@@ -19,25 +19,30 @@ import {
 
 import type { DetailProject } from "@/features/projects/types/projects";
 import { Tasks } from '@/features/tasks/types/tasks';
+import { ProjectMember } from '../../types/projectMembers';
 
 
 type ProjectsDashboardProps = {
     project: DetailProject;
     tasks: Tasks[];
+    members: ProjectMember[];
+    onAddMember?: () => void;
     onCreateTasks?: () => void;
-    onOpenBoard?: (project: DetailProject) => void;
+    onOpenBoard: (project: DetailProject) => void;
+    onSettingProject: (project: DetailProject) => void;
 };
 
 export default function ProjectDashboard({
     project,
     tasks,
+    members,
+    onAddMember,
     onCreateTasks,
     onOpenBoard,
+    onSettingProject,
 }: ProjectsDashboardProps) {
 
     const [activeTab, setActiveTab] = useState<ProjectTab>("overview");
-
-    const projectMembers = project.members;
 
     return (
         <section className="space-y-6">
@@ -45,6 +50,7 @@ export default function ProjectDashboard({
                 project={project}
                 onCreateTasks={onCreateTasks}
                 onOpenBoard={onOpenBoard}
+                onSettingProject={onSettingProject}
             />
 
             <ProjectTabs
@@ -66,7 +72,7 @@ export default function ProjectDashboard({
 
             {activeTab === "members" && (
                 <ProjectMembers
-                    members={projectMembers}
+                    members={members}
                     tasks={tasks}
                 />
             )}

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Check, Users } from 'lucide-react';
 import {
-    Avatar,
+    DateRangePicker,
     Button,
     Combobox,
     DatePicker,
@@ -118,8 +118,9 @@ export function CreateProjectModal({
                                         className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                                     />
                                 </div>
-                                {/* Members */}
-                                <div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    {/* Members */}
                                     <MultiSelect
                                         portalled={false}
                                         label="Members"
@@ -134,40 +135,64 @@ export function CreateProjectModal({
                                         }
                                         options={userOptions}
                                     />
-                                </div>
 
-                                {/* Dates */}
-                                <div className="grid grid-cols-2 gap-3">
+                                    {/* Dates */}
                                     <div>
-                                        <DatePicker
-                                            label={
-                                                <>
-                                                    Start date
-                                                </>
-                                            }
-                                            value={form.start_date}
-                                            onChange={(value) =>
-                                                setForm(prev => ({
+                                        <DateRangePicker
+                                            label="Project duration"
+                                            startDate={form.start_date}
+                                            endDate={form.due_date}
+                                            onChange={(startDate, endDate) => {
+                                                setForm((prev) => ({
                                                     ...prev,
-                                                    start_date: value,
-                                                }))
-                                            }
+                                                    start_date: startDate,
+                                                    due_date: endDate,
+                                                }));
+                                            }}
                                         />
                                     </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    {/* Priority */}
                                     <div>
-                                        <DatePicker
+                                        <Combobox
+                                            placeholder="Select Priority"
                                             label={
                                                 <>
-                                                    Due date
+                                                    Priority
                                                 </>
                                             }
-                                            value={form.due_date}
-                                            onChange={(value) =>
+                                            value={form.priority}
+                                            onValueChange={(value) =>
                                                 setForm(prev => ({
                                                     ...prev,
-                                                    due_date: value,
+                                                    priority: value,
                                                 }))
                                             }
+                                            searchable={false}
+                                            options={priorityOptions}
+                                        />
+                                    </div>
+
+                                    {/* Status */}
+                                    <div>
+                                        <Combobox
+                                            placeholder="Select Status"
+                                            label={
+                                                <>
+                                                    Status
+                                                </>
+                                            }
+                                            value={form.status}
+                                            onValueChange={(value) =>
+                                                setForm(prev => ({
+                                                    ...prev,
+                                                    status: value,
+                                                }))
+                                            }
+                                            searchable={false}
+                                            options={statusOptions}
                                         />
                                     </div>
                                 </div>
@@ -212,55 +237,12 @@ export function CreateProjectModal({
                                         })}
                                     </div>
                                 </div>
-
                                 {/* Workspace */}
                                 <div>
                                     <Input
                                         label="Workspace"
                                         value={workspaceName}
                                         readOnly
-                                    />
-                                </div>
-
-                                {/* Priority */}
-                                <div>
-                                    <Combobox
-                                        placeholder="Select Priority"
-                                        label={
-                                            <>
-                                                Priority
-                                            </>
-                                        }
-                                        value={form.priority}
-                                        onValueChange={(value) =>
-                                            setForm(prev => ({
-                                                ...prev,
-                                                priority: value,
-                                            }))
-                                        }
-                                        searchable={false}
-                                        options={priorityOptions}
-                                    />
-                                </div>
-
-                                {/* Status */}
-                                <div>
-                                    <Combobox
-                                        placeholder="Select Status"
-                                        label={
-                                            <>
-                                                Status
-                                            </>
-                                        }
-                                        value={form.status}
-                                        onValueChange={(value) =>
-                                            setForm(prev => ({
-                                                ...prev,
-                                                status: value,
-                                            }))
-                                        }
-                                        searchable={false}
-                                        options={statusOptions}
                                     />
                                 </div>
                             </div>

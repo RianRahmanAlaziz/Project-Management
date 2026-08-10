@@ -5,7 +5,7 @@ import {
     SquareDashedKanban,
     Settings,
 } from "lucide-react";
-import clsx from "clsx";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,47 +13,35 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
+import { Button } from "@/components/ui";
+import type { DetailProject } from "@/features/projects/types/projects";
 
 
-import type { Projects } from "@/features/projects/types/projects";
-
-interface ProjectActionsMenuProps {
-    project: Projects;
-    onOpenBoard: (project: Projects) => void;
-    onSettingProject: (project: Projects) => void;
+interface ActionsMenuActionsMenuProps {
+    project: DetailProject;
+    onOpenBoard: (project: DetailProject) => void;
+    onSettingProject: (project: DetailProject) => void;
 }
 
-export default function ProjectActionsMenu({
+export default function ActionsMenu({
     project,
     onOpenBoard,
     onSettingProject,
-}: ProjectActionsMenuProps) {
+}: ActionsMenuActionsMenuProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <button
-                    type="button"
-                    aria-label={`Open ${project.name} menu`}
+                <Button
+                    variant="outline"
+                    size="md"
                     onClick={(e) => e.stopPropagation()}
-                    className={clsx(
-                        "cursor-pointer",
-                        "flex h-8 w-8 shrink-0",
-                        "items-center justify-center",
-                        "rounded-lg",
-                        "text-muted-foreground",
-                        "transition-colors",
-                        "hover:bg-muted",
-                        "hover:text-foreground",
-                        "opacity-100",
-                        "lg:opacity-0",
-                        "lg:group-hover:opacity-100"
-                    )}
                 >
                     <MoreHorizontal size={17} />
-                </button>
+                </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
+
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
@@ -63,7 +51,7 @@ export default function ProjectActionsMenu({
                     <SquareDashedKanban size={16} />
                     Open Project Board
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
+
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
@@ -75,5 +63,5 @@ export default function ProjectActionsMenu({
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
-    )
+    );
 }

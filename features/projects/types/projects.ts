@@ -94,3 +94,11 @@ export interface CreateProjectPayload {
     start_date: string;
     due_date: string;
 }
+export interface UpdateProjectPayload {
+    name: string;
+    description?: string;
+    status?: string;
+    color?: string;
+    start_date?: string;
+    due_date?: string;
+}

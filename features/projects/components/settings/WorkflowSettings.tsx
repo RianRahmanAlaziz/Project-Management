@@ -5,9 +5,7 @@ import {
     SettingSection,
 } from "@/components/layouts/settings";
 
-import type {
-    WorkflowColumn,
-} from "@/features/projects/types/workflow";
+import type { WorkflowColumn } from "@/features/projects/types/workflow";
 
 import {
     DndContext,
@@ -45,76 +43,53 @@ export default function WorkflowSettings({
 
     const updateColumn = (
         index: number,
-        value: string
+        value: string,
     ) => {
-        setColumns(prev =>
+        setColumns((prev) =>
             prev.map((column, i) =>
                 i === index
                     ? {
                         ...column,
                         name: value,
                     }
-                    : column
-            )
+                    : column,
+            ),
         );
-    };
-
-    const toggleColumn = (
-        index: number
-    ) => {
-        setColumns(prev =>
-            prev.map((column, i) =>
-                i === index
-                    ? {
-                        ...column,
-                        enabled: !column.enabled,
-                    }
-                    : column
-            )
-        );
-    };
-
-    const addColumn = () => {
-        setColumns(prev => [
-            ...prev,
-            {
-                id: crypto.randomUUID(),
-                name: "New Column",
-                enabled: true,
-            },
-        ]);
     };
 
     const handleDragEnd = (
-        event: DragEndEvent
+        event: DragEndEvent,
     ) => {
-
         const { active, over } = event;
 
-        if (!over) return;
-
-        if (active.id === over.id) return;
+        if (!over || active.id === over.id) {
+            return;
+        }
 
         setColumns((items) => {
+            const oldIndex = items.findIndex(
+                (item) =>
+                    item.id === active.id,
+            );
 
-            const oldIndex =
-                items.findIndex(
-                    item => item.id === active.id
-                );
+            const newIndex = items.findIndex(
+                (item) =>
+                    item.id === over.id,
+            );
 
-            const newIndex =
-                items.findIndex(
-                    item => item.id === over.id
-                );
+            if (
+                oldIndex === -1 ||
+                newIndex === -1
+            ) {
+                return items;
+            }
 
             return arrayMove(
                 items,
                 oldIndex,
-                newIndex
+                newIndex,
             );
-
         });
-
     };
 
     return (
@@ -127,7 +102,9 @@ export default function WorkflowSettings({
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext
-                    items={columns}
+                    items={columns.map(
+                        (column) => column.id,
+                    )}
                     strategy={verticalListSortingStrategy}
                 >
                     <div className="flex flex-col gap-3 w-full">
@@ -136,10 +113,10 @@ export default function WorkflowSettings({
                                 key={column.id}
                                 column={column}
                                 onRename={(value) =>
-                                    updateColumn(index, value)
-                                }
-                                onToggle={() =>
-                                    toggleColumn(index)
+                                    updateColumn(
+                                        index,
+                                        value,
+                                    )
                                 }
                             />
                         ))}
@@ -147,7 +124,7 @@ export default function WorkflowSettings({
                 </SortableContext>
             </DndContext>
 
-            <button
+            {/* <button
                 type="button"
                 onClick={addColumn}
                 className="
@@ -159,7 +136,7 @@ export default function WorkflowSettings({
                 "
             >
                 + Add Column
-            </button>
+            </button> */}
 
             <SettingFooter
                 saved={saved}

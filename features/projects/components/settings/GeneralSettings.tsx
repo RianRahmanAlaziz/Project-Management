@@ -2,25 +2,32 @@
 import { Dispatch, SetStateAction } from "react";
 import { Check, Hash } from 'lucide-react';
 import { Input } from '@/components/ui';
+import {
+    Combobox,
+    DatePicker,
+} from "@/components/ui";
+
+import {
+    Color,
+    COLORS,
+    priorityOptions,
+    statusOptions,
+} from "@/components/constants";
 
 import {
     SettingSection,
     SettingFooter,
 } from "@/components/layouts/settings";
 
-import {
-    PROJECT_COLORS,
-} from "@/features/projects/constants/settings";
 
 import type {
-    ProjectColor,
     ProjectForm,
 } from "@/features/projects/types/settings";
 
 interface GeneralSettingsProps {
-    color: ProjectColor;
+    color: Color;
     setColor: (
-        color: ProjectColor
+        color: Color
     ) => void;
     projForm: ProjectForm;
     setProjForm: Dispatch<SetStateAction<ProjectForm>>;
@@ -49,7 +56,7 @@ export default function GeneralSettings({
                         <div className="flex-1">
                             <p className="text-xs font-medium text-foreground mb-1.5">Project color</p>
                             <div className="flex gap-1.5 flex-wrap">
-                                {PROJECT_COLORS.map(c => (
+                                {COLORS.map(c => (
                                     <button key={c.label} onClick={() => setColor(c)} className={`cursor-pointer w-6 h-6 rounded-md ${c.bg} flex items-center justify-center transition-all ${color.label === c.label ? `ring-2 ring-offset-1 ring-offset-card ${c.ring}` : "opacity-60 hover:opacity-100"}`}>
                                         {color.label === c.label && <Check size={10} className="text-white" strokeWidth={3} />}
                                     </button>
@@ -68,18 +75,6 @@ export default function GeneralSettings({
                             className="w-full bg-input-background border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-none"
                         />
                     </div>
-                    <div>
-                        <label className="block text-xs font-medium text-foreground mb-1.5">
-                            <Hash size={11} className="inline mr-1" />Project identifier
-                        </label>
-                        <input
-                            value={projForm.identifier}
-                            onChange={e => setProjForm(f => ({ ...f, identifier: e.target.value.toUpperCase().slice(0, 5) }))}
-                            maxLength={5}
-                            className="w-32 h-8 bg-input-background border border-border rounded-lg px-3 text-sm text-foreground font-mono focus:outline-none focus:ring-2 focus:ring-ring"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">Used as prefix for task IDs (e.g. {projForm.identifier}-42)</p>
-                    </div>
                 </div>
                 <SettingFooter onSave={onSave} saved={saved} />
             </SettingSection>
@@ -87,24 +82,61 @@ export default function GeneralSettings({
             <SettingSection title="Schedule & Status" desc="Dates, priority, and current status.">
                 <div className="grid grid-cols-2 gap-3">
                     <div>
-                        <label className="block text-xs font-medium text-foreground mb-1.5">Start date</label>
-                        <input type="date" value={projForm.startDate} onChange={e => setProjForm(f => ({ ...f, startDate: e.target.value }))} className="w-full h-8 bg-input-background border border-border rounded-lg px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+                        <DatePicker
+                            label="Start date"
+                            value={projForm.startDate}
+                            onChange={(value) =>
+                                setProjForm((prev) => ({
+                                    ...prev,
+                                    startDate: value,
+                                }))
+                            }
+                        />
                     </div>
+
                     <div>
-                        <label className="block text-xs font-medium text-foreground mb-1.5">Due date</label>
-                        <input type="date" value={projForm.dueDate} onChange={e => setProjForm(f => ({ ...f, dueDate: e.target.value }))} className="w-full h-8 bg-input-background border border-border rounded-lg px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
+                        <DatePicker
+                            label="Due date"
+                            value={projForm.dueDate}
+                            onChange={(value) =>
+                                setProjForm((prev) => ({
+                                    ...prev,
+                                    dueDate: value,
+                                }))
+                            }
+                        />
                     </div>
+
                     <div>
-                        <label className="block text-xs font-medium text-foreground mb-1.5">Status</label>
-                        <select value={projForm.status} onChange={e => setProjForm(f => ({ ...f, status: e.target.value }))} className="w-full h-8 bg-input-background border border-border rounded-lg px-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                            {["Todo", "In Progress", "Review", "Done"].map(s => <option key={s}>{s}</option>)}
-                        </select>
+                        <Combobox
+                            label="Status"
+                            placeholder="Select Status"
+                            value={projForm.status}
+                            onValueChange={(value) =>
+                                setProjForm((prev) => ({
+                                    ...prev,
+                                    status: value,
+                                }))
+                            }
+                            searchable={false}
+                            options={statusOptions}
+                        />
                     </div>
+
                     <div>
-                        <label className="block text-xs font-medium text-foreground mb-1.5">Priority</label>
-                        <select value={projForm.priority} onChange={e => setProjForm(f => ({ ...f, priority: e.target.value }))} className="w-full h-8 bg-input-background border border-border rounded-lg px-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
-                            {["Low", "Medium", "High"].map(p => <option key={p}>{p}</option>)}
-                        </select>
+                        <Combobox
+                            label="Priority"
+                            placeholder="Select Priority"
+                            value={projForm.priority}
+                            onValueChange={(value) =>
+                                setProjForm((prev) => ({
+                                    ...prev,
+                                    priority: value,
+                                }))
+                            }
+                            searchable={false}
+                            options={priorityOptions}
+                        />
                     </div>
                 </div>
                 <SettingFooter onSave={onSave} saved={saved} />

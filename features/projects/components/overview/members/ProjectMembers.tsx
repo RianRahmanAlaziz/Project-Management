@@ -8,6 +8,7 @@ import { ProjectMember } from "@/features/projects/types/projectMembers";
 interface ProjectMembersProps {
     members: ProjectMember[];
     tasks: Tasks[];
+    onAddMember?: () => void;
     onRole?: (member: ProjectMember) => void;
     onRemove?: (member: ProjectMember) => void;
 }
@@ -15,6 +16,7 @@ interface ProjectMembersProps {
 export default function ProjectMembers({
     members,
     tasks,
+    onAddMember,
     onRole,
     onRemove,
 }: ProjectMembersProps) {
@@ -27,6 +29,7 @@ export default function ProjectMembers({
                 <Button
                     size="md"
                     variant="primary"
+                    onClick={onAddMember}
                 >
                     <Plus size={14} />
                     Add Member
@@ -59,12 +62,12 @@ export default function ProjectMembers({
                             <div className="mb-4 flex items-start justify-between">
                                 <div className="flex items-center gap-3">
                                     <Avatar
-                                        name={member.name}
+                                        name={member.user.name}
                                         size="lg"
                                     />
                                     <div>
                                         <h4 className="font-semibold text-foreground">
-                                            {member.name}
+                                            {member.user.name}
                                         </h4>
                                         <p className="text-sm text-muted-foreground capitalize">
                                             {member.role}

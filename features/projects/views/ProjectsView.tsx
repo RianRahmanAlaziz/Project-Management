@@ -31,13 +31,6 @@ export default function ProjectsView({
 }: ProjectsViewProps) {
     const { user } = useAuth();
 
-    const handleEditProject = () => {
-        console.log("Edit Project")
-    };
-
-    const handleDeleteProject = () => {
-        console.log("Delete Project")
-    };
     const { workspace } = useDetailWorkspace(workspaceSlug);
     const { members } = useWorkspaceMembers(workspaceSlug);
 
@@ -102,9 +95,7 @@ export default function ProjectsView({
                                 project={project}
                                 onOpenProject={handleOpenProject}
                                 onOpenBoard={handleOpenProjectBoard}
-                                onEditProject={handleEditProject}
                                 onSettingProject={handleSettingProject}
-                                onDeleteProject={handleDeleteProject}
                             />
                         ))}
                     </div>

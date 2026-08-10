@@ -4,8 +4,10 @@ import type {
     DetailProject,
     ProjectsListResponse,
     CreateProjectPayload,
+    UpdateProjectPayload,
 } from "../types/projects";
 import { ApiResponse } from "@/lib/api/apiResponse";
+import { WorkflowColumn } from "../types/workflow";
 
 export async function getProjects(
     workspaceSlug: string,
@@ -34,6 +36,30 @@ export async function createProject(
     const response = await apiClient.post<ApiResponse<Projects>>(
         `/workspaces/${workspaceSlug}/projects`,
         payload,
+    );
+
+    return response.data;
+}
+
+export async function updateProject(
+    workspaceSlug: string,
+    projectSlug: string,
+    payload: UpdateProjectPayload,
+): Promise<ApiResponse<Projects>> {
+    const response = await apiClient.patch<ApiResponse<Projects>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}`,
+        payload,
+    );
+
+    return response.data;
+}
+
+export async function getProjectColumns(
+    workspaceSlug: string,
+    projectSlug: string,
+) {
+    const response = await apiClient.get<ApiResponse<WorkflowColumn[]>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}/columns`,
     );
 
     return response.data;

@@ -1,13 +1,17 @@
 "use client"
-
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { SettingsSidebar } from "@/components/layouts/settings";
-import { NAV_Projets } from "@/features/projects/constants/settings"
-
 import {
-    PROJECT_COLORS,
+    NAV_Projets,
 } from "@/features/projects/constants/settings";
 
+import {
+    Color,
+    COLORS,
+    priorityOptions,
+    statusOptions,
+} from "@/components/constants";
 
 import {
     GeneralSettings,
@@ -20,24 +24,13 @@ import type {
     NotificationToggle,
 } from "@/features/projects/types/notifications";
 
-import { DEFAULT_WORKFLOW_COLUMNS } from "../constants/workflow";
+import type {
+    ProjectForm,
+} from "@/features/projects/types/settings";
 
-const [toggles, setToggles] =
-    useState<NotificationToggle>({
-        taskAssigned: true,
-        taskUpdated: false,
-        newComment: true,
-        dailyDigest: false,
-    });
 
-const toggle = (
-    key: keyof NotificationToggle
-) => {
-    setToggles(prev => ({
-        ...prev,
-        [key]: !prev[key],
-    }));
-};
+import { useOverviewProject, useProjectColumns, useUpdateProject } from "../hooks";
+import ProjectsSettingsSkeleton from "../components/skeleton/ProjectsSettingsSkeleton";
 
 interface ProjectSettingsViewProps {
     workspaceSlug: string;
@@ -47,28 +40,127 @@ export default function ProjectSettingsView({
     workspaceSlug,
     projectSlug
 }: ProjectSettingsViewProps) {
-
+    const router = useRouter();
     const [section, setSection] = useState("general");
-    const [color, setColor] = useState(PROJECT_COLORS[0]);
+    const [toggles, setToggles] = useState<NotificationToggle>({
+        taskAssigned: true,
+        taskUpdated: false,
+        newComment: true,
+        dailyDigest: false,
+    });
+
+    const toggle = (key: keyof NotificationToggle) => {
+        setToggles(prev => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
+
+    const [color, setColor] = useState<Color>(COLORS[0]);
     const [saved, setSaved] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState("");
 
-    const [columns, setColumns] = useState(
-        DEFAULT_WORKFLOW_COLUMNS
-    );
-
-    const [projForm, setProjForm] = useState({
-        name: "ProjectFlow v2.0",
-        description: "Rebuilding the core product — new architecture, redesigned UX, and full design system.",
-        identifier: "PF2",
-        status: "In Progress",
-        priority: "High",
-        startDate: "2026-05-01",
-        dueDate: "2026-07-15",
+    const {
+        columns,
+        setColumns,
+        isLoading: isColumnsLoading,
+        error: columnsError,
+        refetch: refetchColumns,
+    } = useProjectColumns({
+        workspaceSlug,
+        projectSlug,
     });
 
-    const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
+    const [projForm, setProjForm] =
+        useState<ProjectForm>({
+            name: "",
+            description: "",
+            identifier: "",
+            status: "",
+            priority: "",
+            startDate: "",
+            dueDate: "",
+        });
 
+    const {
+        project,
+        isLoading,
+        error,
+        refetch,
+    } = useOverviewProject(workspaceSlug, projectSlug);
+
+    useEffect(() => {
+        if (!project) {
+            return;
+        }
+
+        setProjForm({
+            name: project.name,
+            description: project.description ?? "",
+            identifier: "",
+            status: project.status,
+            priority: project.priority,
+            startDate: project.start_date ?? "",
+            dueDate: project.due_date ?? "",
+        });
+    }, [project]);
+
+    useEffect(() => {
+        if (!project) {
+            return;
+        }
+
+        const selectedColor = COLORS.find(
+            (item) => item.bg === project.color,
+        );
+
+        if (selectedColor) {
+            setColor(selectedColor);
+        }
+    }, [project]);
+
+    const {
+        handleUpdateProject,
+        isUpdating,
+        updateError,
+        isSaved,
+    } = useUpdateProject({
+        workspaceSlug,
+        projectSlug,
+        onSuccess: async (updatedProject) => {
+            if (updatedProject.slug !== projectSlug) {
+                router.replace(
+                    `/workspaces/${workspaceSlug}/projects/${updatedProject.slug}/settings`,
+                );
+                return;
+            }
+
+            await refetch();
+        },
+    });
+
+    const handleSaveGeneral = async () => {
+        await handleUpdateProject({
+            name: projForm.name.trim(),
+            description: projForm.description.trim(),
+            color: color.bg,
+            status: projForm.status,
+            start_date: projForm.startDate || undefined,
+            due_date: projForm.dueDate || undefined,
+        });
+    };
+
+    const handleSave = () => {
+        setSaved(true);
+
+        setTimeout(() => {
+            setSaved(false);
+        }, 2000);
+    };
+
+    if (isLoading || !projForm) {
+        return <ProjectsSettingsSkeleton />;
+    }
 
     return (
         <div className="flex h-full flex-1 flex-col overflow-hidden">
@@ -88,8 +180,9 @@ export default function ProjectSettingsView({
                                 setColor={setColor}
                                 projForm={projForm}
                                 setProjForm={setProjForm}
-                                saved={saved}
-                                onSave={handleSave} />
+                                saved={isSaved}
+                                onSave={handleSaveGeneral}
+                            />
                         )}
 
                         {section === "workflow" && (

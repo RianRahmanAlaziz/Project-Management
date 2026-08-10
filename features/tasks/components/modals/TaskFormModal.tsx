@@ -19,19 +19,7 @@ import {
     Users,
 } from "lucide-react";
 
-interface Task {
-    id?: string;
-    title: string;
-    description?: string;
-    projectId?: string;
-    columnId?: string;
-    priority?: string;
-    assigneeId?: string;
-    labels?: string[];
-    startDate?: string;
-    dueDate?: string;
-    estimateHours?: number;
-}
+import type { Task } from "@/features/tasks/types/tasks";
 
 interface Option {
     id: string;
@@ -46,7 +34,7 @@ interface TaskFormModalProps {
 
     projects: Option[];
     members: Option[];
-    columns: Option[];
+    columns?: Option[];
     labels: Option[];
 
     onClose: () => void;
@@ -202,18 +190,6 @@ export default function TaskFormModal({
                 />
 
                 <div className="grid grid-cols-2 gap-4">
-
-                    <Input
-                        label={
-                            <>
-                                <Hash size={12} />
-                                Project
-                            </>
-                        }
-                        value={'test'}
-                        readOnly
-                    />
-
                     <Combobox
                         label={
                             <>

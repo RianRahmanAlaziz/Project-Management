@@ -9,13 +9,11 @@ import type { WorkflowColumn } from "@/features/projects/types/workflow";
 interface WorkflowItemProps {
     column: WorkflowColumn;
     onRename: (value: string) => void;
-    onToggle: () => void;
 }
 
 export default function WorkflowItem({
     column,
     onRename,
-    onToggle,
 }: WorkflowItemProps) {
 
     const {
@@ -58,7 +56,7 @@ export default function WorkflowItem({
             </div>
 
             {/* RIGHT */}
-            <button
+            {/* <button
                 type="button"
                 onClick={onToggle}
                 aria-pressed={column.enabled}
@@ -67,7 +65,7 @@ export default function WorkflowItem({
                 <span
                     className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 ${column.enabled ? "translate-x-5" : "translate-x-0"} `}
                 />
-            </button>
+            </button> */}
         </div>
     );
 }
