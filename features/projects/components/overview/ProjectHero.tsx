@@ -1,29 +1,36 @@
 "use client";
 
-import {
-    Plus,
-    SquareDashedKanban,
-} from "lucide-react";
-import { Button } from "@/components/ui";
-import type { DetailProject, Projects } from "@/features/projects/types/projects";
-import { Badge } from "@/components/ui";
-import { statusOptions } from "@/components/constants";
+import { Plus } from "lucide-react";
+import { Badge, Button } from "@/components/ui";
+import type { DetailProject } from "@/features/projects/types/projects";
 import { formatDate } from "@/lib/utils/formatDate";
-import { ProjectActionsMenu } from "../list";
 import ActionsMenu from "./ActionsMenu";
 
-const statusColorMap = {
-    planning: "blue",
-    in_progress: "indigo",
-    review: "purple",
-    done: "green",
-} as const;
+const statusLabelMap: Record<string, string> = {
+    planning: "Planning",
+    in_progress: "In Progress",
+    review: "Review",
+    done: "Done",
+};
 
-const priorityColorMap = {
-    Low: "green",
-    Medium: "yellow",
-    High: "red",
-} as const;
+const statusColorMap: Record<
+    string,
+    "blue" | "amber" | "purple" | "emerald"
+> = {
+    planning: "blue",
+    in_progress: "amber",
+    review: "purple",
+    done: "emerald",
+};
+
+const priorityColorMap: Record<
+    string,
+    "emerald" | "amber" | "red"
+> = {
+    low: "emerald",
+    medium: "amber",
+    high: "red",
+};
 
 type ProjectHeroProps = {
     project: DetailProject;
@@ -38,9 +45,9 @@ export default function ProjectHero({
     onOpenBoard,
     onSettingProject,
 }: ProjectHeroProps) {
-    const status = statusOptions.find(
-        (option) => option.value === project.status,
-    ) ?? null;
+    const statusLabel = statusLabelMap[project.status] ?? project.status;
+    const statusColor = statusColorMap[project.status] ?? "blue";
+    const priorityColor = priorityColorMap[project.priority.toLowerCase()] ?? "emerald";
 
     return (
         <div className="rounded-2xl border border-border bg-card p-7 shadow-sm">
@@ -57,18 +64,22 @@ export default function ProjectHero({
                                 {project.name}
                             </h2>
                             <Badge
-                                label={status?.label ?? project.status}
-                                color={statusColorMap[project.status] ?? "gray"}
+                                label={statusLabel}
+                                color={statusColor}
                             />
 
                             <Badge
-                                label={`${project.priority} Priority`}
-                                color={priorityColorMap[project.priority] ?? "gray"}
+                                label={`${project.priority} priority`}
+                                color={priorityColor}
                             />
                         </div>
                         <p className="text-sm text-muted-foreground mt-0.5 max-w-lg">{project.description}</p>
                         <p className="text-sm text-muted-foreground mt-1">
-                            Started: {formatDate(project.start_date)} - Due: {formatDate(project.due_date)}
+                            Started:{" "}
+                            {formatDate(project.start_date) || "-"}
+                            {" - "}
+                            Due:{" "}
+                            {formatDate(project.due_date) || "-"}
                         </p>
                     </div>
                 </div>

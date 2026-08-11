@@ -7,9 +7,15 @@ export interface Tasks {
     priority: string;
     start_date: string;
     due_date: string;
+    column: {
+        id: number;
+        name: string;
+        position: number;
+    };
     assignee: {
         id: number;
         name: string;
+        email: string;
     };
 }
 

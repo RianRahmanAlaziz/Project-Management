@@ -43,13 +43,6 @@ export interface DetailProject {
     progress: number;
     color: string;
     member_count: number;
-    members: {
-        id: number;
-        name: string;
-        email: string;
-        role: string;
-        joined_at: string | null;
-    }[];
     tasks_count: number;
     start_date: string;
     due_date: string;

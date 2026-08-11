@@ -38,7 +38,7 @@ export default function ProjectMembers({
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {members.map((member) => {
                     const memberTasks = tasks.filter(
-                        (task) => task.assignee.id === member.id,
+                        (task) => task.assignee.id === member.user_id,
                     );
 
                     const active = memberTasks.filter(

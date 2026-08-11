@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
+
 import {
     ProjectDashboard,
     ProjectTaskModal,
     SkeletonProjectsOverview,
+    InviteProjectMemberModal,
 } from "@/features/projects/components";
 
 import {
@@ -12,12 +13,12 @@ import {
     useProjectMembers,
     useProjectNavigation,
     useProjectTaskModal,
+    useOverviewProject,
+
 } from "../hooks";
 
-import { useOverviewProject } from "../hooks/queries/useOverviewProject";
 import { useTasks } from "@/features/tasks/hooks/useTasks";
 import { useWorkspaceMembers } from "@/features/members/hooks";
-import InviteProjectMemberModal from "../components/modal/InviteProjectMemberModal";
 
 interface ProjectsOverviewProps {
     workspaceSlug: string;
@@ -32,13 +33,9 @@ export default function ProjectsOverview({
     const {
         project,
         isLoading,
-        error,
-        refetch,
     } = useOverviewProject(workspaceSlug, projectSlug);
 
-    const {
-        tasks,
-    } = useTasks(workspaceSlug, projectSlug);
+    const { tasks } = useTasks(workspaceSlug, projectSlug);
 
     const {
         handleOpenProjectBoard,
@@ -88,13 +85,16 @@ export default function ProjectsOverview({
         closeTaskModal,
     } = useProjectTaskModal();
 
-    const handleCreateTask = () => {
-        openCreateTask();
-    };
+
+    if (isLoading) {
+        return <SkeletonProjectsOverview />;
+    }
 
     if (!project) {
         return (
-            <SkeletonProjectsOverview />
+            <div className="p-6 text-sm text-muted-foreground">
+                Project not found.
+            </div>
         );
     }
     return (
@@ -105,18 +105,18 @@ export default function ProjectsOverview({
                     tasks={tasks}
                     members={projectMembers}
                     onAddMember={openInviteMember}
-                    onCreateTasks={handleCreateTask}
+                    onCreateTasks={openCreateTask}
                     onOpenBoard={handleOpenProjectBoard}
                     onSettingProject={handleSettingProject}
                 />
             </div>
 
-            {/* <ProjectTaskModal
+            <ProjectTaskModal
                 open={taskModal.open}
                 mode={taskModal.mode}
                 task={taskModal.task}
                 onClose={closeTaskModal}
-            /> */}
+            />
 
             <InviteProjectMemberModal
                 open={isInviteMemberOpen}

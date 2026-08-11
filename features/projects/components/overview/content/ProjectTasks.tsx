@@ -19,7 +19,7 @@ const priorityColorMap = {
 
 const statusColorMap = {
     planning: "blue",
-    in_progress: "indigo",
+    "In Progress": "yellow",
     review: "purple",
     done: "green",
 } as const;
@@ -76,7 +76,7 @@ export default function ProjectTasks({
                                     <td className="hidden px-4 py-3 sm:table-cell">
                                         <Badge
                                             size="md"
-                                            label={status?.label ?? task.status}
+                                            label={status?.label ?? task.column.name}
                                             color={statusColorMap[task.status as keyof typeof statusColorMap]}
                                         />
                                     </td>

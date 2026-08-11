@@ -13,14 +13,14 @@ interface TimelineRowProps {
 
 const statusColorMap = {
     planning: "bg-blue-500",
-    in_progress: "bg-indigo-500",
+    in_progress: "bg-amber-500",
     review: "bg-purple-500",
     done: "bg-emerald-500",
 } as const;
 
 const statusTrackMap = {
     planning: "bg-blue-100 dark:bg-blue-950/40",
-    in_progress: "bg-indigo-100 dark:bg-indigo-950/40",
+    in_progress: "bg-amber-100 dark:bg-amber-950/40",
     review: "bg-purple-100 dark:bg-purple-950/40",
     done: "bg-emerald-100 dark:bg-emerald-950/40",
 } as const;
@@ -97,7 +97,9 @@ export default function TimelineRow({
                         h-4
                         w-full
                         rounded-full
-                        ${statusTrackMap[task.status as keyof typeof statusTrackMap]}
+                        ${statusTrackMap[
+                        task.status as keyof typeof statusTrackMap
+                        ] ?? "bg-slate-100 dark:bg-slate-900"}
                     `}
                 />
                 {/* Bar */}
@@ -111,7 +113,9 @@ export default function TimelineRow({
                         transition-all
                         duration-300
                         group-hover:scale-y-110
-                        ${statusColorMap[task.status as keyof typeof statusColorMap]}
+                        ${statusColorMap[
+                        task.status as keyof typeof statusColorMap
+                        ] ?? "bg-slate-500"}
                     `}
                     style={{
                         left: `${left}%`,

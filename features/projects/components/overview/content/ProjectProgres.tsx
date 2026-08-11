@@ -6,21 +6,24 @@ import {
     PolarAngleAxis,
 } from "recharts";
 import type { DetailProject } from "@/features/projects/types/projects";
-import { TASKS } from '@/features/tasks/mocks/tasks';
+import { Tasks } from "@/features/tasks/types/tasks";
 
 type ProjectProgresProps = {
     project: DetailProject;
+    tasks: Tasks[];
 };
 
 export default function ProjectProgres({
-    project
+    project,
+    tasks,
 }: ProjectProgresProps) {
 
     const radialData = [{ name: "Progress", value: project.progress, fill: "#4F46E5" }];
     const colCounts = (status: string) =>
-        TASKS.data.filter((task) =>
-            task.status === status &&
-            task.project_id === project.id
+        tasks.filter(
+            (task) =>
+                task.status === status &&
+                task.project_id === project.id,
         ).length;
 
     return (

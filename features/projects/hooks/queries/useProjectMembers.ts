@@ -1,12 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-
+import { parseApiError } from "@/lib/api/apiError";
 import { getProjectMembers } from "../../api/projectMembersApi";
-
-import type {
-    ProjectMember,
-} from "../../types/projectMembers";
+import type { ProjectMember } from "../../types/projectMembers";
 
 interface UseProjectMembersOptions {
     workspaceSlug: string;
@@ -33,11 +30,8 @@ export function useProjectMembers({
 
             setMembers(response.data);
         } catch (error) {
-            setError(
-                error instanceof Error
-                    ? error.message
-                    : "Failed to load project members.",
-            );
+            const apiError = parseApiError(error);
+            setError(apiError.message);
         } finally {
             setIsLoading(false);
         }

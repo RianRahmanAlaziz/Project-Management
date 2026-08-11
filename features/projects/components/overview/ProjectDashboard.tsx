@@ -26,6 +26,7 @@ type ProjectsDashboardProps = {
     project: DetailProject;
     tasks: Tasks[];
     members: ProjectMember[];
+
     onAddMember?: () => void;
     onCreateTasks?: () => void;
     onOpenBoard: (project: DetailProject) => void;
@@ -59,7 +60,7 @@ export default function ProjectDashboard({
                 onChange={setActiveTab}
             />
             {activeTab === "overview" && (
-                <ProjectContent project={project} />
+                <ProjectContent tasks={tasks} project={project} />
             )}
 
             {activeTab === "tasks" && (
@@ -74,6 +75,7 @@ export default function ProjectDashboard({
                 <ProjectMembers
                     members={members}
                     tasks={tasks}
+                    onAddMember={onAddMember}
                 />
             )}
 

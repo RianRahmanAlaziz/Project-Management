@@ -9,46 +9,25 @@ import {
 } from "lucide-react";
 
 import type { DetailProject } from "@/features/projects/types/projects";
-import { TASKS } from "@/features/tasks/mocks/tasks";
 import { ProgressBar } from "@/components/ui/ProgressBar";
+import { Tasks } from "@/features/tasks/types/tasks";
 
 type ProjectHealthProps = {
     project: DetailProject;
+    tasks: Tasks[];
 };
 
 export default function ProjectHealth({
     project,
+    tasks,
 }: ProjectHealthProps) {
 
-    const tasks = TASKS.data.filter(
-        (task) => task.project_id === project.id
-    );
+    const completed = tasks.filter((task) => task.status === "done").length;
+    const overdue = tasks.filter((task) => task.status !== "done" && new Date(task.due_date) < new Date()).length;
 
-    const completed = tasks.filter(
-        (task) => task.status === "Done"
-    ).length;
+    const remainingDays = project.due_date ? Math.max(0, Math.ceil((new Date(project.due_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24),),) : 0;
 
-    const overdue = tasks.filter(
-        (task) =>
-            task.status !== "Done" &&
-            new Date(task.due_date) < new Date()
-    ).length;
-
-    const remainingDays = Math.max(
-        0,
-        Math.ceil(
-            (new Date(project.due_date).getTime() - Date.now()) /
-            (1000 * 60 * 60 * 24)
-        )
-    );
-
-    const healthScore = Math.max(
-        0,
-        Math.min(
-            100,
-            project.progress - overdue * 5
-        )
-    );
+    const healthScore = Math.max(0, Math.min(100, project.progress - overdue * 5,),);
 
     const healthStatus =
         healthScore >= 90
@@ -77,147 +56,97 @@ export default function ProjectHealth({
 
     return (
         <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-
             <div className="flex items-start justify-between">
-
                 <div>
-
                     <p className="text-sm text-muted-foreground">
                         Project Health
                     </p>
-
                     <h2 className="mt-1 text-3xl font-bold">
                         {healthScore}%
                     </h2>
-
                 </div>
-
-                <span
-                    className={`rounded-full px-3 py-1 text-sm font-medium ${healthStatus.bg} ${healthStatus.color}`}
-                >
+                <span className={`rounded-full px-3 py-1 text-sm font-medium ${healthStatus.bg} ${healthStatus.color}`} >
                     {healthStatus.label}
                 </span>
-
             </div>
-
             <div className="mt-5">
-
                 <ProgressBar
                     value={healthScore}
                     color="indigo"
                 />
-
             </div>
-
             <div className="mt-6 space-y-4">
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex items-center gap-3">
-
                         <Activity
                             size={18}
                             className="text-primary"
                         />
-
                         <span className="text-sm">
                             Progress
                         </span>
-
                     </div>
-
                     <span className="font-semibold">
                         {project.progress}%
                     </span>
-
                 </div>
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex items-center gap-3">
-
                         <CheckCircle2
                             size={18}
                             className="text-success"
                         />
-
                         <span className="text-sm">
                             Completed Tasks
                         </span>
-
                     </div>
-
                     <span className="font-semibold">
                         {completed}/{tasks.length}
                     </span>
-
                 </div>
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex items-center gap-3">
-
                         <Users
                             size={18}
                             className="text-indigo-500"
                         />
-
                         <span className="text-sm">
                             Team Members
                         </span>
-
                     </div>
-
                     <span className="font-semibold">
                         {project.member_count}
                     </span>
-
                 </div>
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex items-center gap-3">
-
                         <AlertTriangle
                             size={18}
                             className="text-warning"
                         />
-
                         <span className="text-sm">
                             Overdue Tasks
                         </span>
-
                     </div>
-
                     <span className="font-semibold">
                         {overdue}
                     </span>
-
                 </div>
-
                 <div className="flex items-center justify-between">
-
                     <div className="flex items-center gap-3">
-
                         <CalendarClock
                             size={18}
                             className="text-primary"
                         />
-
                         <span className="text-sm">
                             Remaining Time
                         </span>
-
                     </div>
-
                     <span className="font-semibold">
                         {remainingDays} Days
                     </span>
-
                 </div>
-
             </div>
-
         </div>
     );
 }

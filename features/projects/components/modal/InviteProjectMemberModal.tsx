@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
 
 import {
@@ -19,7 +19,7 @@ interface InviteProjectMemberModalProps {
     onConfirm: (userId: number) => Promise<void> | void;
 }
 
-export default function InviteProjectMemberModal({
+export function InviteProjectMemberModal({
     open,
     users,
     isSubmitting = false,
@@ -50,6 +50,12 @@ export default function InviteProjectMemberModal({
         setUserId("");
         onClose();
     };
+
+    useEffect(() => {
+        if (!open) {
+            setUserId("");
+        }
+    }, [open]);
 
     return (
         <Modal
