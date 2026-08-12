@@ -9,7 +9,7 @@ import type {
 
 interface ProjectTaskModalProps {
     open: boolean;
-    mode?: "create" | "edit";
+    mode: "create" | "edit";
     task?: Tasks | null;
 
     projects: any[];
@@ -23,7 +23,7 @@ interface ProjectTaskModalProps {
 
 export function ProjectTaskModal({
     open,
-    mode = "create",
+    mode,
     task = null,
     projects,
     members,

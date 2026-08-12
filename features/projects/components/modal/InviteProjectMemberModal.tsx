@@ -9,7 +9,8 @@ import {
     Modal,
 } from "@/components/ui";
 
-import type { WorkspaceMember } from "@/features/members/types/workspaceMember";
+import { ProjectMember } from "../../types/projectMembers";
+import { WorkspaceMember } from "@/features/members/types/workspaceMember";
 
 interface InviteProjectMemberModalProps {
     open: boolean;
@@ -104,7 +105,7 @@ export function InviteProjectMemberModal({
                         size="lg"
                         onClick={handleSubmit}
                         loading={isSubmitting}
-                        disabled={!userId}
+                        disabled={!userId || isSubmitting}
                     >
                         Add Member
                     </Button>

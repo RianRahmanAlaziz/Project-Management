@@ -13,7 +13,7 @@ import {
 
 import {
     useCreateProjectWithMembers,
-    useProjectModal,
+    useProjectModals,
     useProjectNavigation,
     useProjectSearch,
     useProjects,
@@ -56,8 +56,8 @@ export default function ProjectsView({
     } = useProjectNavigation(workspaceSlug);
 
     const {
-        create
-    } = useProjectModal();
+        project
+    } = useProjectModals();
 
     const {
         handleCreateProjectWithMembers,
@@ -66,7 +66,7 @@ export default function ProjectsView({
         workspaceSlug,
         onSuccess: async () => {
             await refetch();
-            create.closeModal();
+            project.closeCreate();
         },
     });
 
@@ -79,7 +79,7 @@ export default function ProjectsView({
             <div className="w-full space-y-6">
                 <ProjectHeader
                     totalProjects={filtered.length}
-                    onCreateProject={create.openModal}
+                    onCreateProject={project.openCreate}
                 />
 
                 <ProjectSearch
@@ -109,10 +109,10 @@ export default function ProjectsView({
             </div>
 
             <CreateProjectModal
-                open={create.open}
+                open={project.createOpen}
                 users={availableMembers}
                 workspaceName={workspace?.name ?? ""}
-                onClose={create.closeModal}
+                onClose={project.closeCreate}
                 onConfirm={handleCreateProjectWithMembers}
                 isSubmitting={isSubmitting}
             />

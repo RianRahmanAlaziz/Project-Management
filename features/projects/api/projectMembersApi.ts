@@ -29,3 +29,16 @@ export async function addProjectMember(
 
     return response.data;
 }
+
+
+export async function removeProjectMember(
+    workspaceSlug: string,
+    projectSlug: string,
+    userId: number,
+): Promise<ApiResponse<void>> {
+    const response = await apiClient.delete<ApiResponse<void>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}/members/${userId}`,
+    );
+
+    return response.data;
+}

@@ -5,15 +5,16 @@ import {
     ProjectTaskModal,
     SkeletonProjectsOverview,
     InviteProjectMemberModal,
+    RemoveProjectMemberModal,
 } from "@/features/projects/components";
 
 import {
     useAddProjectMember,
-    useProjectMemberModal,
     useProjectMembers,
     useProjectNavigation,
-    useProjectTaskModal,
     useOverviewProject,
+    useProjectModals,
+    useRemoveProjectMember,
 
 } from "../hooks";
 
@@ -43,6 +44,11 @@ export default function ProjectsOverview({
     } = useProjectNavigation(workspaceSlug);
 
     const {
+        member,
+        task,
+    } = useProjectModals();
+
+    const {
         members: workspaceMembers,
     } = useWorkspaceMembers(workspaceSlug);
 
@@ -62,12 +68,6 @@ export default function ProjectsOverview({
     );
 
     const {
-        isInviteMemberOpen,
-        openInviteMember,
-        closeInviteMember,
-    } = useProjectMemberModal();
-
-    const {
         handleAddProjectMember,
         isAdding,
     } = useAddProjectMember({
@@ -75,15 +75,21 @@ export default function ProjectsOverview({
 
         onSuccess: async () => {
             await refetchProjectMembers();
-            closeInviteMember();
+            member.closeInvite();
         },
     });
 
     const {
-        taskModal,
-        openCreateTask,
-        closeTaskModal,
-    } = useProjectTaskModal();
+        handleRemoveMemberProject,
+        isRemoving,
+    } = useRemoveProjectMember({
+        workspaceSlug,
+        projectSlug,
+        onSuccess: async () => {
+            await refetchProjectMembers();
+            member.remove.close();
+        },
+    });
 
 
     if (isLoading) {
@@ -104,25 +110,26 @@ export default function ProjectsOverview({
                     project={project}
                     tasks={tasks}
                     members={projectMembers}
-                    onAddMember={openInviteMember}
-                    onCreateTasks={openCreateTask}
+                    onAddMember={member.openInvite}
+                    onRemoveMember={member.remove.open}
+                    onCreateTasks={task.openCreate}
                     onOpenBoard={handleOpenProjectBoard}
                     onSettingProject={handleSettingProject}
                 />
             </div>
 
-            <ProjectTaskModal
-                open={taskModal.open}
-                mode={taskModal.mode}
-                task={taskModal.task}
-                onClose={closeTaskModal}
-            />
+            {/* <ProjectTaskModal
+                open={task.modal.open}
+                mode={task.modal.mode}
+                task={task.modal.task}
+                onClose={task.close}
+            /> */}
 
             <InviteProjectMemberModal
-                open={isInviteMemberOpen}
+                open={member.inviteOpen}
                 users={availableMembers}
                 isSubmitting={isAdding}
-                onClose={closeInviteMember}
+                onClose={member.closeInvite}
                 onConfirm={(userId) =>
                     handleAddProjectMember(
                         projectSlug,
@@ -130,6 +137,15 @@ export default function ProjectsOverview({
                     )
                 }
             />
+
+            <RemoveProjectMemberModal
+                open={member.remove.modal.open}
+                users={member.remove.modal.member}
+                isSubmitting={isRemoving}
+                onClose={member.remove.close}
+                onConfirm={handleRemoveMemberProject}
+            />
+
         </div>
     )
 }

@@ -9,7 +9,7 @@ import {
     useDetailWorkspace,
     useWorkspaceNavigation,
 } from "../hooks";
-import { useCreateProjectWithMembers, useProjectModal, useProjects } from "@/features/projects/hooks";
+import { useCreateProjectWithMembers, useProjectModals, useProjects } from "@/features/projects/hooks";
 import { CreateProjectModal } from "@/features/projects/components";
 import { useWorkspaceMembers } from "@/features/members/hooks";
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -45,8 +45,8 @@ export default function WorkspaceOverview({
     } = useWorkspaceNavigation();
 
     const {
-        create
-    } = useProjectModal();
+        project
+    } = useProjectModals();
 
     const {
         handleCreateProjectWithMembers,
@@ -55,7 +55,7 @@ export default function WorkspaceOverview({
         workspaceSlug,
         onSuccess: async () => {
             await refetchProjects();
-            create.closeModal();
+            project.closeCreate();
         },
     });
 
@@ -80,17 +80,17 @@ export default function WorkspaceOverview({
                 <WorkspaceDashboard
                     workspace={workspace}
                     projects={projects}
-                    onCreateProject={create.openModal}
+                    onCreateProject={project.openCreate}
                     onOpenProject={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}
                 />
             </div>
             <CreateProjectModal
-                open={create.open}
+                open={project.createOpen}
                 users={userOptions}
                 workspaceName={workspace?.name ?? ""}
-                onClose={create.closeModal}
+                onClose={project.closeCreate}
                 onConfirm={handleCreateProjectWithMembers}
                 isSubmitting={isSubmitting}
             />

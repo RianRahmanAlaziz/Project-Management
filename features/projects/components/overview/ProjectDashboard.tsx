@@ -28,6 +28,7 @@ type ProjectsDashboardProps = {
     members: ProjectMember[];
 
     onAddMember?: () => void;
+    onRemoveMember?: (project: ProjectMember) => void;
     onCreateTasks?: () => void;
     onOpenBoard: (project: DetailProject) => void;
     onSettingProject: (project: DetailProject) => void;
@@ -38,6 +39,7 @@ export default function ProjectDashboard({
     tasks,
     members,
     onAddMember,
+    onRemoveMember,
     onCreateTasks,
     onOpenBoard,
     onSettingProject,
@@ -76,6 +78,7 @@ export default function ProjectDashboard({
                     members={members}
                     tasks={tasks}
                     onAddMember={onAddMember}
+                    onRemove={onRemoveMember}
                 />
             )}
 
