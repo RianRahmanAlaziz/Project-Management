@@ -1,9 +1,10 @@
-const COLOR_COUNT = 8;
+const COLOR_COUNT = 18;
 
-export default function ProjectsSettingsSkeleton() {
+export function ProjectsSettingsSkeleton() {
     return (
         <div className="flex h-full flex-1 flex-col overflow-hidden">
             <div className="flex flex-1 overflow-hidden">
+
                 {/* Settings Sidebar */}
                 <div className="w-56 shrink-0 border-r border-border p-4">
                     <Sk className="mb-5 h-5 w-24 rounded-md" />
@@ -18,67 +19,96 @@ export default function ProjectsSettingsSkeleton() {
 
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-2xl space-y-6">
+                    <div className="max-w space-y-6">
                         <div className="rounded-xl border border-border bg-card">
+
                             {/* Section Header */}
-                            <div className="border-b border-border p-5">
-                                <Sk className="h-5 w-40 rounded-md" />
-                                <Sk className="mt-2 h-3 w-64 rounded-md" />
+                            <div className="border-b border-border p-6">
+                                <Sk className="h-6 w-40 rounded-md" />
+                                <Sk className="mt-2 h-4 w-72 rounded-md" />
                             </div>
 
                             {/* Form */}
-                            <div className="p-5">
-                                <div className="space-y-4">
-                                    {/* Workspace Icon + Colors */}
-                                    <div className="flex items-center gap-4">
-                                        <Sk className="h-14 w-14 shrink-0 rounded-2xl" />
+                            <div className="space-y-6 p-6">
 
-                                        <div className="flex-1">
-                                            <Sk className="mb-2 h-3 w-24 rounded-md" />
+                                {/* Project Identity */}
+                                <div className="flex items-center gap-4">
+                                    <Sk className="h-14 w-14 shrink-0 rounded-2xl" />
 
-                                            <div className="flex gap-1.5">
-                                                {Array.from({
-                                                    length: COLOR_COUNT,
-                                                }).map((_, index) => (
-                                                    <Sk
-                                                        key={index}
-                                                        className="h-6 w-6 rounded-md"
-                                                    />
-                                                ))}
-                                            </div>
+                                    <div className="min-w-0 flex-1">
+                                        <Sk className="mb-2 h-3 w-24 rounded-md" />
+
+                                        <div className="flex flex-wrap gap-2">
+                                            {Array.from({
+                                                length: COLOR_COUNT,
+                                            }).map((_, index) => (
+                                                <Sk
+                                                    key={index}
+                                                    className="h-7 w-7 rounded-lg"
+                                                />
+                                            ))}
                                         </div>
                                     </div>
+                                </div>
 
-                                    {/* Workspace Name */}
+                                {/* Project Name */}
+                                <div className="space-y-1.5">
+                                    <Sk className="h-3 w-28 rounded-md" />
+                                    <Sk className="h-9 w-full rounded-lg" />
+                                </div>
+
+                                {/* Description */}
+                                <div className="space-y-1.5">
+                                    <Sk className="h-3 w-20 rounded-md" />
+
+                                    <Sk className="h-32 w-full rounded-lg" />
+                                </div>
+
+                                {/* Dates */}
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div className="space-y-1.5">
-                                        <Sk className="h-3 w-28 rounded-md" />
+                                        <Sk className="h-3 w-20 rounded-md" />
                                         <Sk className="h-9 w-full rounded-lg" />
                                     </div>
 
-                                    {/* Description */}
                                     <div className="space-y-1.5">
                                         <Sk className="h-3 w-20 rounded-md" />
-                                        <Sk className="h-20 w-full rounded-lg" />
+                                        <Sk className="h-9 w-full rounded-lg" />
                                     </div>
                                 </div>
 
-                                {/* Footer */}
-                                <div className="mt-4 flex justify-end border-t border-border pt-4">
-                                    <Sk className="h-8 w-28 rounded-md" />
+                                {/* Status & Priority */}
+                                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                    <div className="space-y-1.5">
+                                        <Sk className="h-3 w-16 rounded-md" />
+                                        <Sk className="h-12 w-full rounded-lg" />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Sk className="h-3 w-20 rounded-md" />
+                                        <Sk className="h-12 w-full rounded-lg" />
+                                    </div>
                                 </div>
+
                             </div>
+
+                            {/* Footer */}
+                            <div className="flex justify-end border-t border-border px-6 py-4">
+                                <Sk className="h-10 w-32 rounded-lg" />
+                            </div>
+
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 function SidebarItemSkeleton() {
     return (
         <div className="flex items-center gap-1 rounded-lg px-1 py-0.5">
-            <Sk className="h-6 w-54 rounded-md" />
+            <Sk className="h-9 w-full rounded-lg" />
         </div>
     );
 }

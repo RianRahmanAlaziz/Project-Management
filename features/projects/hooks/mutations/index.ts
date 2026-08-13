@@ -3,3 +3,7 @@ export * from "./useCreateProjectWithMembers";
 export * from "./useAddProjectMember";
 export * from "./useUpdateProject";
 export * from "./useRemoveProjectMember";
+export * from "./useCreateProjectColumn";
+export * from "./useUpdateProjectColumn";
+export * from "./useReorderProjectColumns";
+export * from "./useDeleteProjectColumn";

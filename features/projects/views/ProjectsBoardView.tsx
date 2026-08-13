@@ -13,7 +13,7 @@ import {
     ProjectTaskModal,
 }
     from "@/features/projects/components";
-import { useProjectTaskModal } from "../hooks";
+import { useProjectModals } from "../hooks";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;
@@ -28,15 +28,13 @@ export default function ProjectsBoardView({
     const [openTaskId, setOpenTaskId] = useState<number | null>(null);
 
     const {
-        taskModal,
-        openCreateTask,
-        closeTaskModal,
-    } = useProjectTaskModal();
+        task
+    } = useProjectModals();
 
     const handleCreateTask = (
         column: string,
     ) => {
-        openCreateTask(column);
+        task.openCreate(column);
     };
 
     return (

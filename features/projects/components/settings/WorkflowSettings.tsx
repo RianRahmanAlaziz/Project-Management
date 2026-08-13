@@ -29,16 +29,28 @@ interface WorkflowSettingsProps {
     setColumns: Dispatch<
         SetStateAction<WorkflowColumn[]>
     >;
-
+    hasUnsavedChanges: boolean;
     saved: boolean;
+    isSaving?: boolean;
+
     onSave: () => void;
+    onAddColumn: () => void;
+    onReorder: (columns: WorkflowColumn[]) => Promise<void>;
+    onToggle: (column: WorkflowColumn) => Promise<void>;
+    onDelete: (column: WorkflowColumn) => Promise<void>;
 }
 
 export default function WorkflowSettings({
     columns,
     setColumns,
+    hasUnsavedChanges,
     saved,
+    isSaving = false,
     onSave,
+    onAddColumn,
+    onReorder,
+    onToggle,
+    onDelete
 }: WorkflowSettingsProps) {
 
     const updateColumn = (
@@ -57,7 +69,7 @@ export default function WorkflowSettings({
         );
     };
 
-    const handleDragEnd = (
+    const handleDragEnd = async (
         event: DragEndEvent,
     ) => {
         const { active, over } = event;
@@ -66,30 +78,32 @@ export default function WorkflowSettings({
             return;
         }
 
-        setColumns((items) => {
-            const oldIndex = items.findIndex(
-                (item) =>
-                    item.id === active.id,
-            );
+        const oldIndex = columns.findIndex(
+            (column) => column.id === active.id,
+        );
 
-            const newIndex = items.findIndex(
-                (item) =>
-                    item.id === over.id,
-            );
+        const newIndex = columns.findIndex(
+            (column) => column.id === over.id,
+        );
 
-            if (
-                oldIndex === -1 ||
-                newIndex === -1
-            ) {
-                return items;
-            }
+        if (oldIndex === -1 || newIndex === -1) {
+            return;
+        }
 
-            return arrayMove(
-                items,
-                oldIndex,
-                newIndex,
-            );
-        });
+        const previousColumns = columns;
+        const reorderedColumns = arrayMove(
+            columns,
+            oldIndex,
+            newIndex,
+        );
+
+        setColumns(reorderedColumns);
+
+        try {
+            await onReorder(reorderedColumns);
+        } catch {
+            setColumns(previousColumns);
+        }
     };
 
     return (
@@ -102,9 +116,7 @@ export default function WorkflowSettings({
                 onDragEnd={handleDragEnd}
             >
                 <SortableContext
-                    items={columns.map(
-                        (column) => column.id,
-                    )}
+                    items={columns.map((column) => column.id)}
                     strategy={verticalListSortingStrategy}
                 >
                     <div className="flex flex-col gap-3 w-full">
@@ -112,36 +124,36 @@ export default function WorkflowSettings({
                             <WorkflowItem
                                 key={column.id}
                                 column={column}
+                                disabled={isSaving}
                                 onRename={(value) =>
                                     updateColumn(
                                         index,
                                         value,
                                     )
                                 }
+                                onToggle={() => onToggle(column)}
+                                onDelete={() => onDelete(column)}
                             />
                         ))}
                     </div>
                 </SortableContext>
             </DndContext>
 
-            {/* <button
+            <button
+                onClick={onAddColumn}
+                disabled={isSaving}
                 type="button"
-                onClick={addColumn}
-                className="
-                    mt-4
-                    text-sm
-                    font-medium
-                    text-primary
-                    hover:underline
-                "
+                className="cursor-pointer mt-4 text-sm font-medium text-primary hover:underline "
             >
                 + Add Column
-            </button> */}
+            </button>
 
-            <SettingFooter
-                saved={saved}
-                onSave={onSave}
-            />
+            {hasUnsavedChanges && (
+                <SettingFooter
+                    saved={saved}
+                    onSave={onSave}
+                />
+            )}
         </SettingSection>
     );
 }

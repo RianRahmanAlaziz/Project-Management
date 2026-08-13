@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getProjectColumns } from "../../api/projectsApi";
 
 import type { WorkflowColumn } from "../../types/workflow";
+import { getProjectColumns } from "../../api/projectsColumnsApi";
 
 interface UseProjectColumnsOptions {
     workspaceSlug: string;

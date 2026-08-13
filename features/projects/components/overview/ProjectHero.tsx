@@ -73,7 +73,11 @@ export default function ProjectHero({
                                 color={priorityColor}
                             />
                         </div>
-                        <p className="text-sm text-muted-foreground mt-0.5 max-w-lg">{project.description}</p>
+                        <p className="text-sm text-muted-foreground mt-0.5 max-w-lg">
+                            {project.description?.length > 200
+                                ? `${project.description.slice(0, 200)}...`
+                                : project.description}
+                        </p>
                         <p className="text-sm text-muted-foreground mt-1">
                             Started:{" "}
                             {formatDate(project.start_date) || "-"}

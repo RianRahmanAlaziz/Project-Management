@@ -1,8 +1,8 @@
 import {
     SettingSection,
     SettingFooter,
-    ToggleRow,
 } from "@/components/layouts/settings";
+import ToggleRow from "@/components/ui/ToggleRow";
 
 import type {
     NotificationToggle,

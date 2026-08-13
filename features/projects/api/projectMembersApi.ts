@@ -1,9 +1,8 @@
-import { apiClient } from "@/lib/api/apiClient";
+import { ApiResponse, apiClient } from "@/lib/api";
 import type {
     AddProjectMemberPayload,
     ProjectMembersResponse,
 } from "../types/projectMembers";
-import { ApiResponse } from "@/lib/api/apiResponse";
 
 export async function getProjectMembers(
     workspaceSlug: string,

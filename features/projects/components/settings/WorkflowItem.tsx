@@ -2,18 +2,25 @@
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 
 import type { WorkflowColumn } from "@/features/projects/types/workflow";
+import Toggle from "@/components/ui/Toggle";
 
 interface WorkflowItemProps {
     column: WorkflowColumn;
     onRename: (value: string) => void;
+    onToggle: () => void;
+    onDelete: () => void;
+    disabled?: boolean;
 }
 
 export default function WorkflowItem({
     column,
     onRename,
+    onToggle,
+    onDelete,
+    disabled,
 }: WorkflowItemProps) {
 
     const {
@@ -42,7 +49,9 @@ export default function WorkflowItem({
                     type="button"
                     {...attributes}
                     {...listeners}
-                    className="cursor-grab active:cursor-grabbing text-muted-foreground"
+                    disabled={disabled}
+                    aria-label={`Move ${column.name}`}
+                    className="cursor-grab text-muted-foreground hover:text-foreground active:cursor-grabbing disabled:cursor-not-allowed  disabled:opacity-50 "
                 >
                     <GripVertical size={18} />
                 </button>
@@ -56,16 +65,22 @@ export default function WorkflowItem({
             </div>
 
             {/* RIGHT */}
-            {/* <button
-                type="button"
-                onClick={onToggle}
-                aria-pressed={column.enabled}
-                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors duration-200 cursor-pointer ${column.enabled ? "bg-primary" : "bg-muted"} `}
-            >
-                <span
-                    className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 ${column.enabled ? "translate-x-5" : "translate-x-0"} `}
+            <div className="flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={onDelete}
+                    disabled={disabled}
+                    className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive disabled:opacity-50"
+                    aria-label={`Delete ${column.name}`}
+                >
+                    <Trash2 size={16} />
+                </button>
+                <Toggle
+                    value={column.enabled}
+                    onChange={onToggle}
+                    disabled={disabled}
                 />
-            </button> */}
+            </div>
         </div>
     );
 }

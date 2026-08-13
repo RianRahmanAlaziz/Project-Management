@@ -4,6 +4,7 @@ export interface WorkflowColumn {
     name: string;
     color: string;
     position: number;
+    enabled: boolean;
     created_at: string;
     updated_at: string;
 }

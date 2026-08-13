@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { SettingsSidebar } from "@/components/layouts/settings";
 import {
     NAV_Projets,
@@ -9,8 +9,6 @@ import {
 import {
     Color,
     COLORS,
-    priorityOptions,
-    statusOptions,
 } from "@/components/constants";
 
 import {
@@ -18,19 +16,24 @@ import {
     WorkflowSettings,
     NotificationsSettings,
     DangerZoneSettings,
+    ProjectsSettingsSkeleton,
 } from "@/features/projects/components";
 
-import type {
-    NotificationToggle,
-} from "@/features/projects/types/notifications";
+import type { NotificationToggle } from "@/features/projects/types/notifications";
 
-import type {
-    ProjectForm,
-} from "@/features/projects/types/settings";
+import type { ProjectForm } from "@/features/projects/types/settings";
 
 
-import { useOverviewProject, useProjectColumns, useUpdateProject } from "../hooks";
-import ProjectsSettingsSkeleton from "../components/skeleton/ProjectsSettingsSkeleton";
+import {
+    useOverviewProject,
+    useUpdateProject,
+    useProjectColumns,
+    useCreateProjectColumn,
+    useReorderProjectColumns,
+    useUpdateProjectColumn,
+    useDeleteProjectColumn,
+} from "../hooks";
+import { WorkflowColumn } from "../types/workflow";
 
 interface ProjectSettingsViewProps {
     workspaceSlug: string;
@@ -49,27 +52,21 @@ export default function ProjectSettingsView({
         dailyDigest: false,
     });
 
-    const toggle = (key: keyof NotificationToggle) => {
-        setToggles(prev => ({
-            ...prev,
-            [key]: !prev[key],
-        }));
-    };
-
     const [color, setColor] = useState<Color>(COLORS[0]);
     const [saved, setSaved] = useState(false);
     const [confirmDelete, setConfirmDelete] = useState("");
+    const [workflowSaved, setWorkflowSaved] = useState(false);
+    const [isWorkflowSaving, setIsWorkflowSaving] = useState(false);
+    const initialColumnsRef = useRef<WorkflowColumn[]>([]);
 
     const {
-        columns,
-        setColumns,
-        isLoading: isColumnsLoading,
-        error: columnsError,
-        refetch: refetchColumns,
-    } = useProjectColumns({
+        project,
+        isLoading,
+        refetch,
+    } = useOverviewProject(
         workspaceSlug,
         projectSlug,
-    });
+    );
 
     const [projForm, setProjForm] =
         useState<ProjectForm>({
@@ -81,13 +78,6 @@ export default function ProjectSettingsView({
             startDate: "",
             dueDate: "",
         });
-
-    const {
-        project,
-        isLoading,
-        error,
-        refetch,
-    } = useOverviewProject(workspaceSlug, projectSlug);
 
     useEffect(() => {
         if (!project) {
@@ -121,9 +111,7 @@ export default function ProjectSettingsView({
 
     const {
         handleUpdateProject,
-        isUpdating,
-        updateError,
-        isSaved,
+        isSaved: isGeneralSaved,
     } = useUpdateProject({
         workspaceSlug,
         projectSlug,
@@ -142,25 +130,209 @@ export default function ProjectSettingsView({
     const handleSaveGeneral = async () => {
         await handleUpdateProject({
             name: projForm.name.trim(),
-            description: projForm.description.trim(),
+            description:
+                projForm.description.trim(),
             color: color.bg,
             status: projForm.status,
-            start_date: projForm.startDate || undefined,
-            due_date: projForm.dueDate || undefined,
+            start_date:
+                projForm.startDate || undefined,
+            due_date:
+                projForm.dueDate || undefined,
         });
     };
 
-    const handleSave = () => {
-        setSaved(true);
 
-        setTimeout(() => {
-            setSaved(false);
-        }, 2000);
+    const {
+        columns,
+        setColumns,
+        isLoading: isColumnsLoading,
+        refetch: refetchColumns,
+    } = useProjectColumns({
+        workspaceSlug,
+        projectSlug,
+    });
+
+    useEffect(() => {
+        if (
+            columns.length > 0 &&
+            initialColumnsRef.current.length === 0
+        ) {
+            initialColumnsRef.current =
+                columns.map((column) => ({
+                    ...column,
+                }));
+        }
+    }, [columns]);
+
+    const hasUnsavedWorkflowChanges =
+        columns.some((column) => {
+            const initial =
+                initialColumnsRef.current.find(
+                    (item) => item.id === column.id,
+                );
+
+            return (
+                initial &&
+                initial.name !== column.name
+            );
+        });
+
+    const {
+        handleCreateColumn,
+        isCreating,
+    } = useCreateProjectColumn({
+        workspaceSlug,
+        projectSlug,
+
+        onSuccess: async () => {
+            await refetchColumns();
+            initialColumnsRef.current = [];
+        },
+    });
+
+    const {
+        handleUpdateColumn,
+        isUpdating: isUpdatingColumn,
+    } = useUpdateProjectColumn({
+        workspaceSlug,
+        projectSlug,
+    });
+
+    const {
+        handleReorderColumns,
+        isReordering,
+    } = useReorderProjectColumns({
+        workspaceSlug,
+        projectSlug,
+    });
+
+    const handleAddColumn = async () => {
+        await handleCreateColumn({
+            name: "New Column",
+            color: "bg-slate-500",
+        });
     };
 
-    if (isLoading || !projForm) {
-        return <ProjectsSettingsSkeleton />;
+    const handleSaveWorkflow = async () => {
+        if (
+            isWorkflowSaving ||
+            !hasUnsavedWorkflowChanges
+        ) {
+            return;
+        }
+
+        setIsWorkflowSaving(true);
+        setWorkflowSaved(false);
+
+        try {
+            const initialColumns = initialColumnsRef.current;
+
+            const renamedColumns =
+                columns.filter((column) => {
+                    const initial =
+                        initialColumns.find(
+                            (item) =>
+                                item.id === column.id,
+                        );
+
+                    return (
+                        initial &&
+                        initial.name !== column.name
+                    );
+                });
+
+            for (const column of renamedColumns) {
+                await handleUpdateColumn(column.id, {
+                    name: column.name,
+                },);
+            }
+
+            await refetchColumns();
+
+            /*
+             * Setelah berhasil disimpan,
+             * jadikan data terbaru sebagai snapshot.
+             */
+            initialColumnsRef.current =
+                columns.map((column) => ({
+                    ...column,
+                }));
+
+            setWorkflowSaved(true);
+
+            setTimeout(() => {
+                setWorkflowSaved(false);
+            }, 2000);
+        } finally {
+            setIsWorkflowSaving(false);
+        }
+    };
+
+    const handleAutoSaveReorder = async (
+        reorderedColumns: WorkflowColumn[],
+    ) => {
+        await handleReorderColumns(
+            reorderedColumns.map(
+                (column, index) => ({
+                    id: column.id,
+                    position: index + 1,
+                }),
+            ),
+        );
+
+        if (!hasUnsavedWorkflowChanges) {
+            await refetchColumns();
+        }
+    };
+
+    const {
+        handleDeleteColumn,
+        isDeleting,
+    } = useDeleteProjectColumn({
+        workspaceSlug,
+        projectSlug,
+
+        onSuccess: async () => {
+            await refetchColumns();
+            initialColumnsRef.current = [];
+        },
+    });
+
+    const handleToggleColumn = async (
+        column: WorkflowColumn,
+    ) => {
+        await handleUpdateColumn(column.id, {
+            enabled: !column.enabled,
+        });
+
+        await refetchColumns();
+    };
+
+    const toggle = (
+        key: keyof NotificationToggle,
+    ) => {
+        setToggles((prev) => ({
+            ...prev,
+            [key]: !prev[key],
+        }));
+    };
+
+    if (isLoading) {
+        return (
+            <ProjectsSettingsSkeleton />
+        );
     }
+
+    if (!project) {
+        return (
+            <div className="flex h-full items-center justify-center p-6">
+                <p className="text-sm text-muted-foreground">
+                    Project not found.
+                </p>
+            </div>
+        );
+    }
+
 
     return (
         <div className="flex h-full flex-1 flex-col overflow-hidden">
@@ -173,14 +345,14 @@ export default function ProjectSettingsView({
                 />
 
                 <div className="flex-1 overflow-y-auto p-6">
-                    <div className="max-w-2xl space-y-6">
+                    <div className="max-w space-y-6">
                         {section === "general" && (
                             <GeneralSettings
                                 color={color}
                                 setColor={setColor}
                                 projForm={projForm}
                                 setProjForm={setProjForm}
-                                saved={isSaved}
+                                saved={isGeneralSaved}
                                 onSave={handleSaveGeneral}
                             />
                         )}
@@ -189,8 +361,19 @@ export default function ProjectSettingsView({
                             <WorkflowSettings
                                 columns={columns}
                                 setColumns={setColumns}
-                                saved={saved}
-                                onSave={handleSave}
+                                hasUnsavedChanges={hasUnsavedWorkflowChanges}
+                                saved={workflowSaved}
+                                isSaving={
+                                    isWorkflowSaving ||
+                                    isCreating ||
+                                    isUpdatingColumn ||
+                                    isReordering
+                                }
+                                onSave={handleSaveWorkflow}
+                                onAddColumn={handleAddColumn}
+                                onReorder={handleAutoSaveReorder}
+                                onToggle={handleToggleColumn}
+                                onDelete={handleDeleteColumn}
                             />
                         )}
 
@@ -198,8 +381,8 @@ export default function ProjectSettingsView({
                             <NotificationsSettings
                                 toggles={toggles}
                                 toggle={toggle}
-                                saved={saved}
-                                onSave={handleSave}
+                                saved={false}
+                                onSave={() => { }}
                             />
                         )}
 

@@ -3,8 +3,8 @@ import React from 'react'
 import {
     SettingSection,
     SettingFooter,
-    ToggleRow,
 } from "@/components/layouts/settings";
+import ToggleRow from '@/components/ui/ToggleRow';
 
 type Toggle = {
     taskAssigned: boolean; taskUpdated: boolean; newComment: boolean;

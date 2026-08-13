@@ -1,4 +1,4 @@
-import { apiClient } from "@/lib/api/apiClient";
+import { ApiResponse, apiClient } from "@/lib/api";
 import type {
     Projects,
     DetailProject,
@@ -6,8 +6,6 @@ import type {
     CreateProjectPayload,
     UpdateProjectPayload,
 } from "../types/projects";
-import { ApiResponse } from "@/lib/api/apiResponse";
-import { WorkflowColumn } from "../types/workflow";
 
 export async function getProjects(
     workspaceSlug: string,
@@ -54,15 +52,6 @@ export async function updateProject(
     return response.data;
 }
 
-export async function getProjectColumns(
-    workspaceSlug: string,
-    projectSlug: string,
-) {
-    const response = await apiClient.get<ApiResponse<WorkflowColumn[]>>(
-        `/workspaces/${workspaceSlug}/projects/${projectSlug}/columns`,
-    );
 
-    return response.data;
-}
 
 
