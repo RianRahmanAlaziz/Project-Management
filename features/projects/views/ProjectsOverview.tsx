@@ -18,7 +18,7 @@ import {
 
 } from "../hooks";
 
-import { useTasks } from "@/features/tasks/hooks/useTasks";
+import { useTasks } from "@/features/tasks/hooks";
 import { useWorkspaceMembers } from "@/features/members/hooks";
 
 interface ProjectsOverviewProps {
@@ -62,8 +62,7 @@ export default function ProjectsOverview({
 
     const availableMembers = workspaceMembers.filter((workspaceMember) =>
         !projectMembers.some(
-            (projectMember) =>
-                projectMember.user_id === workspaceMember.user.id,
+            (projectMember) => projectMember.user_id === workspaceMember.user.id,
         ),
     );
 

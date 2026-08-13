@@ -53,7 +53,7 @@ export function CreateProjectModal({
     });
 
     const userOptions = users.map((member) => ({
-        value: String(member.id),
+        value: String(member.user.id),
         label: member.user.email,
         description: member.role,
     }));
