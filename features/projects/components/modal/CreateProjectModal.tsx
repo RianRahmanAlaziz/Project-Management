@@ -243,6 +243,7 @@ export function CreateProjectModal({
                                         label="Workspace"
                                         value={workspaceName}
                                         readOnly
+                                        disabled
                                     />
                                 </div>
                             </div>
