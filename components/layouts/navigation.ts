@@ -38,7 +38,7 @@ export const NAV_ITEMS: NavigationItem[] = [
     {
         label: "My Tasks",
         mobileLabel: "Tasks",
-        href: "/tasks",
+        href: "/mytasks",
         icon: ListTodo,
     },
     {

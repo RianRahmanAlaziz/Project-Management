@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { ComboboxSearch } from "./ComboboxSearch";
 
 interface ComboboxBaseProps {
+    value?: string;
     searchable?: boolean;
     searchPlaceholder?: string;
     emptyMessage?: string;
@@ -22,6 +23,7 @@ interface ComboboxBaseProps {
 }
 
 export function ComboboxBase({
+    value,
     searchable = true,
     searchPlaceholder = "Search...",
     emptyMessage = "No data found",
@@ -55,7 +57,10 @@ export function ComboboxBase({
                         contentClassName
                     )}
                 >
-                    <Command className="flex max-h-96 flex-col">
+                    <Command
+                        key={value}
+                        defaultValue={value}
+                        className="flex max-h-96 flex-col">
                         <ComboboxSearch
                             searchable={searchable}
                             placeholder={searchPlaceholder}

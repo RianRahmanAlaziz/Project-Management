@@ -21,6 +21,7 @@ interface ComboboxProps {
     onValueChange?: (value: string) => void;
     className?: string;
     searchable?: boolean;
+    disabled?: boolean;
 }
 
 export function Combobox({
@@ -34,6 +35,7 @@ export function Combobox({
     onValueChange,
     className,
     searchable,
+    disabled = false,
 }: ComboboxProps) {
 
     const selected = useMemo(() =>
@@ -46,18 +48,23 @@ export function Combobox({
     return (
         <FieldWrapper label={label}>
             <ComboboxBase
+                value={selected?.label}
                 searchable={searchable}
                 searchPlaceholder={searchPlaceholder}
                 emptyMessage={emptyMessage}
                 trigger={({ open }) => (
                     <button
                         type="button"
+                        disabled={disabled}
                         className={clsx(
                             "flex h-12 w-full items-center justify-between",
                             "rounded-lg border border-border bg-background px-4",
                             "cursor-pointer text-left transition-colors",
                             "hover:border-primary/40",
-                            "focus:outline-none focus:ring-2 focus:ring-ring ",
+                            "focus:outline-none focus:ring-2 focus:ring-ring",
+                            "disabled:cursor-not-allowed",
+                            "disabled:opacity-60",
+                            "disabled:hover:border-border",
                             className
                         )}
                     >
