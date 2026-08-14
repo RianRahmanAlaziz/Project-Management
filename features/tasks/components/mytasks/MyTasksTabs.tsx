@@ -1,6 +1,4 @@
-import React from "react";
-
-export type TaskFilter = "all" | "mine" | "overdue";
+export type TaskFilter = "all" | "overdue";
 
 interface MyTasksTabsProps {
     activeTab: TaskFilter;
@@ -11,7 +9,7 @@ export default function MyTasksTabs({
     activeTab,
     onChange,
 }: MyTasksTabsProps) {
-    const tabs: TaskFilter[] = ["all", "mine", "overdue"];
+    const tabs: TaskFilter[] = ["all", "overdue"];
 
     return (
         <div className="mb-4 flex border-b border-border">
@@ -25,7 +23,7 @@ export default function MyTasksTabs({
                         : "border-transparent text-muted-foreground hover:text-foreground"
                         }`}
                 >
-                    {tab === "mine" ? "Assigned to me" : tab}
+                    {tab}
                 </button>
             ))}
         </div>

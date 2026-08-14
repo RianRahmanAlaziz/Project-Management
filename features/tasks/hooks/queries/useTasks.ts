@@ -5,9 +5,10 @@ import {
     useEffect,
     useState,
 } from "react";
+import { Tasks, TasksPagination } from "../../types/tasks";
+import { getTasks } from "../../api/tasksApi";
 
-import { Tasks, TasksPagination } from "../types/tasks";
-import { getTasks } from "../api/tasksApi";
+
 
 export function useTasks(
     workspaceSlug: string,
@@ -33,7 +34,7 @@ export function useTasks(
             setIsLoading(false);
         }
 
-    }, []);
+    }, [workspaceSlug, projectSlug]);
 
     useEffect(() => {
         void fetchTasks();

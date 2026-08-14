@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui';
 import { Link2, X } from 'lucide-react';
-import type { Tasks } from '@/features/tasks/types/tasks'
+import type { TaskDrawer } from '@/features/tasks/types/tasks'
 
 
 interface TaskHeaderProps {
-    task: Tasks;
+    task: TaskDrawer;
     status: string;
     onClose: () => void;
 }
@@ -16,9 +16,7 @@ export default function TaskHeader({
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground font-mono">
-                    PROJECT-{task.project_id}
-                    -
-                    TASK-{task.id}
+                    {task.project.name} : {task.title}
                 </span>
                 <Badge label={status} color={
                     status === "Done" ? "green" : status === "In Progress" ? "indigo" : status === "Review" ? "yellow" : "gray"

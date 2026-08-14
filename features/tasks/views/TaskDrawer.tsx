@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { motion } from "motion/react";
+"use client";
 
-import { USERS } from "@/features/users/mocks/users";
-import { TASKS } from "@/features/tasks/mocks/tasks";
+import { useEffect, useState } from "react";
+import { motion } from "motion/react";
 
 import {
     TaskHeader,
@@ -10,41 +9,139 @@ import {
     TaskCommentInput,
 } from "@/features/tasks/components";
 
+import type { TaskDrawer } from "@/features/tasks/types/tasks";
+
+import { useProjectColumns } from "@/features/projects/hooks";
+import { useUpdateTask } from "../hooks";
+
+interface TaskUpdatedChanges {
+    column: {
+        id: number;
+        name: string;
+        color?: string;
+        position?: number;
+    };
+    priority: string;
+}
+
 interface TaskDrawerProps {
-    taskId: number | string;
+    task: TaskDrawer;
     onClose: () => void;
+    onTaskUpdated?: (changes: TaskUpdatedChanges) => void;
 }
 
 export default function TaskDrawer({
-    taskId,
+    task,
     onClose,
+    onTaskUpdated,
 }: TaskDrawerProps) {
-
-    const task = TASKS.data.find(
-        (item) => item.id === Number(taskId)
-    );
     const [activeTab, setActiveTab] = useState("Comments");
     const [comment, setComment] = useState("");
-    const [status, setStatus] = useState(task?.status ?? "Todo");
-    const [priority, setPriority] = useState(task?.priority ?? "Medium");
+    const [columnId, setColumnId] = useState(String(task.column?.id ?? ""));
+    const [priority, setPriority] = useState(task.priority ?? "");
 
+    const {
+        columns,
+    } = useProjectColumns({
+        workspaceSlug: task.workspace.slug,
+        projectSlug: task.project.slug,
+    });
 
-    if (!task) return null;
+    useEffect(() => {
+        if (!task.column) {
+            return;
+        }
+        let nextColumnId = String(task.column.id);
 
-    const assignee =
-        USERS.data.find(
-            user =>
-                user.id === task.assignee_id
-        );
+        if (columns.length > 0) {
+            const matchedColumn =
+                columns.find(
+                    (column) =>
+                        column.id === task.column.id,
+                ) ??
+                columns.find(
+                    (column) =>
+                        column.name.toLowerCase() ===
+                        task.column.name.toLowerCase(),
+                );
+
+            if (matchedColumn) {
+                nextColumnId = String(
+                    matchedColumn.id,
+                );
+            }
+        }
+        setColumnId(nextColumnId);
+        setPriority(task.priority ?? "");
+    }, [task]);
+
+    const currentColumn = columns.find(
+        (column) => String(column.id) === columnId,
+    ) ?? task.column;
+
+    const {
+        handleUpdateTask,
+        isUpdating,
+    } = useUpdateTask({
+        workspaceSlug: task.workspace.slug,
+        projectSlug: task.project.slug,
+        onSuccess: async (updatedTask) => {
+            onTaskUpdated?.({
+                column: updatedTask.column,
+                priority: updatedTask.priority,
+            });
+        },
+    });
+
+    const handleColumnChange = async (nextColumnId: string) => {
+        if (nextColumnId === columnId || isUpdating) {
+            return;
+        }
+
+        const previousColumnId = columnId;
+        setColumnId(nextColumnId);
+
+        try {
+            await handleUpdateTask(
+                task.id,
+                {
+                    column_id: Number(nextColumnId),
+                },
+            );
+        } catch {
+            setColumnId(previousColumnId);
+        }
+    };
+
+    const handlePriorityChange = async (nextPriority: string) => {
+        if (nextPriority === priority || isUpdating) {
+            return;
+        }
+
+        const previousPriority = priority;
+        setPriority(nextPriority);
+
+        try {
+            await handleUpdateTask(
+                task.id,
+                {
+                    priority: nextPriority,
+                },
+            );
+        } catch {
+            setPriority(previousPriority);
+        }
+    };
 
     const handleSendComment = (message: string) => {
-        console.log("Send Comment:", message);
-
-        // nanti diganti API Laravel
+        console.log(
+            "Send Comment:",
+            message,
+        );
     };
 
     return (
-        <div className="fixed inset-0 z-40 flex">
+        <div className="fixed inset-0 z-50">
             <motion.div
                 className="absolute inset-0 bg-black/30 backdrop-blur-sm"
                 onClick={onClose}
@@ -58,42 +155,31 @@ export default function TaskDrawer({
             />
 
             <motion.div
-                initial={{
-                    x: "100%",
-                    opacity: 0.9,
-                    scale: 0.98,
-                }}
-                animate={{
-                    x: 0,
-                    opacity: 1,
-                    scale: 1,
-                }}
-                exit={{
-                    x: "100%",
-                    opacity: 0.9,
-                    scale: 0.98,
-                }}
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
                 transition={{
                     type: "spring",
-                    stiffness: 280,
-                    damping: 28,
-                    mass: 0.9,
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 0.8,
                 }}
-                className="relative ml-auto flex h-full w-full max-w-130 flex-col overflow-hidden border-l border-border bg-card shadow-2xl"
+                className="absolute top-0 right-0 h-dvh w-full max-w-130 flex flex-col overflow-hidden border-l border-border bg-card shadow-2xl"
             >
                 <TaskHeader
                     task={task}
-                    status={status}
+                    status={currentColumn?.name ?? task.column.name}
                     onClose={onClose}
                 />
 
                 <TaskContent
                     task={task}
-                    assignee={assignee}
-                    status={status}
+                    columns={columns}
+                    columnId={columnId}
                     priority={priority}
-                    setStatus={setStatus}
-                    setPriority={setPriority}
+                    setColumnId={handleColumnChange}
+                    setPriority={handlePriorityChange}
+                    isUpdating={isUpdating}
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                 />

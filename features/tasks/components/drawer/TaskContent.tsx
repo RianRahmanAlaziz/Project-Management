@@ -1,6 +1,7 @@
 "use client";
 
-import { Tabs } from '@/components/ui'
+import { Tabs } from "@/components/ui";
+import { WorkflowColumn } from "@/features/projects/types/workflow";
 
 import {
     TaskMeta,
@@ -9,67 +10,69 @@ import {
     TaskAttachments,
 } from "@/features/tasks/components";
 
-import type { Tasks } from '@/features/tasks/types/tasks'
-
-interface Users {
-    id: number | string;
-    name: string;
-    email: string;
-    role: string;
-}
+import type { TaskDrawer } from "@/features/tasks/types/tasks";
 
 interface TaskContentProps {
-    task: Tasks;
-    assignee?: Users;
-    status: string;
+    task: TaskDrawer;
+    columns: WorkflowColumn[];
+    columnId: string;
     priority: string;
-    setStatus: React.Dispatch<React.SetStateAction<string>>;
-    setPriority: React.Dispatch<React.SetStateAction<string>>;
+    setColumnId: (value: string) => void | Promise<void>;
+    setPriority: (value: string) => void | Promise<void>;
+    isUpdating: boolean;
     activeTab: string;
     setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
-
 export default function TaskContent({
     task,
-    assignee,
-    status,
+    columns,
+    columnId,
     priority,
-    setStatus,
+    setColumnId,
     setPriority,
+    isUpdating,
     activeTab,
     setActiveTab,
 }: TaskContentProps) {
     return (
         <div className="flex-1 overflow-y-auto">
             {/* Title */}
-            <div className="px-5 pt-4 pb-3">
-                <h2 className="font-semibold text-foreground leading-snug">{task.title}</h2>
+            <div className="px-5 pb-3 pt-4">
+                <h2 className="font-semibold leading-snug text-foreground">
+                    {task.title}
+                </h2>
             </div>
 
             <TaskMeta
                 task={task}
-                assignee={assignee}
-                status={status}
+                columns={columns}
+                columnId={columnId}
                 priority={priority}
-                setStatus={setStatus}
+                isUpdating={isUpdating}
+                setColumnId={setColumnId}
                 setPriority={setPriority}
             />
 
             {/* Description */}
-            <div className="px-5 py-3 border-t border-border">
-                <p className="text-base font-medium text-foreground mb-2">Description</p>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                    This task involves implementing the {task.title.toLowerCase()} feature. The implementation should follow
-                    the design specifications and maintain consistency with our component library. Performance and accessibility
-                    are key considerations.
+            <div className="border-t border-border px-5 py-3">
+                <p className="mb-2 text-base font-medium text-foreground">
+                    Description
+                </p>
+
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                    {task.description || "No description provided."}
                 </p>
             </div>
 
             {/* Tabs */}
             <div className="border-t border-border">
                 <Tabs
-                    tabs={["Comments", "Attachments", "Activity"]}
+                    tabs={[
+                        "Comments",
+                        "Attachments",
+                        "Activity",
+                    ]}
                     active={activeTab}
                     onChange={setActiveTab}
                 />
@@ -89,5 +92,5 @@ export default function TaskContent({
                 )}
             </div>
         </div>
-    )
+    );
 }
