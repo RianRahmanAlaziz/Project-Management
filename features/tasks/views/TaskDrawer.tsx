@@ -26,12 +26,18 @@ interface TaskUpdatedChanges {
 
 interface TaskDrawerProps {
     task: TaskDrawer;
+    workspaceSlug: string;
+    projectSlug: string;
+    projectName: string;
     onClose: () => void;
     onTaskUpdated?: (changes: TaskUpdatedChanges) => void;
 }
 
 export default function TaskDrawer({
     task,
+    workspaceSlug,
+    projectSlug,
+    projectName,
     onClose,
     onTaskUpdated,
 }: TaskDrawerProps) {
@@ -40,11 +46,13 @@ export default function TaskDrawer({
     const [columnId, setColumnId] = useState(String(task.column?.id ?? ""));
     const [priority, setPriority] = useState(task.priority ?? "");
 
+
     const {
         columns,
+        isLoading: isColumnsLoading,
     } = useProjectColumns({
-        workspaceSlug: task.workspace.slug,
-        projectSlug: task.project.slug,
+        workspaceSlug,
+        projectSlug,
     });
 
     useEffect(() => {
@@ -73,7 +81,7 @@ export default function TaskDrawer({
         }
         setColumnId(nextColumnId);
         setPriority(task.priority ?? "");
-    }, [task]);
+    }, [task, columns]);
 
     const currentColumn = columns.find(
         (column) => String(column.id) === columnId,
@@ -83,8 +91,9 @@ export default function TaskDrawer({
         handleUpdateTask,
         isUpdating,
     } = useUpdateTask({
-        workspaceSlug: task.workspace.slug,
-        projectSlug: task.project.slug,
+        workspaceSlug,
+        projectSlug,
+
         onSuccess: async (updatedTask) => {
             onTaskUpdated?.({
                 column: updatedTask.column,
@@ -168,6 +177,7 @@ export default function TaskDrawer({
             >
                 <TaskHeader
                     task={task}
+                    projectName={projectName}
                     status={currentColumn?.name ?? task.column.name}
                     onClose={onClose}
                 />

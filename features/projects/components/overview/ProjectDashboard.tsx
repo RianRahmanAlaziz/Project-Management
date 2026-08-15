@@ -32,6 +32,7 @@ type ProjectsDashboardProps = {
     onCreateTasks?: () => void;
     onOpenBoard: (project: DetailProject) => void;
     onSettingProject: (project: DetailProject) => void;
+    onTaskClick: (task: Tasks) => void;
 };
 
 export default function ProjectDashboard({
@@ -43,6 +44,7 @@ export default function ProjectDashboard({
     onCreateTasks,
     onOpenBoard,
     onSettingProject,
+    onTaskClick,
 }: ProjectsDashboardProps) {
 
     const [activeTab, setActiveTab] = useState<ProjectTab>("overview");
@@ -66,7 +68,7 @@ export default function ProjectDashboard({
             )}
 
             {activeTab === "tasks" && (
-                <ProjectTasks tasks={tasks} />
+                <ProjectTasks tasks={tasks} onTaskClick={onTaskClick} />
             )}
 
             {activeTab === "timeline" && (

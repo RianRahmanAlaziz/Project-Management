@@ -1,4 +1,6 @@
 "use client";
+import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 
 import {
     ProjectDashboard,
@@ -15,11 +17,16 @@ import {
     useOverviewProject,
     useProjectModals,
     useRemoveProjectMember,
-
 } from "../hooks";
 
+import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 import { useTasks } from "@/features/tasks/hooks";
 import { useWorkspaceMembers } from "@/features/members/hooks";
+import type {
+    Tasks,
+    TaskDrawer as TaskDrawerData,
+} from "@/features/tasks/types/tasks";
+
 
 interface ProjectsOverviewProps {
     workspaceSlug: string;
@@ -31,12 +38,19 @@ export default function ProjectsOverview({
     workspaceSlug,
     projectSlug,
 }: ProjectsOverviewProps) {
+    const [selectedTask, setSelectedTask] = useState<TaskDrawerData | null>(null);
     const {
         project,
         isLoading,
     } = useOverviewProject(workspaceSlug, projectSlug);
 
-    const { tasks } = useTasks(workspaceSlug, projectSlug);
+    const {
+        tasks,
+        refetch: refetchTasks,
+    } = useTasks(
+        workspaceSlug,
+        projectSlug,
+    );
 
     const {
         handleOpenProjectBoard,
@@ -90,6 +104,25 @@ export default function ProjectsOverview({
         },
     });
 
+    const handleTaskClick = (task: Tasks) => {
+        setSelectedTask({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            due_date: task.due_date,
+
+            column: {
+                id: task.column.id,
+                name: task.column.name,
+                description: task.column.description,
+                color: task.column.color,
+                position: task.column.position,
+            },
+
+            assignee: task.assignee,
+        });
+    };
 
     if (isLoading) {
         return <SkeletonProjectsOverview />;
@@ -108,6 +141,7 @@ export default function ProjectsOverview({
                 <ProjectDashboard
                     project={project}
                     tasks={tasks}
+                    onTaskClick={handleTaskClick}
                     members={projectMembers}
                     onAddMember={member.openInvite}
                     onRemoveMember={member.remove.open}
@@ -144,6 +178,37 @@ export default function ProjectsOverview({
                 onClose={member.remove.close}
                 onConfirm={handleRemoveMemberProject}
             />
+
+            <AnimatePresence initial={false} mode="wait">
+                {selectedTask && (
+                    <TaskDrawer
+                        key={selectedTask.id}
+                        task={selectedTask}
+                        workspaceSlug={workspaceSlug}
+                        projectSlug={projectSlug}
+                        projectName={project.name}
+                        onClose={() => setSelectedTask(null)}
+                        onTaskUpdated={async (changes) => {
+                            setSelectedTask((currentTask) => {
+                                if (!currentTask) {
+                                    return null;
+                                }
+
+                                return {
+                                    ...currentTask,
+                                    priority: changes.priority,
+                                    column: {
+                                        ...currentTask.column,
+                                        ...changes.column,
+                                    },
+                                };
+                            });
+
+                            await refetchTasks();
+                        }}
+                    />
+                )}
+            </AnimatePresence>
 
         </div>
     )

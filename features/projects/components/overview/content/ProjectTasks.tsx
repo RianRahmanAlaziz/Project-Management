@@ -9,6 +9,7 @@ import type { Tasks } from "@/features/tasks/types/tasks";
 
 interface ProjectTasksProps {
     tasks: Tasks[];
+    onTaskClick: (task: Tasks) => void;
 }
 
 const priorityColorMap = {
@@ -26,6 +27,7 @@ const statusColorMap = {
 
 export default function ProjectTasks({
     tasks,
+    onTaskClick,
 }: ProjectTasksProps) {
     return (
         <div className="space-y-4">
@@ -59,7 +61,8 @@ export default function ProjectTasks({
                             return (
                                 <tr
                                     key={task.id}
-                                    className="border-b border-border transition-colors last:border-0 hover:bg-muted/30"
+                                    onClick={() => onTaskClick(task)}
+                                    className="border-b border-border transition-colors last:border-0 hover:bg-muted/30 cursor-pointer"
                                 >
                                     <td className="px-4 py-3">
                                         <div className="flex items-center gap-3">

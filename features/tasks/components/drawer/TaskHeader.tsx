@@ -5,18 +5,20 @@ import type { TaskDrawer } from '@/features/tasks/types/tasks'
 
 interface TaskHeaderProps {
     task: TaskDrawer;
+    projectName: string;
     status: string;
     onClose: () => void;
 }
 export default function TaskHeader({
     task,
+    projectName,
     status,
     onClose }: TaskHeaderProps) {
     return (
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
             <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground font-mono">
-                    {task.project.name} : {task.title}
+                    {projectName} : {task.title}
                 </span>
                 <Badge label={status} color={
                     status === "Done" ? "green" : status === "In Progress" ? "indigo" : status === "Review" ? "yellow" : "gray"

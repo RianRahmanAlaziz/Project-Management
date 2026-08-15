@@ -9,10 +9,15 @@ import {
     MyTasksSkeleton
 } from "@/features/tasks/components";
 
+import type {
+    MyTasks,
+    TaskDrawer as TaskDrawerData,
+} from "../types/tasks";
+
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 import { useMyTasks } from "../hooks";
 import { CheckSquare } from "lucide-react";
-import { MyTasks } from "../types/tasks";
+
 
 
 
@@ -46,6 +51,23 @@ export default function MyTasksView() {
         });
     }, [myTasks, filter]);
 
+    const drawerTask: TaskDrawerData | null = selectedTask
+        ? {
+            id: selectedTask.id,
+            title: selectedTask.title,
+            description: selectedTask.description,
+            priority: selectedTask.priority,
+            due_date: selectedTask.due_date,
+
+            column: {
+                id: selectedTask.column.id,
+                name: selectedTask.column.name,
+                description: selectedTask.column.description,
+                color: selectedTask.column.color,
+                position: selectedTask.column.position,
+            },
+        }
+        : null;
 
     if (isLoading) {
         return <MyTasksSkeleton />;
@@ -103,10 +125,13 @@ export default function MyTasksView() {
             )}
 
             <AnimatePresence initial={false} mode="wait">
-                {selectedTask && (
+                {selectedTask && drawerTask && (
                     <TaskDrawer
-                        key={selectedTask.id}
-                        task={selectedTask}
+                        key={drawerTask.id}
+                        task={drawerTask}
+                        workspaceSlug={selectedTask.workspace.slug}
+                        projectSlug={selectedTask.project.slug}
+                        projectName={selectedTask.project.name}
                         onClose={() => setSelectedTask(null)}
                         onTaskUpdated={(changes) => {
                             setSelectedTask((currentTask) => {

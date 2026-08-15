@@ -7,16 +7,32 @@ export interface Tasks {
     priority: string;
     start_date: string;
     due_date: string;
+    completed_at: boolean;
+    workspace: {
+        id: number;
+        name: string;
+        slug: string;
+    };
+    project: {
+        id: number;
+        name: string;
+        slug: string;
+        color: string;
+    };
     column: {
         id: number;
         name: string;
+        description: string;
         position: number;
+        color?: string;
+        is_completed: boolean;
     };
-    assignee: {
-        id: number;
+    assignee?: {
+        id: number | string;
         name: string;
         email: string;
-    };
+        role: string;
+    } | null;
 }
 
 export interface Task {
@@ -56,7 +72,8 @@ export interface MyTasks {
     column: {
         id: number;
         name: string;
-        description: string;
+        description?: string;
+        color?: string;
         position: number;
         is_completed: boolean;
     };
@@ -72,21 +89,10 @@ export interface TaskDrawer {
     description: string;
     priority: string;
     due_date: string | null;
-    workspace: {
-        id: number;
-        name: string;
-        slug: string;
-    };
-    project: {
-        id: number;
-        name: string;
-        slug: string;
-        color: string;
-    };
     column: {
         id: number;
         name: string;
-        description: string;
+        description?: string;
         color?: string;
         position?: number;
     };
