@@ -19,11 +19,11 @@ import {
     useUpdateWorkspace,
     useDetailWorkspace,
     useDeleteWorkspace,
+    useWorkspaceModal,
     useTransferWorkspaceOwnership,
 } from "@/features/workspaces/hooks";
 
 import { useWorkspaceMembers } from "@/features/members/hooks";
-
 import type { UpdateWorkspacePayload } from "@/features/workspaces/types/workspace";
 
 interface WorkspaceSettingsProps {
@@ -34,9 +34,9 @@ export default function WorkspaceSettings({
     workspaceSlug
 }: WorkspaceSettingsProps) {
     const router = useRouter();
+    const workspaceModal = useWorkspaceModal();
+
     const [activeSection, setActiveSection] = useState("general");
-    const [confirmDelete, setConfirmDelete] = useState("");
-    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
     const [workspaceData, setWorkspaceData] = useState<UpdateWorkspacePayload | null>(null);
 
     const {
@@ -90,14 +90,12 @@ export default function WorkspaceSettings({
         onSuccess: (updatedWorkspace) => {
             setWorkspaceData({
                 name: updatedWorkspace.name,
-                description:
-                    updatedWorkspace.description ?? "",
+                description: updatedWorkspace.description ?? "",
                 color: updatedWorkspace.color,
             });
 
             if (
-                updatedWorkspace.slug !==
-                workspaceSlug
+                updatedWorkspace.slug !== workspaceSlug
             ) {
                 router.replace(
                     `/workspaces/${updatedWorkspace.slug}/settings`,
@@ -125,33 +123,12 @@ export default function WorkspaceSettings({
         deleteError,
     } = useDeleteWorkspace({
         workspaceSlug,
-
         onSuccess: () => {
+            workspaceModal.delete.closeModal();
             router.replace("/workspaces");
             router.refresh();
         },
     });
-
-    const handleOpenDeleteModal = () => {
-        setDeleteModalOpen(true);
-    };
-
-    const handleCloseDeleteModal = () => {
-        if (isDeleting) {
-            return;
-        }
-
-        setDeleteModalOpen(false);
-    };
-
-    const [
-        transferModalOpen,
-        setTransferModalOpen,
-    ] = useState(false);
-
-    const handleOpenTransferModal = () => {
-        setTransferModalOpen(true);
-    };
 
     const {
         handleTransferOwnership,
@@ -161,23 +138,14 @@ export default function WorkspaceSettings({
         workspaceSlug,
 
         onSuccess: (updatedWorkspace) => {
-            setTransferModalOpen(false);
-
+            workspaceModal.transferOwnership.closeModal();
             router.replace(
                 `/workspaces/${updatedWorkspace.slug}`,
             );
-
             router.refresh();
         },
     });
 
-    const handleCloseTransferModal = () => {
-        if (isTransferring) {
-            return;
-        }
-
-        setTransferModalOpen(false);
-    };
 
     if (isLoading || !workspaceData) {
         return <WorkspaceSettingsSkeleton />;
@@ -244,10 +212,10 @@ export default function WorkspaceSettings({
                             {activeSection === "danger" && (
                                 <DangerZoneSettings
                                     workspaceSlug={workspace.slug}
-                                    confirmDelete={confirmDelete}
-                                    onConfirmDeleteChange={setConfirmDelete}
-                                    onOpenDeleteModal={handleOpenDeleteModal}
-                                    onOpenTransferModal={handleOpenTransferModal}
+                                    confirmDelete={workspaceModal.delete.confirmDelete}
+                                    onConfirmDeleteChange={workspaceModal.delete.setConfirmDelete}
+                                    onOpenDeleteModal={workspaceModal.delete.openModal}
+                                    onOpenTransferModal={workspaceModal.transferOwnership.openModal}
                                 />
                             )}
                         </div>
@@ -256,20 +224,20 @@ export default function WorkspaceSettings({
             </div>
 
             <TransferOwnershipModal
-                open={transferModalOpen}
+                open={workspaceModal.transferOwnership.open}
                 members={members}
                 isSubmitting={isTransferring}
                 error={transferError}
-                onClose={handleCloseTransferModal}
+                onClose={workspaceModal.transferOwnership.closeModal}
                 onConfirm={(userId) => handleTransferOwnership({ user_id: userId })}
             />
 
             <DeleteWorkspaceModal
-                open={deleteModalOpen}
+                open={workspaceModal.delete.open}
                 workspace={workspace}
                 isSubmitting={isDeleting}
                 error={deleteError}
-                onClose={handleCloseDeleteModal}
+                onClose={workspaceModal.delete.closeModal}
                 onConfirm={handleDeleteWorkspace}
             />
         </>

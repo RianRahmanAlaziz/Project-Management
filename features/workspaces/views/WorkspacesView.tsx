@@ -15,7 +15,6 @@ import {
     useWorkspaceSearch,
     useWorkspaceNavigation,
     useWorkspaceModal,
-    useCreateWorkspace,
     useCreateWorkspaceWithMembers,
 } from "@/features/workspaces/hooks";
 
@@ -40,11 +39,7 @@ export function WorkspacesView() {
         handleOpenProject,
     } = useWorkspaceNavigation();
 
-    const {
-        isCreateWorkspaceOpen,
-        openCreateWorkspace,
-        closeCreateWorkspace,
-    } = useWorkspaceModal();
+    const workspaceModal = useWorkspaceModal();
 
     const {
         users,
@@ -60,7 +55,7 @@ export function WorkspacesView() {
     } = useCreateWorkspaceWithMembers({
         onSuccess: async () => {
             await refetch();
-            closeCreateWorkspace();
+            workspaceModal.create.closeModal();
         },
     });
 
@@ -72,7 +67,7 @@ export function WorkspacesView() {
         <div className="px-6 py-8 xl:px-8">
             <div className="w-full space-y-6">
                 <WorkspaceHeader
-                    OpenCreateWorkspace={openCreateWorkspace}
+                    OpenCreateWorkspace={workspaceModal.create.openModal}
                 />
 
                 <WorkspaceSearch
@@ -86,15 +81,15 @@ export function WorkspacesView() {
                     onOpenProjects={handleOpenProject}
                     onOpenMembers={handleOpenMembers}
                     onOpenSetting={handleOpenSetting}
-                    OpenCreateWorkspace={openCreateWorkspace}
+                    OpenCreateWorkspace={workspaceModal.create.openModal}
                 />
             </div>
 
             <WorkspaceFormModal
-                open={isCreateWorkspaceOpen}
+                open={workspaceModal.create.open}
                 users={userOptions}
                 isSubmitting={isSubmitting}
-                onClose={closeCreateWorkspace}
+                onClose={workspaceModal.create.closeModal}
                 onSubmit={handleCreateWorkspaceWithMembers}
             />
 
