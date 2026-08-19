@@ -48,7 +48,7 @@ export function Combobox({
     return (
         <FieldWrapper label={label}>
             <ComboboxBase
-                value={selected?.label}
+                value={selected?.value}
                 searchable={searchable}
                 searchPlaceholder={searchPlaceholder}
                 emptyMessage={emptyMessage}

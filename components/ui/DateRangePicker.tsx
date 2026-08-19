@@ -28,6 +28,7 @@ interface DateRangePickerProps {
     ) => void;
     placeholder?: string;
     error?: string;
+    disabled?: boolean;
 }
 
 export function DateRangePicker({
@@ -37,6 +38,7 @@ export function DateRangePicker({
     endDate,
     onChange,
     placeholder = "Select schedule",
+    disabled = false,
 }: DateRangePickerProps) {
     const [open, setOpen] = useState(false);
     const [hoverDate, setHoverDate] = useState<Date | null>(null);
@@ -164,14 +166,31 @@ export function DateRangePicker({
         };
     }, [open]);
 
+    useEffect(() => {
+        if (disabled) {
+            setOpen(false);
+            setHoverDate(null);
+        }
+    }, [disabled]);
+
     return (
         <FieldWrapper label={label}>
             <div className="relative">
                 <button
                     ref={buttonRef}
                     type="button"
-                    onClick={() => setOpen(!open)}
-                    className="flex h-12 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm hover:bg-muted/40 cursor-pointer">
+                    disabled={disabled}
+                    onClick={() => {
+                        if (disabled) {
+                            return;
+                        }
+                        setOpen((prev) => !prev);
+                    }}
+                    className={["flex h-12 w-full items-center justify-between rounded-lg border border-border bg-background px-3 text-sm transition-colors",
+                        disabled
+                            ? "cursor-not-allowed opacity-60"
+                            : "cursor-pointer hover:bg-muted/40",
+                    ].join(" ")}>
                     <span className={start ? "text-foreground" : "text-muted-foreground"}  >
                         {start && end
                             ? `${format(start, "dd MMM yyyy")} → ${format(end, "dd MMM yyyy")}`
@@ -202,12 +221,15 @@ export function DateRangePicker({
                             {/* HEADER */}
                             <div className="mb-3 flex items-center justify-between">
                                 <button
-                                    className="cursor-pointer"
                                     type="button"
+                                    disabled={disabled}
                                     onClick={() =>
-                                        setMonth(
-                                            subMonths(month, 1)
-                                        )
+                                        setMonth(subMonths(month, 1))
+                                    }
+                                    className={
+                                        disabled
+                                            ? "cursor-not-allowed opacity-50"
+                                            : "cursor-pointer"
                                     }
                                 >
                                     <ChevronLeft size={16} />
@@ -221,12 +243,15 @@ export function DateRangePicker({
                                 </p>
 
                                 <button
-                                    className="cursor-pointer"
                                     type="button"
+                                    disabled={disabled}
                                     onClick={() =>
-                                        setMonth(
-                                            addMonths(month, 1)
-                                        )
+                                        setMonth(addMonths(month, 1))
+                                    }
+                                    className={
+                                        disabled
+                                            ? "cursor-not-allowed opacity-50"
+                                            : "cursor-pointer"
                                     }
                                 >
                                     <ChevronRight size={16} />
@@ -278,22 +303,29 @@ export function DateRangePicker({
                                             )}
                                             <button
                                                 type="button"
+                                                disabled={disabled}
                                                 onClick={() => selectDate(day)}
                                                 onMouseEnter={() => {
-                                                    if (start && !end) {
+                                                    if (!disabled && start && !end) {
                                                         setHoverDate(current);
                                                     }
                                                 }}
                                                 onMouseLeave={() => {
-                                                    if (start && !end) {
+                                                    if (!disabled && start && !end) {
                                                         setHoverDate(null);
                                                     }
                                                 }}
                                                 className={[
-                                                    "relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-sm transition cursor-pointer",
-                                                    "hover:bg-muted",
-                                                    (isStart || isEnd) && "bg-primary text-primary-foreground",
-                                                    !isStart && !isEnd && (isMiddle || isPreviewMiddle) && "text-primary"
+                                                    "relative z-10 flex h-9 w-9 items-center justify-center rounded-full text-sm transition",
+                                                    disabled
+                                                        ? "cursor-not-allowed opacity-50"
+                                                        : "cursor-pointer hover:bg-muted",
+                                                    (isStart || isEnd) &&
+                                                    "bg-primary text-primary-foreground",
+                                                    !isStart &&
+                                                    !isEnd &&
+                                                    (isMiddle || isPreviewMiddle) &&
+                                                    "text-primary",
                                                 ]
                                                     .filter(Boolean)
                                                     .join(" ")}
@@ -308,14 +340,37 @@ export function DateRangePicker({
                             <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
                                 <button
                                     type="button"
-                                    className="rounded-md px-2 py-1 text-xs text-muted-foreground hover:bg-muted cursor-pointer"
-                                    onClick={() => setMonth(new Date())}>
+                                    disabled={disabled}
+                                    className={[
+                                        "rounded-md px-2 py-1 text-xs",
+                                        disabled
+                                            ? "cursor-not-allowed opacity-50"
+                                            : "cursor-pointer text-muted-foreground hover:bg-muted",
+                                    ].join(" ")}
+                                    onClick={() => {
+                                        if (disabled) {
+                                            return;
+                                        }
+
+                                        setMonth(new Date());
+                                    }}
+                                >
                                     Today
                                 </button>
                                 <button
                                     type="button"
-                                    className="rounded-md px-2 py-1 text-xs text-destructive hover:bg-destructive/10 cursor-pointer"
+                                    disabled={disabled}
+                                    className={[
+                                        "rounded-md px-2 py-1 text-xs",
+                                        disabled
+                                            ? "cursor-not-allowed opacity-50"
+                                            : "cursor-pointer text-destructive hover:bg-destructive/10",
+                                    ].join(" ")}
                                     onClick={() => {
+                                        if (disabled) {
+                                            return;
+                                        }
+
                                         onChange("", "");
                                         setHoverDate(null);
                                     }}

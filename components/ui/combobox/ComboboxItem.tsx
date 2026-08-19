@@ -19,7 +19,11 @@ export default function ComboboxItem({
 }: ComboboxItemProps) {
     return (
         <Command.Item
-            value={option.label}
+            value={option.value}
+            keywords={[
+                option.label,
+                option.description ?? "",
+            ]}
             disabled={option.disabled}
             onSelect={onSelect}
             className={clsx(
