@@ -1,111 +1,83 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     Button,
-    Input,
-    Modal,
     Combobox,
-    DatePicker,
     DateRangePicker,
+    Modal,
 } from "@/components/ui";
-
 import {
     Calendar,
     CheckSquare,
-    Clock,
     Flag,
-    Hash,
     Users,
 } from "lucide-react";
 
+import { priorityOptions } from "@/components/constants";
+import type { WorkspaceMember } from "@/features/members/types/workspaceMember";
+import type { WorkflowColumn } from "@/features/projects/types/workflow";
 import type { Task } from "@/features/tasks/types/tasks";
-
-interface Option {
-    id: string;
-    name: string;
-}
 
 interface TaskFormModalProps {
     open: boolean;
     mode: "create" | "edit";
-
     task?: Task | null;
 
-    projects: Option[];
-    members: Option[];
-    columns?: Option[];
-    labels: Option[];
+    users: WorkspaceMember[];
+    columns: WorkflowColumn[];
+
+    isSubmitting?: boolean;
 
     onClose: () => void;
-    onSubmit: (task: Task) => void;
+    onSubmit: (task: Task) => Promise<void>;
 }
-
-const PRIORITY_OPTIONS = [
-    {
-        value: "Low",
-        label: "Low",
-        icon: (
-            <span className="h-2 w-2 rounded-full bg-green-500" />
-        ),
-    },
-    {
-        value: "Medium",
-        label: "Medium",
-        icon: (
-            <span className="h-2 w-2 rounded-full bg-yellow-500" />
-        ),
-    },
-    {
-        value: "High",
-        label: "High",
-        icon: (
-            <span className="h-2 w-2 rounded-full bg-red-500" />
-        ),
-    },
-];
-
-
-const ESTIMATE_OPTIONS = [
-    "30m",
-    "1h",
-    "2h",
-    "4h",
-    "1d",
-    "2d",
-    "3d",
-    "1w",
-].map(item => ({
-    value: item,
-    label: item,
-}));
-
 
 export default function TaskFormModal({
     open,
     mode,
     task,
-    projects = [],
-    members = [],
+    users = [],
     columns = [],
-    labels = [],
-
+    isSubmitting = false,
     onClose,
     onSubmit,
 }: TaskFormModalProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-
     const [projectId, setProjectId] = useState("");
     const [columnId, setColumnId] = useState("");
-
-    const [priority, setPriority] = useState("medium");
+    const [priority, setPriority] = useState("");
     const [assigneeId, setAssigneeId] = useState("");
-
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
 
-    const [estimateHours, setEstimateHours] = useState("");
+    const columnOptions = useMemo(
+        () =>
+            columns
+                .filter((column) => column.enabled)
+                .map((column) => ({
+                    value: String(column.id),
+                    label: column.name,
+                    description: column.description,
+                    icon: (
+                        <span
+                            className={`h-2.5 w-2.5 rounded-full ${column.color}`}
+                        />
+                    ),
+                })),
+        [columns],
+    );
+
+    const memberOptions = useMemo(
+        () =>
+            users.map((user) => ({
+                value: String(user.user.id),
+                label: user.user.name,
+                description: user.user.email,
+            })),
+        [users],
+    );
 
     useEffect(() => {
         if (mode === "edit" && task) {
@@ -115,17 +87,11 @@ export default function TaskFormModal({
             setProjectId(task.projectId ?? "");
             setColumnId(task.columnId ?? "");
 
-            setPriority(task.priority ?? "medium");
+            setPriority(task.priority ?? "");
             setAssigneeId(task.assigneeId ?? "");
 
             setStartDate(task.startDate ?? "");
             setDueDate(task.dueDate ?? "");
-
-            setEstimateHours(
-                task.estimateHours
-                    ? String(task.estimateHours)
-                    : ""
-            );
 
             return;
         }
@@ -136,33 +102,40 @@ export default function TaskFormModal({
         setProjectId("");
         setColumnId("");
 
-        setPriority("medium");
+        setPriority("");
         setAssigneeId("");
 
         setStartDate("");
         setDueDate("");
-
-        setEstimateHours("");
     }, [mode, task, open]);
 
-    const handleSubmit = () => {
-        onSubmit({
+    const handleSubmit = async () => {
+        if (isSubmitting) {
+            return;
+        }
+
+        await onSubmit({
             ...task,
-            title,
-            description,
+            title: title.trim(),
+            description: description.trim(),
             projectId,
             columnId,
             priority,
             assigneeId,
             startDate,
             dueDate,
-            estimateHours: estimateHours
-                ? Number(estimateHours)
-                : undefined,
         });
 
         onClose();
     };
+
+    const submitLabel = isSubmitting
+        ? mode === "create"
+            ? "Creating..."
+            : "Saving..."
+        : mode === "create"
+            ? "Create Task"
+            : "Save Changes";
 
     return (
         <Modal
@@ -176,20 +149,33 @@ export default function TaskFormModal({
             size="xl"
         >
             <div className="space-y-5">
+                {/* Title */}
                 <textarea
                     autoFocus
+                    value={title}
+                    onChange={(event) =>
+                        setTitle(event.target.value)
+                    }
                     placeholder="Task title…"
                     rows={2}
-                    className="w-full bg-transparent text-foreground placeholder:text-muted-foreground text-base font-semibold focus:outline-none resize-none mb-1 leading-snug"
+                    disabled={isSubmitting}
+                    className="mb-1 w-full resize-none bg-transparent text-base font-semibold leading-snug text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                 />
 
+                {/* Description */}
                 <textarea
+                    value={description}
+                    onChange={(event) =>
+                        setDescription(event.target.value)
+                    }
                     placeholder="Add a description, notes, or acceptance criteria…"
                     rows={3}
-                    className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-none resize-none border-b border-border pb-4 mb-4"
+                    disabled={isSubmitting}
+                    className="mb-4 w-full resize-none border-b border-border bg-transparent pb-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                 />
 
                 <div className="grid grid-cols-2 gap-4">
+                    {/* Status */}
                     <Combobox
                         label={
                             <>
@@ -200,14 +186,12 @@ export default function TaskFormModal({
                         value={columnId}
                         onValueChange={setColumnId}
                         placeholder="Select status"
-                        options={
-                            columns.map(item => ({
-                                value: String(item.id),
-                                label: item.name,
-                            }))
-                        }
+                        searchable={false}
+                        options={columnOptions}
+                        disabled={isSubmitting}
                     />
 
+                    {/* Priority */}
                     <Combobox
                         label={
                             <>
@@ -217,10 +201,13 @@ export default function TaskFormModal({
                         }
                         value={priority}
                         onValueChange={setPriority}
+                        placeholder="Select priority"
                         searchable={false}
-                        options={PRIORITY_OPTIONS}
+                        options={priorityOptions}
+                        disabled={isSubmitting}
                     />
 
+                    {/* Assignee */}
                     <Combobox
                         label={
                             <>
@@ -231,14 +218,11 @@ export default function TaskFormModal({
                         value={assigneeId}
                         onValueChange={setAssigneeId}
                         placeholder="Select member"
-                        options={
-                            members.map(user => ({
-                                value: String(user.id),
-                                label: user.name,
-                            }))
-                        }
+                        options={memberOptions}
+                        disabled={isSubmitting}
                     />
 
+                    {/* Schedule */}
                     <DateRangePicker
                         label={
                             <>
@@ -252,17 +236,16 @@ export default function TaskFormModal({
                             setStartDate(start);
                             setDueDate(end);
                         }}
+                        disabled={isSubmitting}
                     />
-
-
                 </div>
 
                 <div className="flex justify-end gap-2">
-
                     <Button
                         variant="outline"
                         size="lg"
                         onClick={onClose}
+                        disabled={isSubmitting}
                     >
                         Cancel
                     </Button>
@@ -271,12 +254,10 @@ export default function TaskFormModal({
                         variant="primary"
                         size="lg"
                         onClick={handleSubmit}
+                        disabled={isSubmitting}
                     >
-                        {mode === "create"
-                            ? "Create Task"
-                            : "Save Changes"}
+                        {submitLabel}
                     </Button>
-
                 </div>
             </div>
         </Modal>

@@ -13,7 +13,7 @@ import type {
     MyTasks,
     TaskDrawer as TaskDrawerData,
 } from "../types/tasks";
-
+import { useProjectColumns } from "@/features/projects/hooks";
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
 import { useMyTasks } from "../hooks";
 import { CheckSquare } from "lucide-react";
@@ -68,6 +68,13 @@ export default function MyTasksView() {
             },
         }
         : null;
+
+    const {
+        columns,
+    } = useProjectColumns({
+        workspaceSlug: selectedTask?.workspace.slug ?? "",
+        projectSlug: selectedTask?.project.slug ?? "",
+    });
 
     if (isLoading) {
         return <MyTasksSkeleton />;
@@ -133,6 +140,7 @@ export default function MyTasksView() {
                         projectSlug={selectedTask.project.slug}
                         projectName={selectedTask.project.name}
                         onClose={() => setSelectedTask(null)}
+                        columns={columns}
                         onTaskUpdated={(changes) => {
                             setSelectedTask((currentTask) => {
                                 if (!currentTask) {

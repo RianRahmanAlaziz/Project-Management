@@ -11,8 +11,8 @@ import {
 
 import type { TaskDrawer } from "@/features/tasks/types/tasks";
 
-import { useProjectColumns } from "@/features/projects/hooks";
 import { useUpdateTask } from "../hooks";
+import { WorkflowColumn } from "@/features/projects/types/workflow";
 
 interface TaskUpdatedChanges {
     column: {
@@ -29,6 +29,7 @@ interface TaskDrawerProps {
     workspaceSlug: string;
     projectSlug: string;
     projectName: string;
+    columns: WorkflowColumn[];
     onClose: () => void;
     onTaskUpdated?: (changes: TaskUpdatedChanges) => void;
 }
@@ -38,6 +39,7 @@ export default function TaskDrawer({
     workspaceSlug,
     projectSlug,
     projectName,
+    columns,
     onClose,
     onTaskUpdated,
 }: TaskDrawerProps) {
@@ -45,15 +47,6 @@ export default function TaskDrawer({
     const [comment, setComment] = useState("");
     const [columnId, setColumnId] = useState(String(task.column?.id ?? ""));
     const [priority, setPriority] = useState(task.priority ?? "");
-
-
-    const {
-        columns,
-        isLoading: isColumnsLoading,
-    } = useProjectColumns({
-        workspaceSlug,
-        projectSlug,
-    });
 
     useEffect(() => {
         if (!task.column) {
@@ -82,6 +75,16 @@ export default function TaskDrawer({
         setColumnId(nextColumnId);
         setPriority(task.priority ?? "");
     }, [task, columns]);
+
+    useEffect(() => {
+        setColumnId(
+            task.column
+                ? String(task.column.id)
+                : ""
+        );
+
+        setPriority(task.priority ?? "");
+    }, [task]);
 
     const currentColumn = columns.find(
         (column) => String(column.id) === columnId,

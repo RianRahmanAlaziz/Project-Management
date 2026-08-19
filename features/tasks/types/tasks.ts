@@ -131,7 +131,32 @@ export interface MyTasksResponse {
     };
 }
 
+export interface CreateTaskForm {
+    title: string;
+    description: string;
+    columnId: string;
+    priority: string;
+    assigneeId: string;
+    startDate: string;
+    dueDate: string;
+}
+
+export interface CreateTaskPayload {
+    title: string;
+    description?: string;
+    column_id: number;
+    priority?: string;
+    assignee_id?: number | null;
+    start_date?: string | null;
+    due_date?: string | null;
+}
+
 export interface UpdateTaskPayload {
+    title?: string;
+    description?: string;
     column_id?: number;
     priority?: string;
+    assignee_id?: number | null;
+    start_date?: string | null;
+    due_date?: string | null;
 }

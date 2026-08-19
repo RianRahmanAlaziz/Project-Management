@@ -29,33 +29,41 @@ export default function TaskMeta({
 }: TaskMetaProps) {
     const enabledColumns = columns.filter((column) => column.enabled);
 
-    const columnOptions = enabledColumns.map(
-        (column) => ({
-            value: String(column.id),
-            label: column.name,
-            description: column.description,
+    const taskColumnOption = task.column
+        ? {
+            value: String(task.column.id),
+            label: task.column.name,
+            description: task.column.description,
             icon: (
-                <span className={`h-2.5 w-2.5 rounded-full ${column.color}`} />
+                <span
+                    className={`h-2.5 w-2.5 rounded-full ${task.column.color}`}
+                />
             ),
-        }),
-    );
+        }
+        : null;
 
-    const currentColumnOption = {
-        value: String(task.column.id),
-        label: task.column.name,
-        description: task.column.description,
+    const columnOptions = enabledColumns.map((column) => ({
+        value: String(column.id),
+        label: column.name,
+        description: column.description,
         icon: (
-            <span className={`h-2.5 w-2.5 rounded-full ${task.column.color}`} />
+            <span
+                className={`h-2.5 w-2.5 rounded-full ${column.color}`}
+            />
         ),
-    };
+    }));
 
-    const hasCurrentColumn = columnOptions.some(
-        (option) => option.value === String(task.column.id),
-    );
+    const hasTaskColumn = taskColumnOption
+        ? columnOptions.some(
+            (option) =>
+                option.value === taskColumnOption.value,
+        )
+        : false;
 
-    const statusOptions = hasCurrentColumn
-        ? columnOptions
-        : [currentColumnOption, ...columnOptions];
+    const statusOptions =
+        taskColumnOption && !hasTaskColumn
+            ? [taskColumnOption, ...columnOptions]
+            : columnOptions;
 
     return (
         <div className="space-y-2.5 px-5 pb-4">

@@ -1,7 +1,13 @@
 import { apiClient } from "@/lib/api/apiClient";
-import { MyTasksResponse, Tasks, TasksListResponse, UpdateTaskPayload } from "../types/tasks";
+import { CreateTaskPayload, MyTasksResponse, Tasks, TasksListResponse, UpdateTaskPayload } from "../types/tasks";
 import { ApiResponse } from "@/lib/api";
 
+export async function getMyTasks(): Promise<MyTasksResponse> {
+    const response = await apiClient.get<MyTasksResponse>(
+        "/my-tasks",
+    );
+    return response.data;
+}
 
 export async function getTasks(
     workspaceSlug: string,
@@ -13,10 +19,16 @@ export async function getTasks(
     return response.data;
 }
 
-export async function getMyTasks(): Promise<MyTasksResponse> {
-    const response = await apiClient.get<MyTasksResponse>(
-        "/my-tasks",
+export async function createTask(
+    workspaceSlug: string,
+    projectSlug: string,
+    payload: CreateTaskPayload,
+): Promise<ApiResponse<Tasks>> {
+    const response = await apiClient.post<ApiResponse<Tasks>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}/tasks`,
+        payload,
     );
+
     return response.data;
 }
 
