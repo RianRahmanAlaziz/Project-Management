@@ -7,6 +7,14 @@ import { priorityOptions } from "@/components/constants";
 import type { TaskDrawer } from "@/features/tasks/types/tasks";
 import type { WorkflowColumn } from "@/features/projects/types/workflow";
 import { formatDate } from "@/lib/utils/formatDate";
+import { getColorOption } from "@/lib/utils/getColorOption";
+
+type ColumnOptionSource = {
+    id: number;
+    name: string;
+    description?: string;
+    color?: string;
+};
 
 interface TaskMetaProps {
     task: TaskDrawer;
@@ -27,31 +35,34 @@ export default function TaskMeta({
     setColumnId,
     setPriority,
 }: TaskMetaProps) {
-    const enabledColumns = columns.filter((column) => column.enabled);
+    const createColumnOption = (
+        column: ColumnOptionSource,
+    ) => {
+        const color = getColorOption(column.color);
 
-    const taskColumnOption = task.column
-        ? {
-            value: String(task.column.id),
-            label: task.column.name,
-            description: task.column.description,
+        return {
+            value: String(column.id),
+            label: column.name,
+            description: column.description,
             icon: (
                 <span
-                    className={`h-2.5 w-2.5 rounded-full ${task.column.color}`}
+                    className={[
+                        "h-2.5 w-2.5 shrink-0 rounded-full",
+                        color?.bg ?? "bg-slate-500",
+                    ].join(" ")}
+                    aria-hidden="true"
                 />
             ),
-        }
-        : null;
+        };
+    };
 
-    const columnOptions = enabledColumns.map((column) => ({
-        value: String(column.id),
-        label: column.name,
-        description: column.description,
-        icon: (
-            <span
-                className={`h-2.5 w-2.5 rounded-full ${column.color}`}
-            />
-        ),
-    }));
+    const columnOptions = columns
+        .filter((column) => column.enabled)
+        .map(createColumnOption);
+
+    const taskColumnOption = task.column
+        ? createColumnOption(task.column)
+        : null;
 
     const hasTaskColumn = taskColumnOption
         ? columnOptions.some(
@@ -62,7 +73,10 @@ export default function TaskMeta({
 
     const statusOptions =
         taskColumnOption && !hasTaskColumn
-            ? [taskColumnOption, ...columnOptions]
+            ? [
+                taskColumnOption,
+                ...columnOptions,
+            ]
             : columnOptions;
 
     return (

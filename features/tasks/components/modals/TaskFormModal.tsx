@@ -18,6 +18,7 @@ import { priorityOptions } from "@/components/constants";
 import type { WorkspaceMember } from "@/features/members/types/workspaceMember";
 import type { WorkflowColumn } from "@/features/projects/types/workflow";
 import type { Task } from "@/features/tasks/types/tasks";
+import { getColorOption } from "@/lib/utils/getColorOption";
 
 interface TaskFormModalProps {
     open: boolean;
@@ -52,20 +53,23 @@ export default function TaskFormModal({
     const [startDate, setStartDate] = useState("");
     const [dueDate, setDueDate] = useState("");
 
-    const columnOptions = useMemo(
-        () =>
-            columns
-                .filter((column) => column.enabled)
-                .map((column) => ({
-                    value: String(column.id),
-                    label: column.name,
-                    description: column.description,
-                    icon: (
-                        <span
-                            className={`h-2.5 w-2.5 rounded-full ${column.color}`}
-                        />
-                    ),
-                })),
+    const columnOptions = useMemo(() =>
+        columns.filter((column) => column.enabled).map((column) => {
+            const color = getColorOption(column.color);
+            return {
+                value: String(column.id),
+                label: column.name,
+                description: column.description,
+                icon: (
+                    <span
+                        className={[
+                            "h-2.5 w-2.5 shrink-0 rounded-full",
+                            color?.bg ?? "bg-slate-500",
+                        ].join(" ")}
+                    />
+                ),
+            };
+        }),
         [columns],
     );
 

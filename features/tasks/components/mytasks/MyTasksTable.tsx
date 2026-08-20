@@ -4,26 +4,13 @@ import { formatDate } from "@/lib/utils/formatDate";
 import {
     priorityOptions,
 } from "@/components/constants";
+import { getColorOption } from "@/lib/utils/getColorOption";
 
 const priorityColorMap = {
     Low: "green",
     Medium: "yellow",
     High: "red",
 } as const;
-
-const statusColorMap: Record<string, "green" | "yellow" | "blue" | "purple"> = {
-    Planning: "blue",
-    "In Progress": "yellow",
-    Review: "purple",
-    Done: "green",
-};
-
-const priorityDot: Record<string, string> = {
-    High: "bg-destructive",
-    Medium: "bg-warning",
-    Low: "bg-muted-foreground",
-};
-
 
 interface MyTasksTableProps {
     tasks: MyTasks[];
@@ -50,20 +37,28 @@ export default function MyTasksTable({
                     {tasks.map((task) => {
                         const priority = priorityOptions.find((option) => option.value === task.priority);
                         const statusName = task.column?.name ?? "Unknown";
-                        const statusColor = statusColorMap[statusName] ?? "gray";
+                        const statusColor = task.column?.color ? getColorOption(task.column.color) : undefined;
                         return (
                             <tr key={task.id} onClick={() => onTaskClick(task)} className="border-b border-border last:border-0 hover:bg-muted/30 transition-colors cursor-pointer">
                                 <td className="px-4 py-2.5">
-                                    <div className="flex items-center gap-2.5">
-                                        <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${priorityDot[task.priority]}`} />
-                                        <span className={`text-m ${task.column.name === "Done" ? "line-through text-muted-foreground" : "text-foreground"}`}>{task.title}</span>
+                                    <div className="flex items-center gap-3">
+                                        {priority?.icon}
+                                        <span
+                                            className={
+                                                task.column?.is_completed
+                                                    ? "text-base text-muted-foreground line-through"
+                                                    : "text-base text-foreground"
+                                            }
+                                        >
+                                            {task.title}
+                                        </span>
                                     </div>
                                 </td>
                                 <td className="px-4 py-2.5 hidden md:table-cell text-center">
                                     <Badge
                                         size="md"
                                         label={statusName}
-                                        color={statusColor}
+                                        color={statusColor?.value ?? "gray"}
                                     />
                                 </td>
                                 <td className="px-4 py-2.5 hidden lg:table-cell text-center">
