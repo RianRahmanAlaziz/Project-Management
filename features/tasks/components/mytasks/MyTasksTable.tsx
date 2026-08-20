@@ -3,13 +3,12 @@ import type { MyTasks } from "@/features/tasks/types/tasks";
 import { formatDate } from "@/lib/utils/formatDate";
 import {
     priorityOptions,
-    statusOptions,
 } from "@/components/constants";
 
 const priorityColorMap = {
-    low: "green",
-    medium: "yellow",
-    high: "red",
+    Low: "green",
+    Medium: "yellow",
+    High: "red",
 } as const;
 
 const statusColorMap: Record<string, "green" | "yellow" | "blue" | "purple"> = {
@@ -20,9 +19,9 @@ const statusColorMap: Record<string, "green" | "yellow" | "blue" | "purple"> = {
 };
 
 const priorityDot: Record<string, string> = {
-    high: "bg-destructive",
-    medium: "bg-warning",
-    low: "bg-muted-foreground",
+    High: "bg-destructive",
+    Medium: "bg-warning",
+    Low: "bg-muted-foreground",
 };
 
 

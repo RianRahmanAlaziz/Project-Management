@@ -1,3 +1,5 @@
+import { Skeleton } from "@/components/ui";
+
 const COLOR_COUNT = 18;
 
 export function ProjectsSettingsSkeleton() {
@@ -7,7 +9,7 @@ export function ProjectsSettingsSkeleton() {
 
                 {/* Settings Sidebar */}
                 <div className="w-56 shrink-0 border-r border-border p-4">
-                    <Sk className="mb-5 h-5 w-24 rounded-md" />
+                    <Skeleton className="mb-5 h-5 w-24 rounded-md" />
 
                     <div className="space-y-2">
                         <SidebarItemSkeleton />
@@ -24,8 +26,8 @@ export function ProjectsSettingsSkeleton() {
 
                             {/* Section Header */}
                             <div className="border-b border-border p-6">
-                                <Sk className="h-6 w-40 rounded-md" />
-                                <Sk className="mt-2 h-4 w-72 rounded-md" />
+                                <Skeleton className="h-6 w-40 rounded-md" />
+                                <Skeleton className="mt-2 h-4 w-72 rounded-md" />
                             </div>
 
                             {/* Form */}
@@ -33,16 +35,16 @@ export function ProjectsSettingsSkeleton() {
 
                                 {/* Project Identity */}
                                 <div className="flex items-center gap-4">
-                                    <Sk className="h-14 w-14 shrink-0 rounded-2xl" />
+                                    <Skeleton className="h-14 w-14 shrink-0 rounded-2xl" />
 
                                     <div className="min-w-0 flex-1">
-                                        <Sk className="mb-2 h-3 w-24 rounded-md" />
+                                        <Skeleton className="mb-2 h-3 w-24 rounded-md" />
 
                                         <div className="flex flex-wrap gap-2">
                                             {Array.from({
                                                 length: COLOR_COUNT,
                                             }).map((_, index) => (
-                                                <Sk
+                                                <Skeleton
                                                     key={index}
                                                     className="h-7 w-7 rounded-lg"
                                                 />
@@ -53,40 +55,40 @@ export function ProjectsSettingsSkeleton() {
 
                                 {/* Project Name */}
                                 <div className="space-y-1.5">
-                                    <Sk className="h-3 w-28 rounded-md" />
-                                    <Sk className="h-9 w-full rounded-lg" />
+                                    <Skeleton className="h-3 w-28 rounded-md" />
+                                    <Skeleton className="h-9 w-full rounded-lg" />
                                 </div>
 
                                 {/* Description */}
                                 <div className="space-y-1.5">
-                                    <Sk className="h-3 w-20 rounded-md" />
+                                    <Skeleton className="h-3 w-20 rounded-md" />
 
-                                    <Sk className="h-32 w-full rounded-lg" />
+                                    <Skeleton className="h-32 w-full rounded-lg" />
                                 </div>
 
                                 {/* Dates */}
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div className="space-y-1.5">
-                                        <Sk className="h-3 w-20 rounded-md" />
-                                        <Sk className="h-9 w-full rounded-lg" />
+                                        <Skeleton className="h-3 w-20 rounded-md" />
+                                        <Skeleton className="h-9 w-full rounded-lg" />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <Sk className="h-3 w-20 rounded-md" />
-                                        <Sk className="h-9 w-full rounded-lg" />
+                                        <Skeleton className="h-3 w-20 rounded-md" />
+                                        <Skeleton className="h-9 w-full rounded-lg" />
                                     </div>
                                 </div>
 
                                 {/* Status & Priority */}
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div className="space-y-1.5">
-                                        <Sk className="h-3 w-16 rounded-md" />
-                                        <Sk className="h-12 w-full rounded-lg" />
+                                        <Skeleton className="h-3 w-16 rounded-md" />
+                                        <Skeleton className="h-12 w-full rounded-lg" />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <Sk className="h-3 w-20 rounded-md" />
-                                        <Sk className="h-12 w-full rounded-lg" />
+                                        <Skeleton className="h-3 w-20 rounded-md" />
+                                        <Skeleton className="h-12 w-full rounded-lg" />
                                     </div>
                                 </div>
 
@@ -94,7 +96,7 @@ export function ProjectsSettingsSkeleton() {
 
                             {/* Footer */}
                             <div className="flex justify-end border-t border-border px-6 py-4">
-                                <Sk className="h-10 w-32 rounded-lg" />
+                                <Skeleton className="h-10 w-32 rounded-lg" />
                             </div>
 
                         </div>
@@ -108,24 +110,7 @@ export function ProjectsSettingsSkeleton() {
 function SidebarItemSkeleton() {
     return (
         <div className="flex items-center gap-1 rounded-lg px-1 py-0.5">
-            <Sk className="h-9 w-full rounded-lg" />
+            <Skeleton className="h-9 w-full rounded-lg" />
         </div>
-    );
-}
-
-function Sk({
-    className = "",
-}: {
-    className?: string;
-}) {
-    return (
-        <div
-            className={`
-                animate-pulse
-                bg-muted
-                ${className}
-            `}
-            aria-hidden="true"
-        />
     );
 }

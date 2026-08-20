@@ -1,25 +1,18 @@
+"use client";
+
 import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
-
-import { KANBAN_COLUMNS } from "@/data/data";
-import {
-    KanbanColumn,
-}
-    from "@/features/projects/components";
-import type { Tasks } from "@/features/tasks/types/tasks";
-import { TaskCard } from "@/features/tasks/components";
 
 import {
     DndContext,
     DragOverlay,
-    pointerWithin,
     PointerSensor,
     KeyboardSensor,
-    useSensor,
-    useSensors,
+    pointerWithin,
     rectIntersection,
     getFirstCollision,
-    closestCorners,
+    useSensor,
+    useSensors,
 } from "@dnd-kit/core";
 
 import type {
@@ -27,10 +20,31 @@ import type {
     DragEndEvent,
 } from "@dnd-kit/core";
 
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import {
+    arrayMove,
+    sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable";
+
+import {
+    KanbanColumn,
+} from "@/features/projects/components";
+
+import {
+    TaskCard,
+} from "@/features/tasks/components";
+
+import type { Tasks } from "@/features/tasks/types/tasks";
+import { WorkflowColumn } from "../../types/workflow";
+
+interface KanbanBoardProps {
+    tasks: Tasks[];
+    columns: WorkflowColumn[];
+    setTasks?: Dispatch<SetStateAction<Tasks[]>>;
+    onCreateTask: (columnId: number) => void;
+    onOpenTask: (task: Tasks) => void;
+}
 
 const collisionDetection = (args: any) => {
-
     const pointerIntersections =
         pointerWithin(args);
 
@@ -40,7 +54,10 @@ const collisionDetection = (args: any) => {
             : rectIntersection(args);
 
     const overId =
-        getFirstCollision(collisions, "id");
+        getFirstCollision(
+            collisions,
+            "id",
+        );
 
     if (!overId) {
         return [];
@@ -49,192 +66,128 @@ const collisionDetection = (args: any) => {
     return collisions;
 };
 
-const colColors: Record<string, string> = {
-    Backlog: "text-muted-foreground",
-    Todo: "text-blue-500",
-    "In Progress": "text-warning",
-    Review: "text-purple-500",
-    Done: "text-success",
-};
-
-const colBg: Record<string, string> = {
-    Backlog: "bg-muted/40",
-    Todo: "bg-blue-500/5",
-    "In Progress": "bg-amber-500/5",
-    Review: "bg-purple-500/5",
-    Done: "bg-green-500/5",
-};
-
-const COLUMN_STYLES = {
-    Backlog: {
-        text: "text-muted-foreground",
-        bg: "bg-muted/40",
-        border: "border-border",
-        ring: "",
-        hoverBorder: "hover:border-muted-foreground",
-    },
-    Todo: {
-        text: "text-blue-500",
-        bg: "bg-blue-500/5",
-        border: "border-blue-500",
-        ring: "ring-blue-500",
-        hoverBorder: "hover:border-blue-500",
-    },
-    "In Progress": {
-        text: "text-amber-500",
-        bg: "bg-amber-500/5",
-        border: "border-amber-500",
-        ring: "ring-amber-500",
-        hoverBorder: "hover:border-amber-500",
-    },
-    Review: {
-        text: "text-purple-500",
-        bg: "bg-purple-500/5",
-        border: "border-purple-500",
-        ring: "ring-purple-500",
-        hoverBorder: "hover:border-purple-500",
-    },
-    Done: {
-        text: "text-emerald-500",
-        bg: "bg-emerald-500/5",
-        border: "border-emerald-500",
-        ring: "ring-emerald-500",
-        hoverBorder: "hover:border-emerald-500",
-    },
-} as const;
-
-interface KanbanBoardProps {
-    tasks: Tasks[];
-    setTasks: Dispatch<SetStateAction<Tasks[]>>;
-    onCreateTask: (column: string) => void;
-    onOpenTask: (taskId: number) => void;
-}
-
 export default function KanbanBoard({
     tasks,
+    columns,
     setTasks,
-    onOpenTask,
     onCreateTask,
+    onOpenTask,
 }: KanbanBoardProps) {
-
-
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
                 distance: 5,
             },
         }),
+
         useSensor(KeyboardSensor, {
-            coordinateGetter: sortableKeyboardCoordinates,
+            coordinateGetter:
+                sortableKeyboardCoordinates,
         }),
     );
 
-    const [activeTask, setActiveTask] =
-        useState<Tasks | null>(null);
+    const [
+        activeTask,
+        setActiveTask,
+    ] = useState<Tasks | null>(null);
 
     const handleDragStart = (
-        event: DragStartEvent
+        event: DragStartEvent,
     ) => {
-
-        const task = event.active.data.current?.task;
+        const task =
+            event.active.data.current?.task;
 
         if (task) {
             setActiveTask(task);
         }
-
     };
 
     const handleDragEnd = ({
         active,
         over,
     }: DragEndEvent) => {
-
         setActiveTask(null);
 
-        if (!over) return;
-        if (active.id === over.id) return;
+        if (!over || !setTasks) {
+            return;
+        }
 
         const draggedTask =
             active.data.current?.task as Tasks;
 
-        if (!draggedTask) return;
+        if (!draggedTask) {
+            return;
+        }
 
-        const overData = over.data.current;
+        const overData =
+            over.data.current;
 
-        setTasks(prev => {
-
+        setTasks((prev) => {
             const items = [...prev];
 
-            const activeIndex = items.findIndex(
-                item => item.id === draggedTask.id
-            );
+            const activeIndex =
+                items.findIndex(
+                    (item) =>
+                        item.id ===
+                        draggedTask.id,
+                );
 
-            if (activeIndex === -1) return prev;
+            if (activeIndex === -1) {
+                return prev;
+            }
 
-            // ============================
-            // DROP DI ATAS TASK
-            // ============================
-
-            if (overData?.type === "task") {
-
+            /**
+             * Drop di atas task
+             */
+            if (
+                overData?.type === "task"
+            ) {
                 const targetTask =
                     overData.task as Tasks;
 
-                const overIndex = items.findIndex(
-                    item => item.id === targetTask.id
-                );
+                const overIndex =
+                    items.findIndex(
+                        (item) =>
+                            item.id ===
+                            targetTask.id,
+                    );
 
-                if (overIndex === -1) return prev;
-
-                items[activeIndex] = {
-                    ...items[activeIndex],
-                    status: targetTask.status,
-                };
-
-                return arrayMove(
-                    items,
-                    activeIndex,
-                    overIndex
-                );
-            }
-
-            // ============================
-            // DROP KE COLUMN
-            // ============================
-
-            if (overData?.type === "column") {
-
-                const targetColumn =
-                    overData.column;
-
-                items[activeIndex] = {
-                    ...items[activeIndex],
-                    status: targetColumn,
-                };
-
-                // cari task terakhir pada column tujuan
-                const lastIndex =
-                    [...items]
-                        .map((task, index) => ({
-                            task,
-                            index,
-                        }))
-                        .filter(
-                            item =>
-                                item.task.status === targetColumn &&
-                                item.task.id !== draggedTask.id
-                        )
-                        .at(-1)?.index;
-
-                if (lastIndex === undefined) {
-                    return items;
+                if (overIndex === -1) {
+                    return prev;
                 }
 
                 return arrayMove(
                     items,
                     activeIndex,
-                    lastIndex + 1
+                    overIndex,
                 );
+            }
+
+            /**
+             * Drop ke column
+             */
+            if (
+                overData?.type === "column"
+            ) {
+                const targetColumn =
+                    overData.column as WorkflowColumn;
+
+                items[activeIndex] = {
+                    ...items[activeIndex],
+
+                    column: {
+                        ...items[activeIndex].column,
+                        id: targetColumn.id,
+                        name: targetColumn.name,
+                        description:
+                            targetColumn.description,
+                        color: targetColumn.color,
+                        position:
+                            targetColumn.position,
+                    },
+                };
+
+                return items;
             }
 
             return prev;
@@ -244,30 +197,39 @@ export default function KanbanBoard({
     return (
         <DndContext
             sensors={sensors}
-            collisionDetection={collisionDetection}
+            collisionDetection={
+                collisionDetection
+            }
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
         >
             <div className="overflow-x-auto overflow-y-hidden">
-                <div className="flex gap-3 p-4 ">
-                    {
-                        KANBAN_COLUMNS.map((column) => (
+                <div className="flex gap-3 p-4">
+                    {columns.map((column) => {
+                        const columnTasks =
+                            tasks.filter(
+                                (task) =>
+                                    task.column?.id ===
+                                    column.id,
+                            );
+
+                        return (
                             <KanbanColumn
-                                key={column}
+                                key={column.id}
                                 column={column}
-                                color={colColors[column]}
-                                background={colBg[column]}
-                                tasks={tasks.filter(
-                                    task => task.status === column
-                                )}
-                                style={COLUMN_STYLES[column]}
-                                onCreateTask={onCreateTask}
-                                onOpenTask={onOpenTask}
+                                tasks={columnTasks}
+                                onCreateTask={
+                                    onCreateTask
+                                }
+                                onOpenTask={
+                                    onOpenTask
+                                }
                             />
-                        ))
-                    }
-                </div >
-            </div >
+                        );
+                    })}
+                </div>
+            </div>
+
             <DragOverlay
                 dropAnimation={{
                     duration: 180,
@@ -278,9 +240,6 @@ export default function KanbanBoard({
                     <TaskCard
                         task={activeTask}
                         preview
-                        style={COLUMN_STYLES[
-                            activeTask.status as keyof typeof COLUMN_STYLES
-                        ]}
                     />
                 ) : null}
             </DragOverlay>

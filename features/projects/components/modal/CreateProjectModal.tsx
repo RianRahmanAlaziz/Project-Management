@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Check, Users } from 'lucide-react';
+import { Check } from 'lucide-react';
 import {
     DateRangePicker,
     Button,
     Combobox,
-    DatePicker,
     Input,
     Modal,
     MultiSelect
@@ -16,8 +15,6 @@ import {
 } from '@/components/constants';
 import { WorkspaceMember } from '@/features/members/types/workspaceMember';
 import { CreateProjectForm } from '../../types/projects';
-import { useDetailWorkspace } from '@/features/workspaces/hooks';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 
 
 interface CreateProjectModalProps {

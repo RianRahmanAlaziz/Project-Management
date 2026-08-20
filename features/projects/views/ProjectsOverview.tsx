@@ -17,14 +17,16 @@ import {
     useOverviewProject,
     useProjectModals,
     useRemoveProjectMember,
+    useProjectColumns,
 } from "../hooks";
 
 import TaskDrawer from "@/features/tasks/views/TaskDrawer";
-import { useTasks } from "@/features/tasks/hooks";
+import { useCreateTask, useTasks } from "@/features/tasks/hooks";
 import { useWorkspaceMembers } from "@/features/members/hooks";
 import type {
     Tasks,
     TaskDrawer as TaskDrawerData,
+    Task,
 } from "@/features/tasks/types/tasks";
 
 
@@ -124,6 +126,49 @@ export default function ProjectsOverview({
         });
     };
 
+    const {
+        columns,
+    } = useProjectColumns({
+        workspaceSlug,
+        projectSlug,
+    });
+
+
+    const {
+        handleCreateTask,
+        isCreating,
+    } = useCreateTask({
+        workspaceSlug,
+        projectSlug,
+
+        onSuccess: async () => {
+            await refetchTasks();
+            task.close();
+        },
+    });
+
+    const handleTaskSubmit = async (
+        formTask: Task,
+    ) => {
+        if (task.modal.mode !== "create") {
+            return;
+        }
+
+        await handleCreateTask({
+            title: formTask.title,
+            description: formTask.description ?? "",
+            columnId: formTask.columnId ?? "",
+            priority: formTask.priority ?? "",
+            assigneeId: formTask.assigneeId ?? "",
+            startDate: formTask.startDate ?? "",
+            dueDate: formTask.dueDate ?? "",
+        });
+    };
+
+    const taskColumns = columns.filter(
+        (column) => column.enabled,
+    );
+
     if (isLoading) {
         return <SkeletonProjectsOverview />;
     }
@@ -151,12 +196,16 @@ export default function ProjectsOverview({
                 />
             </div>
 
-            {/* <ProjectTaskModal
+            <ProjectTaskModal
                 open={task.modal.open}
                 mode={task.modal.mode}
                 task={task.modal.task}
+                users={availableMembers}
+                isSubmitting={isCreating}
+                columns={taskColumns}
                 onClose={task.close}
-            /> */}
+                onSubmit={handleTaskSubmit}
+            />
 
             <InviteProjectMemberModal
                 open={member.inviteOpen}
@@ -187,6 +236,7 @@ export default function ProjectsOverview({
                         workspaceSlug={workspaceSlug}
                         projectSlug={projectSlug}
                         projectName={project.name}
+                        columns={taskColumns}
                         onClose={() => setSelectedTask(null)}
                         onTaskUpdated={async (changes) => {
                             setSelectedTask((currentTask) => {

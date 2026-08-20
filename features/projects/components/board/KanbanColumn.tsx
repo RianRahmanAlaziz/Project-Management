@@ -1,44 +1,41 @@
+"use client";
+
 import { Plus } from "lucide-react";
-import { useDroppable } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
+import {
+    useDroppable,
+} from "@dnd-kit/core";
+
 import {
     SortableContext,
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
 import {
-    TaskCard
+    TaskCard,
 } from "@/features/tasks/components";
+
 import type { Tasks } from "@/features/tasks/types/tasks";
+import { WorkflowColumn } from "../../types/workflow";
 
 interface KanbanColumnProps {
-    column: string;
-    color: string;
-    background: string;
+    column: WorkflowColumn;
     tasks: Tasks[];
-    style: {
-        text: string;
-        bg: string;
-        border: string;
-        ring: string;
-        hoverBorder: string;
-    };
-    onCreateTask: (column: string) => void;
-    onOpenTask: (taskId: number) => void;
+    onCreateTask: (columnId: number) => void;
+    onOpenTask: (task: Tasks) => void;
 }
 
 export default function KanbanColumn({
     column,
-    color,
-    background,
     tasks,
-    style,
     onCreateTask,
     onOpenTask,
 }: KanbanColumnProps) {
+    const {
+        setNodeRef,
+        isOver,
+    } = useDroppable({
+        id: `column-${column.id}`,
 
-    const { setNodeRef, isOver, } = useDroppable({
-        id: column,
         data: {
             type: "column",
             column,
@@ -48,53 +45,62 @@ export default function KanbanColumn({
     return (
         <div
             ref={setNodeRef}
-            className={`flex flex-col w-full rounded-xl border border-border ${background} transition-colors ${isOver ? `${style.border} ring-1 ${style.ring}` : ""}`}
+            className={[
+                "flex min-h-125 w-full flex-col rounded-xl border border-border",
+                "bg-card transition-colors",
+                isOver &&
+                "ring-1 ring-primary",
+            ]
+                .filter(Boolean)
+                .join(" ")}
         >
-            <div className="flex items-center justify-between border-b border-border px-3 py-2 bg-card rounded-t-xl">
+            {/* Header */}
+            <div className="flex items-center justify-between rounded-t-xl border-b border-border bg-card px-3 py-3">
                 <div className="flex items-center gap-2">
-                    <span className={`h-2 w-2 rounded-full bg-current ${color}`} />
-                    <span className={`text-sm font-semibold ${color}`}>
-                        {column}
-                    </span>
-                    <span className="rounded-full bg-muted px-2 text-sm">
-                        {tasks.length}
+                    <span
+                        className={`h-2 w-2 rounded-full ${column.color}`}
+                    />
+
+                    <span className={`text-sm font-semibold text-foreground`}>
+                        {column.name}
                     </span>
                 </div>
 
                 <button
-                    onClick={() => onCreateTask(column)}
-                    className="cursor-pointer">
+                    type="button"
+                    onClick={() =>
+                        onCreateTask(column.id)
+                    }
+                    className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+                >
                     <Plus size={18} />
                 </button>
             </div>
 
-            <div
-                className="flex-1 overflow-y-auto p-2"
-            >
+            {/* Tasks */}
+            <div className="flex-1 overflow-y-auto p-2">
                 <SortableContext
-                    items={tasks.map(task => task.id)}
-                    strategy={verticalListSortingStrategy}
+                    items={tasks.map(
+                        (task) => task.id,
+                    )}
+                    strategy={
+                        verticalListSortingStrategy
+                    }
                 >
                     <div className="space-y-2">
-                        {tasks.map(task => (
+                        {tasks.map((task) => (
                             <TaskCard
                                 key={task.id}
                                 task={task}
-                                style={style}
-                                onClick={() => onOpenTask(task.id)}
+                                onClick={() =>
+                                    onOpenTask(
+                                        task,
+                                    )
+                                }
                             />
                         ))}
                     </div>
                 </SortableContext>
-            </div>
-
-            <div className="border-t border-border p-1 bg-card  rounded-b-xl">
-                <button
-                    onClick={() => onCreateTask(column)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer">
-                    <Plus size={14} />
-                    Add task
-                </button>
             </div>
         </div>
     );

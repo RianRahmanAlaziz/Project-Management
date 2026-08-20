@@ -17,6 +17,8 @@ import {
     NotificationsSettings,
     DangerZoneSettings,
     ProjectsSettingsSkeleton,
+    DeleteProjectModal,
+    WorkflowColumnModal,
 } from "@/features/projects/components";
 
 import type { NotificationToggle } from "@/features/projects/types/notifications";
@@ -32,8 +34,10 @@ import {
     useReorderProjectColumns,
     useUpdateProjectColumn,
     useDeleteProjectColumn,
+    useDeleteProject,
+    useProjectModals,
 } from "../hooks";
-import { WorkflowColumn } from "../types/workflow";
+import { CreateWorkflowColumnPayload, WorkflowColumn } from "../types/workflow";
 
 interface ProjectSettingsViewProps {
     workspaceSlug: string;
@@ -53,8 +57,6 @@ export default function ProjectSettingsView({
     });
 
     const [color, setColor] = useState<Color>(COLORS[0]);
-    const [saved, setSaved] = useState(false);
-    const [confirmDelete, setConfirmDelete] = useState("");
     const [workflowSaved, setWorkflowSaved] = useState(false);
     const [isWorkflowSaving, setIsWorkflowSaving] = useState(false);
     const initialColumnsRef = useRef<WorkflowColumn[]>([]);
@@ -68,16 +70,15 @@ export default function ProjectSettingsView({
         projectSlug,
     );
 
-    const [projForm, setProjForm] =
-        useState<ProjectForm>({
-            name: "",
-            description: "",
-            identifier: "",
-            status: "",
-            priority: "",
-            startDate: "",
-            dueDate: "",
-        });
+    const [projForm, setProjForm] = useState<ProjectForm>({
+        name: "",
+        description: "",
+        identifier: "",
+        status: "",
+        priority: "",
+        startDate: "",
+        dueDate: "",
+    });
 
     useEffect(() => {
         if (!project) {
@@ -130,14 +131,11 @@ export default function ProjectSettingsView({
     const handleSaveGeneral = async () => {
         await handleUpdateProject({
             name: projForm.name.trim(),
-            description:
-                projForm.description.trim(),
+            description: projForm.description.trim(),
             color: color.bg,
             status: projForm.status,
-            start_date:
-                projForm.startDate || undefined,
-            due_date:
-                projForm.dueDate || undefined,
+            start_date: projForm.startDate || undefined,
+            due_date: projForm.dueDate || undefined,
         });
     };
 
@@ -164,18 +162,15 @@ export default function ProjectSettingsView({
         }
     }, [columns]);
 
-    const hasUnsavedWorkflowChanges =
-        columns.some((column) => {
-            const initial =
-                initialColumnsRef.current.find(
-                    (item) => item.id === column.id,
-                );
+    const hasUnsavedWorkflowChanges = columns.some((column) => {
+        const initial = initialColumnsRef.current.find(
+            (item) => item.id === column.id,
+        );
 
-            return (
-                initial &&
-                initial.name !== column.name
-            );
-        });
+        return (
+            initial && initial.name !== column.name
+        );
+    });
 
     const {
         handleCreateColumn,
@@ -187,6 +182,7 @@ export default function ProjectSettingsView({
         onSuccess: async () => {
             await refetchColumns();
             initialColumnsRef.current = [];
+            workflowModal.close();
         },
     });
 
@@ -205,13 +201,6 @@ export default function ProjectSettingsView({
         workspaceSlug,
         projectSlug,
     });
-
-    const handleAddColumn = async () => {
-        await handleCreateColumn({
-            name: "New Column",
-            color: "bg-slate-500",
-        });
-    };
 
     const handleSaveWorkflow = async () => {
         if (
@@ -287,7 +276,7 @@ export default function ProjectSettingsView({
 
     const {
         handleDeleteColumn,
-        isDeleting,
+        isDeleting: deleteProjectColumn,
     } = useDeleteProjectColumn({
         workspaceSlug,
         projectSlug,
@@ -315,6 +304,52 @@ export default function ProjectSettingsView({
             ...prev,
             [key]: !prev[key],
         }));
+    };
+
+    const {
+        project: projectModal,
+        workflow: workflowModal,
+    } = useProjectModals();
+
+    const {
+        handleDeleteProject,
+        isDeleting: isDeletingProject,
+        deleteError,
+    } = useDeleteProject({
+        workspaceSlug,
+        projectSlug,
+        onSuccess: () => {
+            projectModal.closeDelete();
+            projectModal.setConfirmDelete("");
+            router.replace(`/workspaces/${workspaceSlug}/projects`);
+            router.refresh();
+        },
+    });
+
+    const handleWorkflowColumnSubmit = async (
+        payload: CreateWorkflowColumnPayload,
+    ) => {
+        if (workflowModal.modal.mode === "create") {
+            await handleCreateColumn(payload);
+            return;
+        }
+
+        const column = workflowModal.modal.column;
+
+        if (!column) {
+            return;
+        }
+
+        await handleUpdateColumn(column.id, {
+            name: payload.name,
+            description: payload.description,
+            color: payload.color,
+            is_completed: payload.is_completed,
+        });
+
+        await refetchColumns();
+        initialColumnsRef.current = [];
+        workflowModal.close();
     };
 
     if (isLoading) {
@@ -370,7 +405,8 @@ export default function ProjectSettingsView({
                                     isReordering
                                 }
                                 onSave={handleSaveWorkflow}
-                                onAddColumn={handleAddColumn}
+                                onOpenCreateColumn={workflowModal.openCreate}
+                                onEdit={workflowModal.openEdit}
                                 onReorder={handleAutoSaveReorder}
                                 onToggle={handleToggleColumn}
                                 onDelete={handleDeleteColumn}
@@ -389,14 +425,32 @@ export default function ProjectSettingsView({
                         {section === "danger" && (
                             <DangerZoneSettings
                                 projectSlug={projectSlug}
-                                confirmDelete={confirmDelete}
-                                setConfirmDelete={setConfirmDelete}
+                                confirmDelete={projectModal.confirmDelete}
+                                setConfirmDelete={projectModal.setConfirmDelete}
+                                onOpenDeleteModal={projectModal.openDelete}
                             />
                         )}
                     </div>
                 </div>
             </div>
 
+            <WorkflowColumnModal
+                open={workflowModal.modal.open}
+                mode={workflowModal.modal.mode}
+                column={workflowModal.modal.column}
+                isSubmitting={isCreating || isUpdatingColumn}
+                onClose={workflowModal.close}
+                onSubmit={handleWorkflowColumnSubmit}
+            />
+
+            <DeleteProjectModal
+                open={projectModal.deleteOpen}
+                project={project}
+                isSubmitting={isDeletingProject}
+                error={deleteError}
+                onClose={projectModal.closeDelete}
+                onConfirm={handleDeleteProject}
+            />
         </div>
     )
 }

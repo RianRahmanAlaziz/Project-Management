@@ -4,6 +4,7 @@ import { Avatar, Button, ProgressBar } from "@/components/ui";
 import { ProjectMemberActionsMenu } from "@/features/projects/components";
 import type { Tasks } from "@/features/tasks/types/tasks";
 import { ProjectMember } from "@/features/projects/types/projectMembers";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface ProjectMembersProps {
     members: ProjectMember[];
@@ -20,6 +21,12 @@ export default function ProjectMembers({
     onRole,
     onRemove,
 }: ProjectMembersProps) {
+    const user = useAuth()
+    const currentMember = members.find(
+        (item) => item.user_id === user?.user?.id
+    );
+
+    const isCurrentUserOwner = currentMember?.role === "owner";
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -38,7 +45,7 @@ export default function ProjectMembers({
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {members.map((member) => {
                     const memberTasks = tasks.filter(
-                        (task) => task.assignee.id === member.user_id,
+                        (task) => task.assignee?.id === member.user_id,
                     );
 
                     const active = memberTasks.filter(
@@ -74,11 +81,13 @@ export default function ProjectMembers({
                                         </p>
                                     </div>
                                 </div>
-                                <ProjectMemberActionsMenu
-                                    member={member}
-                                    onRole={onRole}
-                                    onRemove={onRemove}
-                                />
+                                {isCurrentUserOwner && member.role !== "owner" && (
+                                    <ProjectMemberActionsMenu
+                                        member={member}
+                                        onRole={onRole}
+                                        onRemove={onRemove}
+                                    />
+                                )}
                             </div>
                             <div className="space-y-3">
                                 <div className="flex justify-between text-sm">

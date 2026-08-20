@@ -5,12 +5,7 @@ import { toast } from "sonner";
 
 import { parseApiError } from "@/lib/api/apiError";
 import { updateProjectColumn } from "../../api/projectsColumnsApi";
-
-interface UpdateProjectColumnData {
-    name?: string;
-    color?: string;
-    enabled?: boolean;
-}
+import { UpdateProjectColumnData } from "../../types/workflow";
 
 interface UseUpdateProjectColumnOptions {
     workspaceSlug: string;

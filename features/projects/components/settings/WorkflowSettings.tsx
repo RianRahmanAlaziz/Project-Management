@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-
+import { Plus } from "lucide-react";
 import {
     SettingFooter,
     SettingSection,
@@ -24,17 +24,17 @@ import type {
 
 import WorkflowItem from "./WorkflowItem";
 
+
 interface WorkflowSettingsProps {
     columns: WorkflowColumn[];
-    setColumns: Dispatch<
-        SetStateAction<WorkflowColumn[]>
-    >;
+    setColumns: Dispatch<SetStateAction<WorkflowColumn[]>>;
     hasUnsavedChanges: boolean;
     saved: boolean;
     isSaving?: boolean;
 
     onSave: () => void;
-    onAddColumn: () => void;
+    onOpenCreateColumn: () => void;
+    onEdit: (column: WorkflowColumn) => void;
     onReorder: (columns: WorkflowColumn[]) => Promise<void>;
     onToggle: (column: WorkflowColumn) => Promise<void>;
     onDelete: (column: WorkflowColumn) => Promise<void>;
@@ -47,7 +47,8 @@ export default function WorkflowSettings({
     saved,
     isSaving = false,
     onSave,
-    onAddColumn,
+    onOpenCreateColumn,
+    onEdit,
     onReorder,
     onToggle,
     onDelete
@@ -126,11 +127,9 @@ export default function WorkflowSettings({
                                 column={column}
                                 disabled={isSaving}
                                 onRename={(value) =>
-                                    updateColumn(
-                                        index,
-                                        value,
-                                    )
+                                    updateColumn(index, value)
                                 }
+                                onEdit={() => onEdit(column)}
                                 onToggle={() => onToggle(column)}
                                 onDelete={() => onDelete(column)}
                             />
@@ -140,12 +139,12 @@ export default function WorkflowSettings({
             </DndContext>
 
             <button
-                onClick={onAddColumn}
+                onClick={onOpenCreateColumn}
                 disabled={isSaving}
                 type="button"
-                className="cursor-pointer mt-4 text-sm font-medium text-primary hover:underline "
+                className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-border px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/50 hover:bg-primary/5  hover:text-primary  disabled:cursor-not-allowed  disabled:opacity-50 cursor-pointer"
             >
-                + Add Column
+                <Plus size={12} /> Add Column
             </button>
 
             {hasUnsavedChanges && (

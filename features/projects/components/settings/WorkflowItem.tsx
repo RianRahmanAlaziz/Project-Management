@@ -2,14 +2,16 @@
 
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
-import { GripVertical, Trash2 } from "lucide-react";
+import { Grip, Pencil, Trash2 } from "lucide-react";
 
 import type { WorkflowColumn } from "@/features/projects/types/workflow";
 import Toggle from "@/components/ui/Toggle";
+import { getColorOption } from "@/lib/utils/getColorOption";
 
 interface WorkflowItemProps {
     column: WorkflowColumn;
     onRename: (value: string) => void;
+    onEdit: () => void;
     onToggle: () => void;
     onDelete: () => void;
     disabled?: boolean;
@@ -18,9 +20,10 @@ interface WorkflowItemProps {
 export default function WorkflowItem({
     column,
     onRename,
+    onEdit,
     onToggle,
     onDelete,
-    disabled,
+    disabled = false,
 }: WorkflowItemProps) {
 
     const {
@@ -34,6 +37,8 @@ export default function WorkflowItem({
         id: column.id,
     });
 
+    const color = getColorOption(column.color);
+
     return (
         <div
             ref={setNodeRef}
@@ -41,7 +46,19 @@ export default function WorkflowItem({
                 transform: CSS.Transform.toString(transform),
                 transition,
             }}
-            className={`flex items-start justify-between gap-6 border-b border-border py-4 last:border-0 ${isDragging ? "opacity-70" : ""}`}
+            className={[
+                "flex items-center justify-between gap-4",
+                "rounded-xl border border-dashed border-border",
+                "px-4 py-3.5",
+                "hover:border-border/80 hover:bg-muted/20",
+                isDragging
+                    ? "z-10 opacity-60 shadow-lg"
+                    : "",
+                disabled
+                    ? "opacity-60"
+                    : "",
+            ].filter(Boolean)
+                .join(" ")}
         >
             {/* LEFT */}
             <div className="flex flex-1 items-center gap-3 min-w-0">
@@ -53,19 +70,49 @@ export default function WorkflowItem({
                     aria-label={`Move ${column.name}`}
                     className="cursor-grab text-muted-foreground hover:text-foreground active:cursor-grabbing disabled:cursor-not-allowed  disabled:opacity-50 "
                 >
-                    <GripVertical size={18} />
+                    <Grip size={18} />
                 </button>
 
-                <input
-                    value={column.name}
-                    onChange={(e) => onRename(e.target.value)}
-                    className=" w-full bg-transparent text-sm font-medium text-foreground outline-none border-0 "
+                <span
+                    className={[
+                        "h-2.5 w-2.5 shrink-0 rounded-full",
+                        color?.bg ?? "bg-gray-500",
+                    ].join(" ")}
+                    aria-hidden="true"
                 />
 
+                <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground">
+                        {column.name}
+                    </p>
+
+                    {column.description && (
+                        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                            {column.description}
+                        </p>
+                    )}
+                </div>
             </div>
 
             {/* RIGHT */}
             <div className="flex items-center gap-3">
+                <button
+                    type="button"
+                    onClick={onEdit}
+                    disabled={disabled}
+                    aria-label={`Edit ${column.name}`}
+                    className="
+            cursor-pointer
+            text-muted-foreground
+            transition-colors
+            hover:text-foreground
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+        "
+                >
+                    <Pencil size={15} />
+                </button>
+
                 <button
                     type="button"
                     onClick={onDelete}
@@ -81,6 +128,6 @@ export default function WorkflowItem({
                     disabled={disabled}
                 />
             </div>
-        </div>
+        </div >
     );
 }

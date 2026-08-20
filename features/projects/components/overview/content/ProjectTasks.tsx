@@ -13,17 +13,17 @@ interface ProjectTasksProps {
 }
 
 const priorityColorMap = {
-    low: "green",
-    medium: "yellow",
-    high: "red",
+    Low: "green",
+    Medium: "yellow",
+    High: "red",
 } as const;
 
-const statusColorMap = {
-    planning: "blue",
+const statusColorMap: Record<string, "green" | "yellow" | "blue" | "purple"> = {
+    Planning: "blue",
     "In Progress": "yellow",
-    review: "purple",
-    done: "green",
-} as const;
+    Review: "purple",
+    Done: "green",
+};
 
 export default function ProjectTasks({
     tasks,
@@ -39,15 +39,15 @@ export default function ProjectTasks({
                                 Task
                             </th>
 
-                            <th className="hidden px-4 py-3 text-left text-base font-medium text-muted-foreground sm:table-cell">
+                            <th className="hidden px-4 py-3 text-center text-base font-medium text-muted-foreground sm:table-cell">
                                 Status
                             </th>
 
-                            <th className="hidden px-4 py-3 text-left text-base font-medium text-muted-foreground md:table-cell">
+                            <th className="hidden px-4 py-3 text-center text-base font-medium text-muted-foreground md:table-cell">
                                 Priority
                             </th>
 
-                            <th className="hidden px-4 py-3 text-left text-base font-medium text-muted-foreground lg:table-cell">
+                            <th className="hidden px-4 py-3 text-center text-base font-medium text-muted-foreground lg:table-cell">
                                 Assignee
                             </th>
                         </tr>
@@ -56,8 +56,8 @@ export default function ProjectTasks({
                     <tbody>
                         {tasks.map((task) => {
                             const priority = priorityOptions.find((option) => option.value === task.priority);
-                            const status = statusOptions.find((option) => option.value === task.status);
-
+                            const statusName = task.column?.name ?? "Unknown";
+                            const statusColor = statusColorMap[statusName] ?? "gray";
                             return (
                                 <tr
                                     key={task.id}
@@ -68,7 +68,10 @@ export default function ProjectTasks({
                                         <div className="flex items-center gap-3">
                                             {priority?.icon}
                                             <span
-                                                className={task.status === "done" ? "text-base text-muted-foreground line-through" : "text-base text-foreground"
+                                                className={
+                                                    task.column?.is_completed
+                                                        ? "text-base text-muted-foreground line-through"
+                                                        : "text-base text-foreground"
                                                 }
                                             >
                                                 {task.title}
@@ -76,34 +79,32 @@ export default function ProjectTasks({
                                         </div>
                                     </td>
 
-                                    <td className="hidden px-4 py-3 sm:table-cell">
+                                    <td className="hidden px-4 py-3 sm:table-cell text-center">
                                         <Badge
                                             size="md"
-                                            label={status?.label ?? task.column.name}
-                                            color={statusColorMap[task.status as keyof typeof statusColorMap]}
+                                            label={statusName}
+                                            color={statusColor}
                                         />
                                     </td>
 
-                                    <td className="hidden px-4 py-3 md:table-cell">
+                                    <td className="hidden px-4 py-3 md:table-cell text-center">
                                         <Badge
                                             size="md"
                                             label={priority?.label ?? task.priority}
-                                            icon={priority?.icon}
                                             color={priorityColorMap[task.priority as keyof typeof priorityColorMap]
                                             }
                                         />
                                     </td>
-
-                                    <td className="hidden px-4 py-3 lg:table-cell">
+                                    <td className="hidden px-4 py-3 lg:table-cell text-center">
                                         {task.assignee && (
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center justify-center gap-2">
                                                 <Avatar
                                                     name={task.assignee.name}
                                                     size="sm"
                                                 />
 
                                                 <span className="text-sm text-muted-foreground">
-                                                    {task.assignee.name.split(" ",)[0]}
+                                                    {task.assignee.name.split(/\s+/)[0]}
                                                 </span>
                                             </div>
                                         )}

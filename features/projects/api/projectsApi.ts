@@ -52,6 +52,16 @@ export async function updateProject(
     return response.data;
 }
 
+export async function deleteProject(
+    workspaceSlug: string,
+    projectSlug: string,
+): Promise<ApiResponse<Projects>> {
+    const response = await apiClient.delete<ApiResponse<Projects>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}`,
+    );
+    return response.data;
+}
+
 
 
 

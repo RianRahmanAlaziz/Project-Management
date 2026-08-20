@@ -18,6 +18,26 @@ import {
 import type {
     Projects,
 } from "@/features/projects/types/projects";
+import {
+    priorityOptions,
+    statusOptions,
+} from "@/components/constants";
+
+type ProjectCardProps = {
+    project: Projects;
+    onOpenProject: (project: Projects) => void;
+    onOpenBoard: (project: Projects) => void;
+    onSettingProject: (project: Projects) => void;
+};
+
+const priorityColorMap: Record<
+    string,
+    "emerald" | "amber" | "red"
+> = {
+    Low: "emerald",
+    Medium: "amber",
+    High: "red",
+};
 
 const statusColorMap: Record<
     string,
@@ -29,75 +49,40 @@ const statusColorMap: Record<
     done: "emerald",
 };
 
-const statusLabelMap: Record<string, string> = {
-    planning: "Planning",
-    in_progress: "In Progress",
-    review: "Review",
-    done: "Done",
-};
-
-const priorityColorMap: Record<
-    string,
-    "emerald" | "amber" | "red"
-> = {
-    low: "emerald",
-    medium: "amber",
-    high: "red",
-};
-
-
-type ProjectCardProps = {
-    project: Projects;
-    onOpenProject: (project: Projects) => void;
-    onOpenBoard: (project: Projects) => void;
-    onSettingProject: (project: Projects) => void;
-};
-
 export default function ProjectCard({
     project,
     onOpenProject,
     onOpenBoard,
     onSettingProject,
 }: ProjectCardProps) {
-    const statusLabel = statusLabelMap[project.status] ?? project.status;
+
+    const statusOption = statusOptions.find(
+        option => option.value === project.status
+    );
+
+    const priorityOption = priorityOptions.find(
+        option => option.value === project.priority
+    );
+
     const statusColor = statusColorMap[project.status] ?? "blue";
-    const priorityColor = priorityColorMap[project.priority.toLowerCase()] ?? "gray";
+    const priorityColor = priorityColorMap[project.priority] ?? "amber";
 
     return (
         <div
             onClick={() => onOpenProject(project)}
-            className="
-                group cursor-pointer
-                rounded-xl border border-border
-                bg-card p-4
-                transition-all
-                hover:border-primary/40
-                hover:shadow-sm
-            "
+            className="group cursor-pointer rounded-xl border border-border bg-card p-4 transition-all hover:border-primary/40 hover:shadow-sm"
         >
             {/* Header */}
             <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center gap-2.5">
                     <div
-                        className={`
-                            flex h-8 w-8 shrink-0
-                            items-center justify-center
-                            rounded-lg
-                            ${project.color}
-                            text-sm font-bold text-white
-                        `}
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${project.color} text-sm font-bold text-white `}
                     >
                         {project.name[0]}
                     </div>
 
                     <div className="min-w-0">
-                        <p className="
-                            truncate
-                            text-base font-semibold
-                            text-foreground
-                            transition-colors
-                            group-hover:text-primary
-                        ">
+                        <p className="truncate text-base font-semibold text-foreground transition-colors group-hover:text-primary">
                             {project.name}
                         </p>
                     </div>
@@ -113,12 +98,12 @@ export default function ProjectCard({
             {/* Status & Priority */}
             <div className="mb-3 flex items-center gap-2">
                 <Badge
-                    label={statusLabel}
+                    label={statusOption?.label ?? project.status}
                     color={statusColor}
                 />
 
                 <Badge
-                    label={project.priority}
+                    label={priorityOption?.label ?? project.priority}
                     color={priorityColor}
                 />
             </div>

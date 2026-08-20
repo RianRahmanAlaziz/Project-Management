@@ -7,3 +7,4 @@ export * from "./useCreateProjectColumn";
 export * from "./useUpdateProjectColumn";
 export * from "./useReorderProjectColumns";
 export * from "./useDeleteProjectColumn";
+export * from "./useDeleteProject";

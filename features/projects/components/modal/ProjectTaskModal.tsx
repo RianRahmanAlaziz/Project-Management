@@ -1,5 +1,6 @@
 "use client";
 
+import { WorkspaceMember } from "@/features/members/types/workspaceMember";
 import { TaskFormModal } from "@/features/tasks/components";
 
 import type {
@@ -7,43 +8,52 @@ import type {
     Task,
 } from "@/features/tasks/types/tasks";
 
+import { WorkflowColumn } from "../../types/workflow";
+
 interface ProjectTaskModalProps {
     open: boolean;
     mode: "create" | "edit";
     task?: Tasks | null;
-
-    projects: any[];
-    members: any[];
-    column?: any[];
-    labels: any[];
+    isSubmitting?: boolean;
+    users: WorkspaceMember[];
+    columns: WorkflowColumn[];
 
     onClose: () => void;
-    onSubmit: (task: Task) => void;
+    onSubmit: (task: Task) => Promise<void>;
 }
 
 export function ProjectTaskModal({
     open,
     mode,
     task = null,
-    projects,
-    members,
-    column,
-    labels,
+    users,
+    columns,
+    isSubmitting = false,
     onClose,
     onSubmit,
 }: ProjectTaskModalProps) {
-
     const formTask: Task | null = task
         ? {
             id: task.id,
             title: task.title,
-            description: task.description,
-            projectId: String(task.project_id),
-            columnId: task.status,
+            description: task.description ?? "",
+
+            projectId: String(
+                task.project?.id ?? "",
+            ),
+
+            columnId: String(
+                task.column?.id ?? "",
+            ),
+
             priority: task.priority,
-            assigneeId: String(task.assignee.id),
-            startDate: task.start_date,
-            dueDate: task.due_date,
+
+            assigneeId: task.assignee
+                ? String(task.assignee.id)
+                : "",
+
+            startDate: task.start_date ?? "",
+            dueDate: task.due_date ?? "",
         }
         : null;
 
@@ -52,9 +62,9 @@ export function ProjectTaskModal({
             open={open}
             mode={mode}
             task={formTask}
-            projects={projects}
-            members={members}
-            labels={labels}
+            users={users}
+            isSubmitting={isSubmitting}
+            columns={columns}
             onClose={onClose}
             onSubmit={onSubmit}
         />
