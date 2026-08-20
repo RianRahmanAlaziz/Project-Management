@@ -25,7 +25,6 @@ import type { NotificationToggle } from "@/features/projects/types/notifications
 
 import type { ProjectForm } from "@/features/projects/types/settings";
 
-
 import {
     useOverviewProject,
     useUpdateProject,
@@ -57,8 +56,6 @@ export default function ProjectSettingsView({
     });
 
     const [color, setColor] = useState<Color>(COLORS[0]);
-    const [workflowSaved, setWorkflowSaved] = useState(false);
-    const [isWorkflowSaving, setIsWorkflowSaving] = useState(false);
     const initialColumnsRef = useRef<WorkflowColumn[]>([]);
 
     const {
@@ -162,16 +159,6 @@ export default function ProjectSettingsView({
         }
     }, [columns]);
 
-    const hasUnsavedWorkflowChanges = columns.some((column) => {
-        const initial = initialColumnsRef.current.find(
-            (item) => item.id === column.id,
-        );
-
-        return (
-            initial && initial.name !== column.name
-        );
-    });
-
     const {
         handleCreateColumn,
         isCreating,
@@ -202,61 +189,6 @@ export default function ProjectSettingsView({
         projectSlug,
     });
 
-    const handleSaveWorkflow = async () => {
-        if (
-            isWorkflowSaving ||
-            !hasUnsavedWorkflowChanges
-        ) {
-            return;
-        }
-
-        setIsWorkflowSaving(true);
-        setWorkflowSaved(false);
-
-        try {
-            const initialColumns = initialColumnsRef.current;
-
-            const renamedColumns =
-                columns.filter((column) => {
-                    const initial =
-                        initialColumns.find(
-                            (item) =>
-                                item.id === column.id,
-                        );
-
-                    return (
-                        initial &&
-                        initial.name !== column.name
-                    );
-                });
-
-            for (const column of renamedColumns) {
-                await handleUpdateColumn(column.id, {
-                    name: column.name,
-                },);
-            }
-
-            await refetchColumns();
-
-            /*
-             * Setelah berhasil disimpan,
-             * jadikan data terbaru sebagai snapshot.
-             */
-            initialColumnsRef.current =
-                columns.map((column) => ({
-                    ...column,
-                }));
-
-            setWorkflowSaved(true);
-
-            setTimeout(() => {
-                setWorkflowSaved(false);
-            }, 2000);
-        } finally {
-            setIsWorkflowSaving(false);
-        }
-    };
-
     const handleAutoSaveReorder = async (
         reorderedColumns: WorkflowColumn[],
     ) => {
@@ -269,9 +201,7 @@ export default function ProjectSettingsView({
             ),
         );
 
-        if (!hasUnsavedWorkflowChanges) {
-            await refetchColumns();
-        }
+        await refetchColumns();
     };
 
     const {
@@ -396,15 +326,11 @@ export default function ProjectSettingsView({
                             <WorkflowSettings
                                 columns={columns}
                                 setColumns={setColumns}
-                                hasUnsavedChanges={hasUnsavedWorkflowChanges}
-                                saved={workflowSaved}
                                 isSaving={
-                                    isWorkflowSaving ||
                                     isCreating ||
                                     isUpdatingColumn ||
                                     isReordering
                                 }
-                                onSave={handleSaveWorkflow}
                                 onOpenCreateColumn={workflowModal.openCreate}
                                 onEdit={workflowModal.openEdit}
                                 onReorder={handleAutoSaveReorder}

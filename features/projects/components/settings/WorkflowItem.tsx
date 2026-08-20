@@ -10,7 +10,6 @@ import { getColorOption } from "@/lib/utils/getColorOption";
 
 interface WorkflowItemProps {
     column: WorkflowColumn;
-    onRename: (value: string) => void;
     onEdit: () => void;
     onToggle: () => void;
     onDelete: () => void;
@@ -19,7 +18,6 @@ interface WorkflowItemProps {
 
 export default function WorkflowItem({
     column,
-    onRename,
     onEdit,
     onToggle,
     onDelete,

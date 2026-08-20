@@ -28,11 +28,7 @@ import WorkflowItem from "./WorkflowItem";
 interface WorkflowSettingsProps {
     columns: WorkflowColumn[];
     setColumns: Dispatch<SetStateAction<WorkflowColumn[]>>;
-    hasUnsavedChanges: boolean;
-    saved: boolean;
     isSaving?: boolean;
-
-    onSave: () => void;
     onOpenCreateColumn: () => void;
     onEdit: (column: WorkflowColumn) => void;
     onReorder: (columns: WorkflowColumn[]) => Promise<void>;
@@ -43,10 +39,7 @@ interface WorkflowSettingsProps {
 export default function WorkflowSettings({
     columns,
     setColumns,
-    hasUnsavedChanges,
-    saved,
     isSaving = false,
-    onSave,
     onOpenCreateColumn,
     onEdit,
     onReorder,
@@ -54,25 +47,7 @@ export default function WorkflowSettings({
     onDelete
 }: WorkflowSettingsProps) {
 
-    const updateColumn = (
-        index: number,
-        value: string,
-    ) => {
-        setColumns((prev) =>
-            prev.map((column, i) =>
-                i === index
-                    ? {
-                        ...column,
-                        name: value,
-                    }
-                    : column,
-            ),
-        );
-    };
-
-    const handleDragEnd = async (
-        event: DragEndEvent,
-    ) => {
+    const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event;
 
         if (!over || active.id === over.id) {
@@ -121,14 +96,11 @@ export default function WorkflowSettings({
                     strategy={verticalListSortingStrategy}
                 >
                     <div className="flex flex-col gap-3 w-full">
-                        {columns.map((column, index) => (
+                        {columns.map((column) => (
                             <WorkflowItem
                                 key={column.id}
                                 column={column}
                                 disabled={isSaving}
-                                onRename={(value) =>
-                                    updateColumn(index, value)
-                                }
                                 onEdit={() => onEdit(column)}
                                 onToggle={() => onToggle(column)}
                                 onDelete={() => onDelete(column)}
@@ -146,13 +118,6 @@ export default function WorkflowSettings({
             >
                 <Plus size={12} /> Add Column
             </button>
-
-            {hasUnsavedChanges && (
-                <SettingFooter
-                    saved={saved}
-                    onSave={onSave}
-                />
-            )}
         </SettingSection>
     );
 }
