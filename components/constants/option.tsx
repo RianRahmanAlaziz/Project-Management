@@ -135,6 +135,106 @@ export const COLORS = [
 ] as const;
 export type Color = (typeof COLORS)[number];
 
+export const BADGE_COLORS = {
+    gray: {
+        bg: "bg-gray-500/15",
+        text: "text-gray-400",
+        dot: "bg-gray-400",
+    },
+    indigo: {
+        bg: "bg-indigo-500/15",
+        text: "text-indigo-400",
+        dot: "bg-indigo-400",
+    },
+    violet: {
+        bg: "bg-violet-500/15",
+        text: "text-violet-400",
+        dot: "bg-violet-400",
+    },
+    purple: {
+        bg: "bg-purple-500/15",
+        text: "text-purple-400",
+        dot: "bg-purple-400",
+    },
+    fuchsia: {
+        bg: "bg-fuchsia-500/15",
+        text: "text-fuchsia-400",
+        dot: "bg-fuchsia-400",
+    },
+    pink: {
+        bg: "bg-pink-500/15",
+        text: "text-pink-400",
+        dot: "bg-pink-400",
+    },
+    rose: {
+        bg: "bg-rose-500/15",
+        text: "text-rose-400",
+        dot: "bg-rose-400",
+    },
+    red: {
+        bg: "bg-red-500/15",
+        text: "text-red-400",
+        dot: "bg-red-400",
+    },
+    orange: {
+        bg: "bg-orange-500/15",
+        text: "text-orange-400",
+        dot: "bg-orange-400",
+    },
+    amber: {
+        bg: "bg-amber-500/15",
+        text: "text-amber-400",
+        dot: "bg-amber-400",
+    },
+    yellow: {
+        bg: "bg-yellow-500/15",
+        text: "text-yellow-400",
+        dot: "bg-yellow-400",
+    },
+    lime: {
+        bg: "bg-lime-500/15",
+        text: "text-lime-400",
+        dot: "bg-lime-400",
+    },
+    green: {
+        bg: "bg-green-500/15",
+        text: "text-green-400",
+        dot: "bg-green-400",
+    },
+    emerald: {
+        bg: "bg-emerald-500/15",
+        text: "text-emerald-400",
+        dot: "bg-emerald-400",
+    },
+    teal: {
+        bg: "bg-teal-500/15",
+        text: "text-teal-400",
+        dot: "bg-teal-400",
+    },
+    cyan: {
+        bg: "bg-cyan-500/15",
+        text: "text-cyan-400",
+        dot: "bg-cyan-400",
+    },
+    sky: {
+        bg: "bg-sky-500/15",
+        text: "text-sky-400",
+        dot: "bg-sky-400",
+    },
+    blue: {
+        bg: "bg-blue-500/15",
+        text: "text-blue-400",
+        dot: "bg-blue-400",
+    },
+    slate: {
+        bg: "bg-slate-500/15",
+        text: "text-slate-400",
+        dot: "bg-slate-400",
+    },
+} as const;
+
+export type BadgeColor = keyof typeof BADGE_COLORS;
+
 export const priorityOptions = [
     {
         value: "Low",
