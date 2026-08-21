@@ -82,6 +82,13 @@ export default function ProjectsOverview({
         ),
     );
 
+    const projectAvailableMembers = workspaceMembers.filter(
+        (workspaceMember) =>
+            projectMembers.some(
+                (projectMember) => projectMember.user_id === workspaceMember.user.id,
+            ),
+    );
+
     const {
         handleAddProjectMember,
         isAdding,
@@ -200,7 +207,7 @@ export default function ProjectsOverview({
                 open={task.modal.open}
                 mode={task.modal.mode}
                 task={task.modal.task}
-                users={availableMembers}
+                users={projectAvailableMembers}
                 isSubmitting={isCreating}
                 columns={taskColumns}
                 onClose={task.close}

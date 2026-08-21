@@ -9,6 +9,7 @@ import {
     getTimelineRange,
     getTotalDays,
     getPosition,
+    isValidTimelineTask,
 } from "./timelineUtils";
 
 import type {
@@ -30,10 +31,14 @@ export default function ProjectTasksTimeline({
         );
     }
 
+    const timelineTasks = tasks.filter(
+        isValidTimelineTask,
+    );
+
     const {
         minDate,
         maxDate,
-    } = getTimelineRange(tasks);
+    } = getTimelineRange(timelineTasks);
 
     const totalDays = getTotalDays(
         minDate,
@@ -44,6 +49,11 @@ export default function ProjectTasksTimeline({
         minDate,
         maxDate,
     );
+    const timelineWidth = Math.max(
+        months.length * 140,
+        900,
+    );
+
     const today = new Date();
     const showToday = today >= minDate && today <= maxDate;
     const todayPercent = showToday ? getPosition(today, minDate, totalDays,) : 0;
@@ -55,10 +65,12 @@ export default function ProjectTasksTimeline({
                     <h2 className="text-lg font-semibold">
                         Project Timeline
                     </h2>
+
                     <p className="text-sm text-muted-foreground">
                         Timeline based on task duration
                     </p>
                 </div>
+
                 <div className="rounded-lg border border-border bg-muted/40 px-3 py-1 text-xs text-muted-foreground">
                     {minDate.toLocaleDateString("en-GB", {
                         day: "2-digit",
@@ -72,27 +84,59 @@ export default function ProjectTasksTimeline({
                     })}
                 </div>
             </div>
-            <TimelineHeader
-                months={months}
-            />
-            <div className="relative">
-                {showToday && (
-                    <TimelineToday
-                        percent={todayPercent}
-                    />
-                )}
-                <div className="space-y-2">
-                    {tasks.map((task) => (
-                        <TimelineRow
-                            key={task.id}
-                            task={task}
-                            minDate={minDate}
-                            totalDays={totalDays}
-                        />
-                    ))}
+
+            {/* Timeline */}
+            <div className="overflow-x-auto overflow-y-hidden">
+                <div
+                    className="w-full"
+                    style={{ minWidth: `${timelineWidth}px` }}
+                >
+                    {/* Header */}
+                    <TimelineHeader months={months} />
+
+                    {/* Timeline Body */}
+                    <div className="relative mt-5">
+
+                        {/* Month Grid */}
+                        <div
+                            className="pointer-events-none absolute inset-0 grid"
+                            style={{
+                                gridTemplateColumns: `repeat(${months.length},minmax(140px, 1fr))`,
+                            }}
+                        >
+                            {months.map((month) => (
+                                <div
+                                    key={month.key}
+                                    className="border-l border-border/40 last:border-r"
+                                />
+                            ))}
+                        </div>
+
+                        {/* Today */}
+                        {showToday && (
+                            <div
+                                className="pointer-events-none absolute inset-y-0 left-75 right-0 z-20"
+                            >
+                                <TimelineToday
+                                    percent={todayPercent}
+                                />
+                            </div>
+                        )}
+
+                        {/* Tasks */}
+                        <div className="relative space-y-2">
+                            {timelineTasks.map((task) => (
+                                <TimelineRow
+                                    key={task.id}
+                                    task={task}
+                                    minDate={minDate}
+                                    totalDays={totalDays}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     );
-
 }

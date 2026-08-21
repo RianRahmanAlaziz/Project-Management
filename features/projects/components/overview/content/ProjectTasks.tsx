@@ -1,11 +1,8 @@
 import { Avatar, Badge } from "@/components/ui";
-
-import {
-    priorityOptions,
-    statusOptions,
-} from "@/components/constants";
+import { priorityOptions } from "@/components/constants";
 
 import type { Tasks } from "@/features/tasks/types/tasks";
+import { getColorOption } from "@/lib/utils/getColorOption";
 
 interface ProjectTasksProps {
     tasks: Tasks[];
@@ -18,12 +15,6 @@ const priorityColorMap = {
     High: "red",
 } as const;
 
-const statusColorMap: Record<string, "green" | "yellow" | "blue" | "purple"> = {
-    Planning: "blue",
-    "In Progress": "yellow",
-    Review: "purple",
-    Done: "green",
-};
 
 export default function ProjectTasks({
     tasks,
@@ -55,9 +46,12 @@ export default function ProjectTasks({
 
                     <tbody>
                         {tasks.map((task) => {
-                            const priority = priorityOptions.find((option) => option.value === task.priority);
+                            const priority = priorityOptions.find(
+                                (option) => option.value === task.priority,
+                            );
+
                             const statusName = task.column?.name ?? "Unknown";
-                            const statusColor = statusColorMap[statusName] ?? "gray";
+                            const statusColor = task.column?.color ? getColorOption(task.column.color) : undefined;
                             return (
                                 <tr
                                     key={task.id}
@@ -83,7 +77,7 @@ export default function ProjectTasks({
                                         <Badge
                                             size="md"
                                             label={statusName}
-                                            color={statusColor}
+                                            color={statusColor?.value ?? "gray"}
                                         />
                                     </td>
 

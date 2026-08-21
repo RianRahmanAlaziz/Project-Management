@@ -1,33 +1,38 @@
+import type { TimelineMonth } from "./timelineUtils";
+
 interface Props {
-    months: string[];
+    months: TimelineMonth[];
 }
 
 export default function TimelineHeader({
     months,
 }: Props) {
-
     return (
         <div
-            className="mb-5 grid gap-5"
-            style={{ gridTemplateColumns: "280px 1fr" }}
+            className="grid gap-5"
+            style={{
+                gridTemplateColumns: "280px 1fr",
+            }}
         >
             <p className="text-sm font-medium text-muted-foreground">
                 Task
             </p>
+
             <div
                 className="grid"
-                style={{ gridTemplateColumns: `repeat(${months.length},1fr)` }}
+                style={{
+                    gridTemplateColumns: `repeat(${months.length}, minmax(80px, 1fr))`,
+                }}
             >
-                {months.map(month => (
+                {months.map((month) => (
                     <div
-                        key={month}
-                        className="text-center text-xs font-medium text-muted-foreground"
+                        key={month.key}
+                        className="min-w-20 text-center text-xs font-medium text-muted-foreground"
                     >
-                        {month}
+                        {month.label}
                     </div>
                 ))}
             </div>
         </div>
-
     );
 }

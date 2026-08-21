@@ -2,8 +2,10 @@
 
 import { statusOptions } from "@/components/constants";
 import type { Tasks } from "@/features/tasks/types/tasks";
+import { getColorOption } from "@/lib/utils/getColorOption";
 import { getPosition } from "./timelineUtils";
 import TimelineTooltip from "./TimelineTooltip";
+import { useState } from "react";
 
 interface TimelineRowProps {
     task: Tasks;
@@ -11,28 +13,26 @@ interface TimelineRowProps {
     totalDays: number;
 }
 
-const statusColorMap = {
-    planning: "bg-blue-500",
-    in_progress: "bg-amber-500",
-    review: "bg-purple-500",
-    done: "bg-emerald-500",
-} as const;
-
-const statusTrackMap = {
-    planning: "bg-blue-100 dark:bg-blue-950/40",
-    in_progress: "bg-amber-100 dark:bg-amber-950/40",
-    review: "bg-purple-100 dark:bg-purple-950/40",
-    done: "bg-emerald-100 dark:bg-emerald-950/40",
-} as const;
-
 export default function TimelineRow({
     task,
     minDate,
     totalDays,
 }: TimelineRowProps) {
+    if (!task.start_date || !task.due_date) {
+        return null;
+    }
 
     const startDate = new Date(task.start_date);
     const endDate = new Date(task.due_date);
+
+    if (
+        Number.isNaN(startDate.getTime()) ||
+        Number.isNaN(endDate.getTime()) ||
+        endDate < startDate
+    ) {
+        return null;
+    }
+
     const left = getPosition(
         startDate,
         minDate,
@@ -50,86 +50,137 @@ export default function TimelineRow({
         2,
     );
 
-    const duration = Math.ceil((endDate.getTime() - startDate.getTime()) / 86400000) + 1;
+    const duration =
+        Math.ceil(
+            (endDate.getTime() -
+                startDate.getTime()) /
+            86400000,
+        ) + 1;
 
     const status = statusOptions.find(
-        option => option.value === task.status,
+        (option) =>
+            option.value === task.status,
     );
+
+    const color = getColorOption(
+        task.column?.color,
+    );
+
+    const barColor = color?.bg ?? "bg-slate-500";
+
+    const [tooltip, setTooltip] = useState<{
+        open: boolean;
+        top: number;
+        left: number;
+    }>({
+        open: false,
+        top: 0,
+        left: 0,
+    });
+
+    const handleMouseEnter = (
+        event: React.MouseEvent<HTMLDivElement>,
+    ) => {
+        const rect =
+            event.currentTarget.getBoundingClientRect();
+
+        setTooltip({
+            open: true,
+            top: rect.top - 8,
+            left: rect.left + rect.width / 2,
+        });
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip((current) => ({
+            ...current,
+            open: false,
+        }));
+    };
 
     return (
         <div
             className="
                 group
                 grid
-                grid-cols-[280px_1fr]
+                grid-cols-[280px_minmax(0,1fr)]
                 gap-5
                 rounded-xl
                 p-3
-                transition-all
+                transition-colors
                 hover:bg-muted/30
             "
         >
             {/* LEFT */}
-            <div className="space-y-1">
+            <div className="min-w-0 space-y-1">
                 <div className="flex items-center gap-2">
-                    {status?.icon}
+                    <span
+                        className={[
+                            "h-2 w-2 shrink-0 rounded-full",
+                            barColor,
+                        ].join(" ")}
+                        aria-hidden="true"
+                    />
+
                     <p className="truncate font-medium text-foreground">
                         {task.title}
                     </p>
                 </div>
+
                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>
-                        {task.assignee.name}
+                    <span className="truncate">
+                        {task.assignee?.name ??
+                            "Unassigned"}
                     </span>
+
                     <span>•</span>
-                    <span>
+
+                    <span className="shrink-0">
                         {duration} days
                     </span>
                 </div>
             </div>
+
             {/* RIGHT */}
             <div className="relative h-9">
                 {/* Track */}
                 <div
-                    className={`
-                        absolute
-                        top-3
-                        h-4
-                        w-full
-                        rounded-full
-                        ${statusTrackMap[
-                        task.status as keyof typeof statusTrackMap
-                        ] ?? "bg-slate-100 dark:bg-slate-900"}
-                    `}
+                    className="absolute inset-x-0 top-1/2 h-4 -translate-y-1/2  rounded-full bg-muted/50"
                 />
-                {/* Bar */}
+
+                {/* Task Bar */}
                 <div
-                    className={`
-                        absolute
-                        top-3
-                        h-4
-                        rounded-full
-                        shadow-sm
-                        transition-all
-                        duration-300
-                        group-hover:scale-y-110
-                        ${statusColorMap[
-                        task.status as keyof typeof statusColorMap
-                        ] ?? "bg-slate-500"}
-                    `}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className={[
+                        "group/bar",
+                        "absolute",
+                        "top-1/2",
+                        "h-7",
+                        "-translate-y-1/2",
+                        "rounded-md",
+                        "shadow-sm",
+                        "transition-all",
+                        "duration-200",
+                        "hover:h-8",
+                        "hover:shadow-md",
+                        "hover:brightness-110",
+                        barColor,
+                    ].join(" ")}
                     style={{
                         left: `${left}%`,
                         width: `${width}%`,
                     }}
-                />
-                <TimelineTooltip
-                    task={task}
-                    duration={duration}
-                    status={
-                        status?.label ??
-                        task.status
-                    }
-                />
+                >
+                    <TimelineTooltip
+                        task={task}
+                        duration={duration}
+                        status={status?.label ?? task.status}
+                        open={tooltip.open}
+                        top={tooltip.top}
+                        left={tooltip.left}
+                    />
+                </div>
             </div>
         </div>
     );
