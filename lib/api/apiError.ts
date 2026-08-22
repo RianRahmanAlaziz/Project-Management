@@ -12,14 +12,31 @@ export interface ParsedApiError {
     status?: number;
 }
 
-export function parseApiError(error: unknown): ParsedApiError {
+export function parseApiError(
+    error: unknown,
+): ParsedApiError {
     if (axios.isAxiosError<ApiErrorResponse>(error)) {
+        const responseData =
+            error.response?.data;
+
+        const errors =
+            responseData?.errors ?? {};
+
+        const validationMessage =
+            Object.values(errors)
+                .flat()
+                .find(Boolean);
+
         return {
             message:
-                error.response?.data?.message ??
+                validationMessage ??
+                responseData?.message ??
                 "Terjadi kesalahan saat memproses permintaan.",
-            errors: error.response?.data?.errors ?? {},
-            status: error.response?.status,
+
+            errors,
+
+            status:
+                error.response?.status,
         };
     }
 
@@ -31,7 +48,8 @@ export function parseApiError(error: unknown): ParsedApiError {
     }
 
     return {
-        message: "Terjadi kesalahan yang tidak diketahui.",
+        message:
+            "Terjadi kesalahan yang tidak diketahui.",
         errors: {},
     };
 }

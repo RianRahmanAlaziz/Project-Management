@@ -1,7 +1,14 @@
-import { COLORS } from "@/components/constants";
+import {
+    COLORS,
+    type Color,
+} from "@/components/constants";
 
-export function getColorOption(color?: string) {
-    return COLORS.find(
-        (item) => item.label.toLowerCase() === color?.toLowerCase() || item.bg === color,
+export function getColorOption(
+    value?: string | null,
+): Color {
+    return (
+        COLORS.find(
+            (color) => color.value === value,
+        ) ?? COLORS[0]
     );
 }

@@ -9,7 +9,7 @@ export function formatDate(
         "en-GB",
         {
             day: "2-digit",
-            month: "long",
+            month: "short",
             year: "numeric",
         },
     );
