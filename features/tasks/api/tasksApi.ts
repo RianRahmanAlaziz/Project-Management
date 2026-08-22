@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/api/apiClient";
-import { CreateTaskPayload, MyTasksResponse, Tasks, TasksListResponse, UpdateTaskPayload } from "../types/tasks";
+import { CreateTaskPayload, MyTasksResponse, ReorderTaskPayload, Tasks, TasksListResponse, UpdateTaskPayload } from "../types/tasks";
 import { ApiResponse } from "@/lib/api";
 
 export async function getMyTasks(): Promise<MyTasksResponse> {
@@ -40,6 +40,19 @@ export async function updateTask(
 ): Promise<ApiResponse<Tasks>> {
     const response = await apiClient.patch<ApiResponse<Tasks>>(
         `/workspaces/${workspaceSlug}/projects/${projectSlug}/tasks/${taskId}`,
+        payload,
+    );
+
+    return response.data;
+}
+
+export async function reorderTasks(
+    workspaceSlug: string,
+    projectSlug: string,
+    payload: ReorderTaskPayload,
+): Promise<ApiResponse<Tasks>> {
+    const response = await apiClient.put<ApiResponse<Tasks>>(
+        `/workspaces/${workspaceSlug}/projects/${projectSlug}/tasks/reorder`,
         payload,
     );
 

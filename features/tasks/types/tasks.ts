@@ -7,6 +7,7 @@ export interface Tasks {
     priority: string;
     start_date: string;
     due_date: string;
+    position: number;
     completed_at: boolean;
     workspace: {
         id: number;
@@ -159,4 +160,12 @@ export interface UpdateTaskPayload {
     assignee_id?: number | null;
     start_date?: string | null;
     due_date?: string | null;
+}
+
+export interface ReorderTaskPayload {
+    tasks: {
+        id: number;
+        position: number;
+        column_id: number;
+    }[];
 }

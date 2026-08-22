@@ -21,9 +21,7 @@ export function useDeleteProjectColumn({
     const [isDeleting, setIsDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState<string | null>(null);
 
-    const handleDeleteColumn = async (
-        column: WorkflowColumn,
-    ) => {
+    const handleDeleteColumn = async (column: WorkflowColumn) => {
         if (isDeleting) {
             return;
         }
@@ -38,14 +36,12 @@ export function useDeleteProjectColumn({
         )
             .then(async (response) => {
                 await onSuccess?.();
-
                 return response;
             })
             .catch((error) => {
                 const apiError = parseApiError(error);
 
                 setDeleteError(apiError.message);
-
                 throw error;
             })
             .finally(() => {
@@ -58,11 +54,7 @@ export function useDeleteProjectColumn({
             error: (error) => {
                 const apiError = parseApiError(error);
 
-                return {
-                    message: "Failed to delete column",
-                    description:
-                        apiError.message,
-                };
+                return apiError.message;
             },
         });
 

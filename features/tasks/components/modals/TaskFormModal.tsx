@@ -27,7 +27,7 @@ interface TaskFormModalProps {
 
     users: WorkspaceMember[];
     columns: WorkflowColumn[];
-
+    defaultColumnId?: string;
     isSubmitting?: boolean;
 
     onClose: () => void;
@@ -40,6 +40,7 @@ export default function TaskFormModal({
     task,
     users = [],
     columns = [],
+    defaultColumnId,
     isSubmitting = false,
     onClose,
     onSubmit,
@@ -100,18 +101,25 @@ export default function TaskFormModal({
             return;
         }
 
+        // CREATE
         setTitle("");
         setDescription("");
-
         setProjectId("");
-        setColumnId("");
+
+        // Ambil column dari tombol "+" yang diklik
+        setColumnId(defaultColumnId ?? "");
 
         setPriority("");
         setAssigneeId("");
 
         setStartDate("");
         setDueDate("");
-    }, [mode, task, open]);
+    }, [
+        mode,
+        task,
+        open,
+        defaultColumnId,
+    ]);
 
     const handleSubmit = async () => {
         if (isSubmitting) {

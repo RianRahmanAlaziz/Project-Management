@@ -14,6 +14,7 @@ interface ProjectTaskModalProps {
     open: boolean;
     mode: "create" | "edit";
     task?: Tasks | null;
+    columnId?: string;
     isSubmitting?: boolean;
     users: WorkspaceMember[];
     columns: WorkflowColumn[];
@@ -27,6 +28,7 @@ export function ProjectTaskModal({
     mode,
     task = null,
     users,
+    columnId,
     columns,
     isSubmitting = false,
     onClose,
@@ -37,21 +39,10 @@ export function ProjectTaskModal({
             id: task.id,
             title: task.title,
             description: task.description ?? "",
-
-            projectId: String(
-                task.project?.id ?? "",
-            ),
-
-            columnId: String(
-                task.column?.id ?? "",
-            ),
-
+            projectId: String(task.project?.id ?? ""),
+            columnId: String(task.column?.id ?? ""),
             priority: task.priority,
-
-            assigneeId: task.assignee
-                ? String(task.assignee.id)
-                : "",
-
+            assigneeId: task.assignee ? String(task.assignee.id) : "",
             startDate: task.start_date ?? "",
             dueDate: task.due_date ?? "",
         }
@@ -64,6 +55,7 @@ export function ProjectTaskModal({
             task={formTask}
             users={users}
             isSubmitting={isSubmitting}
+            defaultColumnId={columnId}
             columns={columns}
             onClose={onClose}
             onSubmit={onSubmit}

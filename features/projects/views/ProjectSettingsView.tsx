@@ -37,6 +37,7 @@ import {
     useProjectModals,
 } from "../hooks";
 import { CreateWorkflowColumnPayload, WorkflowColumn } from "../types/workflow";
+import { useTasks } from "@/features/tasks/hooks";
 
 interface ProjectSettingsViewProps {
     workspaceSlug: string;
@@ -146,6 +147,13 @@ export default function ProjectSettingsView({
         workspaceSlug,
         projectSlug,
     });
+
+    const {
+        tasks,
+    } = useTasks(
+        workspaceSlug,
+        projectSlug,
+    );
 
     useEffect(() => {
         if (
@@ -325,11 +333,13 @@ export default function ProjectSettingsView({
                         {section === "workflow" && (
                             <WorkflowSettings
                                 columns={columns}
+                                tasks={tasks}
                                 setColumns={setColumns}
                                 isSaving={
                                     isCreating ||
                                     isUpdatingColumn ||
-                                    isReordering
+                                    isReordering ||
+                                    deleteProjectColumn
                                 }
                                 onOpenCreateColumn={workflowModal.openCreate}
                                 onEdit={workflowModal.openEdit}

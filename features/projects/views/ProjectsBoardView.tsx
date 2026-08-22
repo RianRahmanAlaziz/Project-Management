@@ -5,17 +5,31 @@ import { AnimatePresence } from "motion/react";
 
 import {
     KanbanBoard,
+    ProjectBoardSkeleton,
     ProjectTaskModal,
 } from "@/features/projects/components";
+
 import {
     useOverviewProject,
     useProjectColumns,
-    useProjectModals
+    useProjectMembers,
+    useProjectModals,
 } from "../hooks";
-import TaskDrawer from "@/features/tasks/views/TaskDrawer";
-import { useTasks } from "@/features/tasks/hooks";
-import { TaskDrawer as TaskDrawerData, Tasks, } from "@/features/tasks/types/tasks";
 
+import TaskDrawer from "@/features/tasks/views/TaskDrawer";
+
+import {
+    useCreateTask,
+    useReorderTasks,
+    useTasks,
+} from "@/features/tasks/hooks";
+
+import type {
+    Task,
+    TaskDrawer as TaskDrawerData,
+    Tasks,
+} from "@/features/tasks/types/tasks";
+import { useWorkspaceMembers } from "@/features/members/hooks";
 
 type ProjectsBoardViewProps = {
     workspaceSlug: string;
@@ -27,6 +41,15 @@ export default function ProjectsBoardView({
     projectSlug,
 }: ProjectsBoardViewProps) {
     const [selectedTask, setSelectedTask] = useState<TaskDrawerData | null>(null);
+    const { members: workspaceMembers } = useWorkspaceMembers(workspaceSlug);
+    const { members: projectMembers } = useProjectMembers({
+        workspaceSlug,
+        projectSlug,
+    });
+
+    const availableMembers = workspaceMembers.filter((member) =>
+        projectMembers.some(({ user_id }) => user_id === member.user.id),
+    );
 
     const {
         project,
@@ -38,6 +61,7 @@ export default function ProjectsBoardView({
 
     const {
         tasks,
+        setTasks,
         refetch: refetchTasks,
     } = useTasks(
         workspaceSlug,
@@ -53,6 +77,38 @@ export default function ProjectsBoardView({
     });
 
     const { task } = useProjectModals();
+    const {
+        handleCreateTask: createTask,
+        isCreating,
+    } = useCreateTask({
+        workspaceSlug,
+        projectSlug,
+
+        onSuccess: async () => {
+            await refetchTasks();
+            task.close();
+        },
+    });
+
+    const handleCreateTask = (columnId: number) => {
+        task.openCreate(String(columnId));
+    };
+
+    const handleTaskSubmit = async (form: Task) => {
+        if (task.modal.mode !== "create") {
+            return;
+        }
+
+        await createTask({
+            title: form.title,
+            description: form.description ?? "",
+            columnId: form.columnId ?? task.modal.column ?? "",
+            priority: form.priority ?? "",
+            assigneeId: form.assigneeId ?? "",
+            startDate: form.startDate ?? "",
+            dueDate: form.dueDate ?? "",
+        });
+    };
 
     const handleTaskClick = (task: Tasks) => {
         setSelectedTask({
@@ -74,9 +130,35 @@ export default function ProjectsBoardView({
         });
     };
 
-    const handleCreateTask = (columnId: number) => {
-        task.openCreate(String(columnId));
+    const {
+        handleReorderTasks,
+        isReordering,
+    } = useReorderTasks({
+        workspaceSlug,
+        projectSlug,
+    });
+
+    const handleReorderTask = async (reorderedTasks: Tasks[]) => {
+        await handleReorderTasks({
+            tasks: reorderedTasks.map((task) => {
+                if (!task.column?.id) {
+                    throw new Error(`Task ${task.id} does not have a column.`);
+                }
+                return {
+                    id: task.id,
+                    position: task.position,
+                    column_id: task.column.id,
+                };
+            },
+            ),
+        });
     };
+
+    if (isColumnsLoading || isProjectLoading) {
+        return (
+            <ProjectBoardSkeleton />
+        );
+    }
 
     if (!project) {
         return (
@@ -86,17 +168,22 @@ export default function ProjectsBoardView({
         );
     }
 
-
     return (
         <div className="w-full space-y-6">
             <KanbanBoard
                 tasks={tasks}
+                setTasks={setTasks}
                 columns={columns}
+                disabled={isReordering}
                 onCreateTask={handleCreateTask}
                 onOpenTask={handleTaskClick}
+                onReorderTask={handleReorderTask}
             />
 
-            <AnimatePresence initial={false} mode="wait">
+            <AnimatePresence
+                initial={false}
+                mode="wait"
+            >
                 {selectedTask && (
                     <TaskDrawer
                         key={selectedTask.id}
@@ -105,12 +192,8 @@ export default function ProjectsBoardView({
                         projectSlug={projectSlug}
                         projectName={project.name}
                         columns={columns}
-                        onClose={() =>
-                            setSelectedTask(null)
-                        }
-                        onTaskUpdated={async (
-                            changes,
-                        ) => {
+                        onClose={() => setSelectedTask(null)}
+                        onTaskUpdated={async (changes) => {
                             setSelectedTask(
                                 (currentTask) => {
                                     if (!currentTask) {
@@ -119,8 +202,7 @@ export default function ProjectsBoardView({
 
                                     return {
                                         ...currentTask,
-                                        priority:
-                                            changes.priority,
+                                        priority: changes.priority,
                                         column: {
                                             ...currentTask.column,
                                             ...changes.column,
@@ -128,7 +210,6 @@ export default function ProjectsBoardView({
                                     };
                                 },
                             );
-
                             await refetchTasks();
                         }}
                     />
@@ -139,14 +220,12 @@ export default function ProjectsBoardView({
                 open={task.modal.open}
                 mode={task.modal.mode}
                 task={task.modal.task}
-                users={[]}
+                columnId={task.modal.column}
+                users={availableMembers}
                 columns={columns}
-                isSubmitting={false}
+                isSubmitting={isCreating}
                 onClose={task.close}
-                onSubmit={async () => {
-                    // Akan kita sambungkan ke useCreateTask
-                    // pada tahap berikutnya.
-                }}
+                onSubmit={handleTaskSubmit}
             />
         </div>
     );

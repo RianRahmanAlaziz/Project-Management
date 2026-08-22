@@ -42,6 +42,7 @@ export function useTasks(
 
     return {
         tasks,
+        setTasks,
         pagination,
         isLoading,
         error,

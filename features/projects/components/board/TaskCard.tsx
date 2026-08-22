@@ -9,31 +9,24 @@ import {
     Paperclip,
 } from "lucide-react";
 
-import { Avatar, Badge } from "@/components/ui";
+import { Avatar } from "@/components/ui";
 import type { Tasks } from "@/features/tasks/types/tasks";
-
-const labelColors = {
-    Frontend: "blue",
-    Backend: "indigo",
-    Design: "purple",
-    DevOps: "gray",
-    Database: "green",
-    Docs: "gray",
-    UX: "yellow",
-    Data: "blue",
-    Feature: "indigo",
-    Performance: "red",
-} as const;
+import { getColorOption } from "@/lib/utils/getColorOption";
+import { formatDate } from "@/lib/utils/formatDate";
 
 interface TaskCardProps {
     task: Tasks;
     preview?: boolean;
+    isDropTarget?: boolean;
+    disabled?: boolean;
     onClick?: () => void;
 }
 
 export default function TaskCard({
     task,
     preview = false,
+    isDropTarget = false,
+    disabled = false,
     onClick,
 }: TaskCardProps) {
     const {
@@ -45,7 +38,7 @@ export default function TaskCard({
         isDragging,
     } = useSortable({
         id: task.id,
-        disabled: preview,
+        disabled: preview || disabled,
         data: {
             type: "task",
             task,
@@ -53,25 +46,38 @@ export default function TaskCard({
         },
     });
 
+    const columnColor = getColorOption(task.column?.color);
+
     return (
         <div
             ref={setNodeRef}
             style={{
-                transform: CSS.Transform.toString(transform),
+                transform:
+                    CSS.Transform.toString(
+                        transform,
+                    ),
                 transition,
             }}
             {...attributes}
             {...listeners}
-            onClick={onClick}
+            onClick={disabled ? undefined : onClick}
             className={[
-                "group cursor-pointer rounded-lg border border-border bg-card p-3 transition-all",
-                "hover:border-primary/30 hover:shadow-sm",
-                isDragging && "opacity-40",
+                "group relative rounded-lg border border-border bg-card p-3 transition-all",
+                disabled
+                    ? "cursor-not-allowed opacity-50"
+                    : [
+                        "cursor-pointer",
+                        "hover:shadow-sm",
+                        columnColor.hoverBorder,
+                    ].join(" "),
+                isDragging && !preview ? "opacity-40" : "",
+                isDropTarget && !preview && !disabled
+                    ? "before:absolute before:-top-1.5 before:left-0 before:right-0 before:h-0.5 before:rounded-full before:bg-primary"
+                    : "",
             ]
                 .filter(Boolean)
                 .join(" ")}
         >
-
             {/* Title */}
             <p className="mb-3 text-sm font-medium text-foreground">
                 {task.title}
@@ -87,12 +93,7 @@ export default function TaskCard({
                 )}
 
                 <div className="ml-auto flex items-center gap-2 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                        <Calendar size={11} />
-                        {task.due_date
-                            ? task.due_date.slice(5)
-                            : "-"}
-                    </span>
+
 
                     <span className="flex items-center gap-1">
                         <Paperclip size={11} />

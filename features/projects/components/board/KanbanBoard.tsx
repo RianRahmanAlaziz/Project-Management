@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import type {
+    Dispatch,
+    SetStateAction,
+} from "react";
 
 import {
     DndContext,
@@ -18,6 +21,7 @@ import {
 import type {
     DragStartEvent,
     DragEndEvent,
+    DragOverEvent,
 } from "@dnd-kit/core";
 
 import {
@@ -27,37 +31,28 @@ import {
 
 import {
     KanbanColumn,
+    TaskCard,
 } from "@/features/projects/components";
 
-import {
-    TaskCard,
-} from "@/features/tasks/components";
-
 import type { Tasks } from "@/features/tasks/types/tasks";
-import { WorkflowColumn } from "../../types/workflow";
+import type { WorkflowColumn } from "../../types/workflow";
 
 interface KanbanBoardProps {
     tasks: Tasks[];
     columns: WorkflowColumn[];
-    setTasks?: Dispatch<SetStateAction<Tasks[]>>;
+    setTasks: Dispatch<SetStateAction<Tasks[]>>;
+
+    disabled?: boolean;
+
     onCreateTask: (columnId: number) => void;
     onOpenTask: (task: Tasks) => void;
+    onReorderTask: (tasks: Tasks[]) => Promise<void>;
 }
 
 const collisionDetection = (args: any) => {
-    const pointerIntersections =
-        pointerWithin(args);
-
-    const collisions =
-        pointerIntersections.length
-            ? pointerIntersections
-            : rectIntersection(args);
-
-    const overId =
-        getFirstCollision(
-            collisions,
-            "id",
-        );
+    const pointerIntersections = pointerWithin(args);
+    const collisions = pointerIntersections.length ? pointerIntersections : rectIntersection(args);
+    const overId = getFirstCollision(collisions, "id");
 
     if (!overId) {
         return [];
@@ -70,8 +65,10 @@ export default function KanbanBoard({
     tasks,
     columns,
     setTasks,
+    disabled = false,
     onCreateTask,
     onOpenTask,
+    onReorderTask,
 }: KanbanBoardProps) {
     const sensors = useSensors(
         useSensor(PointerSensor, {
@@ -81,149 +78,275 @@ export default function KanbanBoard({
         }),
 
         useSensor(KeyboardSensor, {
-            coordinateGetter:
-                sortableKeyboardCoordinates,
+            coordinateGetter: sortableKeyboardCoordinates,
         }),
     );
 
-    const [
-        activeTask,
-        setActiveTask,
-    ] = useState<Tasks | null>(null);
+    const [activeTask, setActiveTask] = useState<Tasks | null>(null);
+    const [overTaskId, setOverTaskId] = useState<number | null>(null);
 
-    const handleDragStart = (
-        event: DragStartEvent,
-    ) => {
-        const task =
-            event.active.data.current?.task;
+    const handleDragStart = (event: DragStartEvent) => {
+        if (disabled) {
+            return;
+        }
+        const task = event.active.data.current?.task;
 
         if (task) {
             setActiveTask(task);
         }
     };
 
-    const handleDragEnd = ({
-        active,
-        over,
-    }: DragEndEvent) => {
+    const handleDragOver = (event: DragOverEvent) => {
+        if (disabled) {
+            return;
+        }
+        const { active, over } = event;
+
+        if (!over || over.data.current?.type !== "task") {
+            setOverTaskId(null);
+            return;
+        }
+
+        if (Number(active.id) === Number(over.id)) {
+            setOverTaskId(null);
+            return;
+        }
+
+        setOverTaskId(Number(over.id));
+    };
+
+    const handleDragCancel = () => {
         setActiveTask(null);
+        setOverTaskId(null);
+    };
 
-        if (!over || !setTasks) {
+    const handleDragEnd = async (event: DragEndEvent) => {
+        if (disabled) {
+            setActiveTask(null);
+            setOverTaskId(null);
             return;
         }
 
-        const draggedTask =
-            active.data.current?.task as Tasks;
+        const { active, over } = event;
 
-        if (!draggedTask) {
+        setActiveTask(null);
+        setOverTaskId(null);
+
+        if (!over) {
             return;
         }
 
-        const overData =
-            over.data.current;
+        const activeId = Number(active.id);
 
-        setTasks((prev) => {
-            const items = [...prev];
+        const activeTask = tasks.find(
+            (task) => task.id === activeId,
+        );
 
-            const activeIndex =
-                items.findIndex(
-                    (item) =>
-                        item.id ===
-                        draggedTask.id,
+        if (!activeTask) {
+            return;
+        }
+
+        let targetColumnId: | number | null = null;
+
+        /**
+         * Drop langsung ke column.
+         */
+        if (
+            over.data.current?.type === "column"
+        ) {
+            targetColumnId = Number(
+                String(over.id).replace(
+                    "column-",
+                    "",
+                ),
+            );
+        }
+
+        /**
+         * Drop ke task.
+         */
+        if (
+            over.data.current?.type === "task"
+        ) {
+            const overTask = tasks.find(
+                (task) => task.id === Number(over.id),
+            );
+
+            targetColumnId = overTask?.column?.id ?? null;
+        }
+
+        if (!targetColumnId) {
+            return;
+        }
+
+        const targetColumn = columns.find(
+            (column) => column.id === targetColumnId,
+        );
+
+        if (!targetColumn) {
+            return;
+        }
+
+        /**
+         * =====================================
+         * MOVE TO ANOTHER COLUMN
+         * =====================================
+         */
+        if (
+            activeTask.column?.id !== targetColumnId
+        ) {
+            const previousTasks = tasks;
+
+            const targetTasks = tasks
+                .filter((task) => task.column?.id === targetColumnId)
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+            const overIndex = over.data.current?.type === "task" ? targetTasks.findIndex((task) => task.id === Number(over.id)) : targetTasks.length;
+            const insertIndex = overIndex === -1 ? targetTasks.length : overIndex;
+
+            const movedTask = {
+                ...activeTask,
+                column: targetColumn,
+            };
+
+            const newTargetTasks =
+                [
+                    ...targetTasks.slice(0, insertIndex),
+                    movedTask,
+                    ...targetTasks.slice(insertIndex),
+                ].map(
+                    (task, index) => ({
+                        ...task,
+                        position: index + 1,
+                    }),
                 );
 
-            if (activeIndex === -1) {
-                return prev;
-            }
+            const sourceTasks = tasks
+                .filter((task) => task.column?.id === activeTask.column?.id && task.id !== activeId)
+                .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+                .map((task, index) => ({ ...task, position: index + 1 }));
 
-            /**
-             * Drop di atas task
-             */
-            if (
-                overData?.type === "task"
-            ) {
-                const targetTask =
-                    overData.task as Tasks;
+            const updatedTaskMap = new Map(
+                [
+                    ...sourceTasks,
+                    ...newTargetTasks,
+                ].map((task) => [
+                    task.id,
+                    task,
+                ]),
+            );
 
-                const overIndex =
-                    items.findIndex(
-                        (item) =>
-                            item.id ===
-                            targetTask.id,
-                    );
+            const reorderedTasks = tasks.map(
+                (task) => updatedTaskMap.get(task.id,) ?? task);
+            setTasks(reorderedTasks);
 
-                if (overIndex === -1) {
-                    return prev;
-                }
-
-                return arrayMove(
-                    items,
-                    activeIndex,
-                    overIndex,
+            try {
+                await onReorderTask(
+                    [
+                        ...sourceTasks,
+                        ...newTargetTasks,
+                    ],
                 );
+            } catch {
+                setTasks(previousTasks);
             }
 
-            /**
-             * Drop ke column
-             */
-            if (
-                overData?.type === "column"
-            ) {
-                const targetColumn =
-                    overData.column as WorkflowColumn;
+            return;
+        }
 
-                items[activeIndex] = {
-                    ...items[activeIndex],
+        /**
+         * =====================================
+         * REORDER IN SAME COLUMN
+         * =====================================
+         */
 
-                    column: {
-                        ...items[activeIndex].column,
-                        id: targetColumn.id,
-                        name: targetColumn.name,
-                        description:
-                            targetColumn.description,
-                        color: targetColumn.color,
-                        position:
-                            targetColumn.position,
-                    },
-                };
+        if (
+            over.data.current?.type !== "task"
+        ) {
+            return;
+        }
 
-                return items;
-            }
+        const overId = Number(over.id);
 
-            return prev;
-        });
+        if (
+            activeId === overId
+        ) {
+            return;
+        }
+
+        const columnTasks = tasks
+            .filter((task) => task.column?.id === targetColumnId)
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+
+        const oldIndex = columnTasks.findIndex((task) => task.id === activeId);
+
+        const newIndex = columnTasks.findIndex((task) => task.id === overId);
+
+        if (oldIndex === -1 || newIndex === -1) {
+            return;
+        }
+
+        const reorderedColumnTasks = arrayMove(
+            columnTasks,
+            oldIndex,
+            newIndex,
+        ).map(
+            (task, index) => ({
+                ...task,
+                position: index + 1,
+            }),
+        );
+
+        const previousTasks = tasks;
+
+        const reorderedTasks = tasks.map(
+            (task) => {
+                const updatedTask = reorderedColumnTasks.find(
+                    (item) => item.id === task.id,
+                );
+
+                return (
+                    updatedTask ?? task
+                );
+            },
+        );
+
+        setTasks(reorderedTasks);
+
+        try {
+            await onReorderTask(reorderedColumnTasks);
+        } catch {
+            setTasks(previousTasks);
+        }
     };
 
     return (
         <DndContext
             sensors={sensors}
-            collisionDetection={
-                collisionDetection
-            }
+            collisionDetection={collisionDetection}
             onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
+            onDragCancel={handleDragCancel}
         >
-            <div className="overflow-x-auto overflow-y-hidden">
+            <div className={[
+                "overflow-x-auto overflow-y-hidden",
+                disabled
+                    ? "cursor-not-allowed"
+                    : "",
+            ].join(" ")}>
                 <div className="flex gap-3 p-4">
-                    {columns.map((column) => {
-                        const columnTasks =
-                            tasks.filter(
-                                (task) =>
-                                    task.column?.id ===
-                                    column.id,
-                            );
-
+                    {columns.filter((column) => column.enabled).map((column) => {
+                        const columnTasks = tasks.filter((task) => task.column?.id === column.id).sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
                         return (
                             <KanbanColumn
                                 key={column.id}
                                 column={column}
                                 tasks={columnTasks}
-                                onCreateTask={
-                                    onCreateTask
-                                }
-                                onOpenTask={
-                                    onOpenTask
-                                }
+                                overTaskId={overTaskId}
+                                disabled={disabled}
+                                onCreateTask={onCreateTask}
+                                onOpenTask={onOpenTask}
                             />
                         );
                     })}

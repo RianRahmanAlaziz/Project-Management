@@ -23,10 +23,12 @@ import type {
 } from "@dnd-kit/core";
 
 import WorkflowItem from "./WorkflowItem";
+import { Tasks } from "@/features/tasks/types/tasks";
 
 
 interface WorkflowSettingsProps {
     columns: WorkflowColumn[];
+    tasks: Tasks[];
     setColumns: Dispatch<SetStateAction<WorkflowColumn[]>>;
     isSaving?: boolean;
     onOpenCreateColumn: () => void;
@@ -38,6 +40,7 @@ interface WorkflowSettingsProps {
 
 export default function WorkflowSettings({
     columns,
+    tasks,
     setColumns,
     isSaving = false,
     onOpenCreateColumn,
@@ -101,6 +104,10 @@ export default function WorkflowSettings({
                                 key={column.id}
                                 column={column}
                                 disabled={isSaving}
+                                hasTasks={tasks.some(
+                                    (task) =>
+                                        task.column?.id === column.id,
+                                )}
                                 onEdit={() => onEdit(column)}
                                 onToggle={() => onToggle(column)}
                                 onDelete={() => onDelete(column)}

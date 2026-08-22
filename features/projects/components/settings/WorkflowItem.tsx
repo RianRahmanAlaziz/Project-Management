@@ -14,6 +14,7 @@ interface WorkflowItemProps {
     onToggle: () => void;
     onDelete: () => void;
     disabled?: boolean;
+    hasTasks?: boolean;
 }
 
 export default function WorkflowItem({
@@ -22,6 +23,7 @@ export default function WorkflowItem({
     onToggle,
     onDelete,
     disabled = false,
+    hasTasks = false,
 }: WorkflowItemProps) {
 
     const {
@@ -36,7 +38,6 @@ export default function WorkflowItem({
     });
 
     const color = getColorOption(column.color);
-
     return (
         <div
             ref={setNodeRef}
@@ -99,14 +100,7 @@ export default function WorkflowItem({
                     onClick={onEdit}
                     disabled={disabled}
                     aria-label={`Edit ${column.name}`}
-                    className="
-            cursor-pointer
-            text-muted-foreground
-            transition-colors
-            hover:text-foreground
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-        "
+                    className="cursor-pointer text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed  disabled:opacity-50"
                 >
                     <Pencil size={15} />
                 </button>
@@ -114,16 +108,21 @@ export default function WorkflowItem({
                 <button
                     type="button"
                     onClick={onDelete}
-                    disabled={disabled}
-                    className="cursor-pointer text-muted-foreground transition-colors hover:text-destructive disabled:opacity-50"
+                    disabled={disabled || hasTasks}
                     aria-label={`Delete ${column.name}`}
+                    className={[
+                        "text-muted-foreground transition-colors",
+                        disabled || hasTasks
+                            ? "cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:text-destructive",
+                    ].join(" ")}
                 >
                     <Trash2 size={16} />
                 </button>
                 <Toggle
                     value={column.enabled}
                     onChange={onToggle}
-                    disabled={disabled}
+                    disabled={disabled || hasTasks}
                 />
             </div>
         </div >
